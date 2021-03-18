@@ -15,6 +15,15 @@ class Shader
 	static Shader* defaultShader;
 
 public:
+	// Locations of uniforms
+	GLint modelLocation = 0;
+	GLint viewLocation = 0;
+	GLint projectionLocation = 0;
+	//GLint shaderModelPosition = 0;
+
+	void UpdateUniformsLocations();
+
+public:
 	const static string TYPE_VERTEX;
 	const static string TYPE_FRAGMENT;
 	

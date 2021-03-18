@@ -16,6 +16,21 @@
     <Filter Include="Pliki nagłówkowe\UserScripts">
       <UniqueIdentifier>{74f18c1b-fd81-44bf-b0b0-60976c562e5a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pliki nagłówkowe\Cameras">
+      <UniqueIdentifier>{4ec6463d-b9bc-495d-af01-e867ee0260f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki źródłowe\Cameras">
+      <UniqueIdentifier>{07b566a6-74d2-4e4c-abd7-538854a1423c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki nagłówkowe\FBX">
+      <UniqueIdentifier>{f9c6dd00-e40d-4db3-8a56-c274c37686ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki źródłowe\FBX">
+      <UniqueIdentifier>{69f0484c-356b-4985-b616-8e1eab74ed16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pliki nagłówkowe\zlib">
+      <UniqueIdentifier>{d624ac69-72e7-40f2-a263-aa7080dcc823}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -36,16 +51,94 @@
     <ClCompile Include="GameObject.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="Debug.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Time.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="FlybackCamera.cpp">
+      <Filter>Pliki źródłowe\Cameras</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshRenderer.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="FBX\fbxdocument.cpp">
+      <Filter>Pliki źródłowe\FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="FBX\fbxdump.cpp">
+      <Filter>Pliki źródłowe\FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="FBX\fbxnode.cpp">
+      <Filter>Pliki źródłowe\FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="FBX\fbxproperty.cpp">
+      <Filter>Pliki źródłowe\FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="FBX\fbxutil.cpp">
+      <Filter>Pliki źródłowe\FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\miniz.c">
+      <Filter>Pliki nagłówkowe\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Color.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Cube.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="VertexShader.vert">
+    <None Include="FragmentShader2.frag">
+      <Filter>Pliki zasobów</Filter>
+    </None>
+    <None Include="VertexLightShader.vert">
+      <Filter>Pliki zasobów</Filter>
+    </None>
+    <None Include="FragmentLightShader.frag">
       <Filter>Pliki zasobów</Filter>
     </None>
     <None Include="FragmentShader.frag">
       <Filter>Pliki zasobów</Filter>
     </None>
-    <None Include="FragmentShader2.frag">
+    <None Include="VertexShader.vert">
+      <Filter>Pliki zasobów</Filter>
+    </None>
+    <None Include="TriangleVertexShader.vert">
+      <Filter>Pliki zasobów</Filter>
+    </None>
+    <None Include="GameObject.tpp">
+      <Filter>Pliki źródłowe</Filter>
+    </None>
+    <None Include="VertexShader2.vert">
       <Filter>Pliki zasobów</Filter>
     </None>
   </ItemGroup>
@@ -75,6 +168,57 @@
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="Time.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Debug.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="FlybackCamera.h">
+      <Filter>Pliki nagłówkowe\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshRenderer.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="OBJLoader.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="FBX\fbxdocument.h">
+      <Filter>Pliki nagłówkowe\FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="FBX\fbxnode.h">
+      <Filter>Pliki nagłówkowe\FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="FBX\fbxproperty.h">
+      <Filter>Pliki nagłówkowe\FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="FBX\fbxutil.h">
+      <Filter>Pliki nagłówkowe\FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\miniz.h">
+      <Filter>Pliki nagłówkowe\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>

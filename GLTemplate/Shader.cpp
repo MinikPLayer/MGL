@@ -1,9 +1,18 @@
 #include "Shader.h"
 
+#include <glm/gtc/type_ptr.hpp>
 #include "Util.h"
+#include "Camera.h"
 
 const string Shader::TYPE_FRAGMENT = "fragment";
 const string Shader::TYPE_VERTEX = "vertex";
+
+void Shader::UpdateUniformsLocations()
+{
+	modelLocation = glGetUniformLocation(ID, "model");
+	viewLocation = glGetUniformLocation(ID, "view");
+	projectionLocation = glGetUniformLocation(ID, "projection");
+}
 
 Shader::Shader(const char* vertexPath, const char* fragmentPath)
 {
@@ -57,6 +66,7 @@ bool Shader::LoadShaders(const char* vertexPath, const char* fragmentPath)
 
 
 	ID = program;
+	UpdateUniformsLocations();
 	return true;
 }
 
@@ -66,6 +76,19 @@ void Shader::Use()
 		return;
 
 	glUseProgram(ID);
+
+	Camera* rendering = Camera::__GetRenderingCamera();
+	if (rendering == nullptr)
+	{
+		LOGW_E("Rendering camera is nullptr");
+		return;
+	}
+
+	glm::mat4 view = rendering->GetViewMatrix();
+	SetMat4(viewLocation, glm::value_ptr(view));
+
+	glm::mat4 projection = rendering->GetProjectionMatrix();
+	SetMat4(projectionLocation, glm::value_ptr(projection));
 }
 
 void Shader::SetBool(GLint location, bool value)
@@ -200,7 +223,14 @@ void Shader::SetVertexVec4(const string& param, float v1, float v2, float v3, fl
 
 GLint Shader::GetUniformLocation(string param)
 {
-	return glGetUniformLocation(ID, param.c_str());
+	GLint v = glGetUniformLocation(ID, param.c_str());
+	if (v < 0)
+	{
+		LOGE_E("Error getting uniform location for param: \"", param, "\"");
+		throw exception(("Error getting uniform location for param: " + param).c_str());
+	}
+
+	return v;
 }
 
 Shader* Shader::defaultShader = nullptr;
