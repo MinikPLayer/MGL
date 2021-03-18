@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <ctime>
 
 template<class Type>
 class Vector3Base
@@ -9,7 +10,11 @@ public:
 	Type x, y, z;
 
 	float Magnitude();
-	Vector3Base<Type> Normalized();
+	Vector3Base<Type> Normalized()
+	{
+		glm::vec3 res = glm::normalize(glm::vec3(x, y, z));
+		return Vector3Base<Type>(res.x, res.y, res.z);
+	}
 	void Normalize();
 
 	Vector3Base<Type> Cross(Vector3Base b);
@@ -78,7 +83,12 @@ public:
 	Type x, y;
 
 	float Magnitude();
-	Vector2Base<Type> Normalized();
+	Vector2Base<Type> Normalized()
+	{
+		glm::vec2 v = glm::normalize(glm::vec2(x, y));
+		return Vector2Base<Type>(v.x, v.y);
+	}
+
 	void Normalize();
 
 	Vector2Base<Type> Cross(Vector2Base b);
@@ -96,6 +106,12 @@ public:
 
 	template<class Type2>
 	Vector2Base<Type>& operator=(const Vector2Base<Type2>& b) { x = b.x; y = b.y; return *this; }
+
+	static Vector2Base<Type> Random()
+	{
+		//srand(time(NULL));
+		return Vector2Base<Type>(rand() * 1000.0 / 50.0, rand() * 1512.0 / 156.0);
+	}
 };
 
 #define Vector2 Vector2Base<float>

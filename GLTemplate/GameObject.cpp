@@ -61,10 +61,22 @@ void GameObject::Move(Vector3 moveVector)
 
 Vector3 GameObject::GetLocalPosition()
 {
-	return position;
+	if (!transform)
+		if(parent == nullptr)
+			LOGE_E("Non-transform object needs a parent");
+		else
+			return parent->GetLocalPosition();
+	else
+		return position;
 }
 
 void GameObject::SetLocalPosition(Vector3 pos)
 {
-	position = pos;
+	if (!transform)
+		if (parent == nullptr)
+			LOGE_E("Non-transform object needs a parent");
+		else
+			parent->SetLocalPosition(pos);
+	else
+		position = pos;
 }

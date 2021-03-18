@@ -17,7 +17,27 @@ using namespace glm;
 
 class RotatingCube : public GameObject
 {
+public:
+	float distance;
+	Vector2 angle;
 
+	void Update()
+	{
+		float alfa, beta;
+		alfa = angle.x * Time::elapsedTime;
+		beta = angle.y * Time::elapsedTime;
+
+		Vector3 newPos = Vector3(
+			distance * cos(alfa) * cos(beta),
+			distance * cos(alfa) * sin(beta),
+			distance * sin(alfa)
+		);
+
+		SetLocalPosition(newPos);
+	}
+
+	RotatingCube(GameObject* parent)
+		:GameObject(parent, false) {}
 };
 
 class UserScript : public GameObject
@@ -46,6 +66,10 @@ public:
 
 		Model* model = new Model("cube.fbx", false);
 		model->SetPosition(pos);
+		RotatingCube* component = new RotatingCube(model);
+		component->angle = Vector2::Random().Normalized();
+		component->distance = (rand() * 151) % 50;
+
 		AddComponent<Model>(model);
 	}
 
@@ -95,6 +119,7 @@ public:
 
 	void Start()
 	{
+		srand(time(NULL));
 		LOG("UserScript start");
 		//AddCube();
 		
@@ -104,6 +129,7 @@ public:
 		LightCube* cube = new LightCube();
 		cube->SetPosition(Vector3(2, 2, 2));
 		lightCube = AddComponent<Mesh>(cube);
+		//lightCube->SetLocalPosition(Vector3(0, 0, 0));
 
 		Material::GetDefaultMaterial()->SetVec3("lightPos", lightCube->GetPosition());
 		Material::GetDefaultMaterial()->SetMaterialTexture("container.jpg");
@@ -112,7 +138,7 @@ public:
 		cube->GetMaterial()->SetVec3("lightColor", clr);
 		//Material::GetDefaultMaterial()->SetVec3("lightColor", clr); //cube->light->color.ToVector3());
 
-		AddMonkey();
+		//AddMonkey();
 
 		//SetPosition(Vector3(-3, 0, -3));
 		startPos = GetPosition();

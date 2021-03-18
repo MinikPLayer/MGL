@@ -23,10 +23,17 @@ protected:
 	vector<GameObject*> components;
 	GameObject* parent = nullptr;
 
-	size_t typeHash;
+	size_t typeHash = 0;
 
 	
+	bool transform;
 public:
+	GameObject() { transform = true; }
+	GameObject(GameObject* parent, bool transform = true) {
+		parent->AddComponent(this);
+		this->transform = transform;
+	}
+
 	static vector<GameObject*> __objects;
 
 
