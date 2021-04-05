@@ -161,6 +161,8 @@ void Input::__Update(GLFWwindow* window)
     }
 }
 
+
+
 void Input::__SetMousePos(double xPos, double yPos)
 {
     static bool firstMouse = true;
@@ -173,9 +175,6 @@ void Input::__SetMousePos(double xPos, double yPos)
 
 
     mousePos = Vector3(xPos, yPos);
-    //mouseY = lastY - yPos;
-    //lastX = xPos;
-    //lastY = yPos;
 }
 
 void Input::Axis::UpdateValue(float value)

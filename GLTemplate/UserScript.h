@@ -19,13 +19,14 @@ class RotatingCube : public GameObject
 {
 public:
 	float distance;
+	float speed = 1;
 	Vector2 angle;
 
 	void Update()
 	{
 		float alfa, beta;
-		alfa = angle.x * Time::elapsedTime;
-		beta = angle.y * Time::elapsedTime;
+		alfa = angle.x * Time::elapsedTime * speed;
+		beta = angle.y * Time::elapsedTime * speed;
 
 		Vector3 newPos = Vector3(
 			distance * cos(alfa) * cos(beta),
@@ -42,8 +43,9 @@ public:
 
 class UserScript : public GameObject
 {
-	Mesh* mesh;
-	Mesh* lightCube;
+	shared_ptr<Mesh> mesh;
+	shared_ptr<Mesh> lightCube;
+	shared_ptr<Model> model;
 	Vector3 startPos;
 	float counter = 100;
 
@@ -53,10 +55,13 @@ class UserScript : public GameObject
 	bool paused = true;
 public:
 
+	shared_ptr<Material> mats[2];
+
 	int cubesSpawned = 0;
 
-	void AddMonkey(Vector3 pos = Vector3(0, 0, 0))
+	void AddCube(Vector3 pos = Vector3(0, 0, 0))
 	{
+
 		//Mesh* mesh = new Mesh();
 		//mesh->SetMaterial(Material::GetDefaultMaterial());
 		//mesh->SetPosition(Vector3(0, 0, 0));
@@ -64,49 +69,22 @@ public:
 
 		//AddComponent<Mesh>(mesh);
 
-		Model* model = new Model("cube.fbx", false);
-		model->SetPosition(pos);
-		RotatingCube* component = new RotatingCube(model);
+		//Model* model = new Model("cube.fbx", mats[rand() % 2]);
+		if(model.get() == nullptr)
+			model = AssetsLoader::LoadModel("cube.fbx", mats[rand() % 2]);
+
+		//Model* model = new Model("sphere.fbx", false);
+		//model->SetPosition(pos);
+		shared_ptr<GameObject> obj = model->SpawnMesh();
+
+		RotatingCube* component = new RotatingCube(obj.get());
 		component->angle = Vector2::Random().Normalized();
-		component->distance = (rand() * 151) % 50;
-
-		AddComponent<Model>(model);
-	}
-
-	void AddCube(Vector3 pos = Vector3(0,0,0))
-	{
-		// Debug
-		AddMonkey(pos);
-		return;
-
-		Cube* c = new Cube();
-		//c->SetShader(Shader::GetDefaultShader());
-		c->SetMaterial(Material::GetDefaultMaterial());
-		c->SetPosition(pos);
-		const float div = 500;
-		//c->SetPosition(vec3((rand() % 1000) / div, (rand() % 1000) / div, (rand() % 1000) / div));
-
-		mesh = AddComponent<Mesh>(c); //(Mesh*)AddComponent<Mesh>(c); //Instantiate<Mesh>((Prefab<Mesh>*)c);
-		/*Mesh* m = new Mesh();
-		m->LoadFromObj("monkey.obj");
-
-		m->SetPosition(pos);
-		m->SetShader(Shader::GetDefaultShader());
-
-		mesh = AddComponent<Mesh>(m);*/
-
-		/*Mesh* m = new Mesh();
-		m->SetMaterial(Material::GetDefaultMaterial());
-		//m->SetPosition(GetPosition());
-		m->SetPosition(pos);
-
-		//m->LoadFromObj("monkey_high.obj");
-		m->LoadFromFBX("monkey_high.fbx");
-
-		AddComponent<Mesh>(m);*/
+		component->distance = (rand() * 151) % 25;
+		component->speed = (((rand() * 5311) % 1000) / 750.0) + 0.5;
 
 		cubesSpawned++;
 	}
+
 
 	void AddRandomCube()
 	{
@@ -119,28 +97,28 @@ public:
 
 	void Start()
 	{
+
 		srand(time(NULL));
 		LOG("UserScript start");
-		//AddCube();
+
+		mats[0] = Material::CreatePrefabedMaterial(Material::RUBBER);
+		mats[1] = Material::CreatePrefabedMaterial(Material::SILVER);
 		
-		//AddCube(); // Add second, static cube
+		for (int i = 0; i < 2; i++)
+		{
+			mats[i].get()->SetMaterialTexture(AssetsLoader::LoadTexture("container.jpg"));
+		}
 
 		// Add light cube
 		LightCube* cube = new LightCube();
 		cube->SetPosition(Vector3(2, 2, 2));
-		lightCube = AddComponent<Mesh>(cube);
-		//lightCube->SetLocalPosition(Vector3(0, 0, 0));
+		lightCube = AddComponent(cube);
 
 		Material::GetDefaultMaterial()->SetVec3("lightPos", lightCube->GetPosition());
-		Material::GetDefaultMaterial()->SetMaterialTexture("container.jpg");
-		
+
 		Vector3 clr = cube->light->color.ToVector3();
 		cube->GetMaterial()->SetVec3("lightColor", clr);
-		//Material::GetDefaultMaterial()->SetVec3("lightColor", clr); //cube->light->color.ToVector3());
 
-		//AddMonkey();
-
-		//SetPosition(Vector3(-3, 0, -3));
 		startPos = GetPosition();
 
 		LOG("UserScript Components size: ", (int)GetComponents().size());
@@ -149,21 +127,12 @@ public:
 		Input::RegisterAxis(Input::Axis("BindCamera", Input::Keyboard, Input::B));
 		Input::RegisterAxis(Input::Axis("Pause", Input::Keyboard, Input::P));
 
-		//Camera::GetMainCamera()->SetPosition(Vector3(-20, 0, 0));
-		Camera::GetMainCamera()->SetPosition(Vector3(0, 0, -30));
-
+		Camera::GetMainCamera()->SetPosition(Vector3(-60, 0, 0));
 	}
 	
 	void Update()
 	{
-		//mesh->SetPosition(GetPosition() + vec3(0, sin(glfwGetTime()), 0));
-		//SetPosition(startPos + Vector3(0, sin(Time::elapsedTime), 0));
-		//lightCube->SetLocalPosition(Vector3(sin(Time::elapsedTime) * 5, cos(Time::elapsedTime) * 10, 0));
-
-		//Camera::GetMainCamera()->yaw += 45 * Time::deltaTime;
-		//Camera::GetMainCamera()->Rotate(Vector3(0, 45 * Time::deltaTime, 0));
-
-		LightCube* lCube = (LightCube*)lightCube;
+		LightCube* lCube = (LightCube*)lightCube.get();
 		if (Input::GetKey(Input::Devices::Keyboard, Input::R))
 			lCube->light->color = Color::Red;
 		if (Input::GetKey(Input::Devices::Keyboard, Input::G))
@@ -171,31 +140,29 @@ public:
 		if (Input::GetKey(Input::Devices::Keyboard, Input::B))
 			lCube->light->color = Color::Blue;
 
-		//lCube->light->intensity = (sin(Time::elapsedTime) + 1)/2.f;
-
-		//Vector3 lColor = lCube->light->GetColorVector();
 		Color color;
 		color.r = (sin(Time::elapsedTime * 0.6) + 1 ) * 255 / 2.f;
 		color.g = (sin(Time::elapsedTime * 0.8) + 1 ) * 255 / 2.f;
 		color.b = (sin(Time::elapsedTime * 1.1) + 1 ) * 255 / 2.f;
 		Vector3 lColor = color.ToVector3();
 
-	
 
-		/*lCube->GetMaterial()->SetVec3("light.specular", lColor);
-		lCube->GetMaterial()->SetVec3("light.diffuse", lColor * 0.5);
-		lCube->GetMaterial()->SetVec3("light.ambient", lColor * 0.1);*/
 		lCube->GetMaterial()->SetVec3("lightColor", lColor);
 
-		//Material::GetDefaultMaterial()->SetVec3("viewPos", Camera::GetMainCamera()->GetPosition());
-		//Material::GetDefaultMaterial()->SetVec3("lightColor", lCube->light->GetColorVector());
-		Material::GetDefaultMaterial()->SetVec3("light.specular", lColor);
-		Material::GetDefaultMaterial()->SetVec3("light.diffuse", lColor * 0.5);
-		Material::GetDefaultMaterial()->SetVec3("light.ambient", lColor * 0.1);
-		Material::GetDefaultMaterial()->SetVec3("lightPos", lightCube->GetPosition());
+		for (int i = 0; i < 2; i++)
+		{
+			mats[i]->SetVec3("light.specular", lColor);
+			mats[i]->SetVec3("light.diffuse", lColor * 0.5);
+			mats[i]->SetVec3("light.ambient", lColor * 0.1);
+			mats[i]->SetVec3("light.strength", 1);
+			mats[i]->SetVec3("lightPos", lightCube->GetPosition());
+		}
 
 		if (Input::GetButtonDown("Pause"))
+		{
 			paused = !paused;
+			LOG("Paused: ", paused);
+		}
 
 		if (!paused)
 		{
@@ -215,8 +182,6 @@ public:
 			}
 
 			LOG("Cubes spawned: ", cubesSpawned);
-
-			//counter = 0;
 		}
 
 		if (Input::GetButtonDown("BindCamera"))
@@ -224,7 +189,7 @@ public:
 			LOG("Bind camera");
 			GameObject* parent = Camera::GetMainCamera()->GetParent();
 			if (parent == nullptr)
-				Camera::GetMainCamera()->SetParent(mesh);
+				Camera::GetMainCamera()->SetParent(mesh.get());
 			else
 				Camera::GetMainCamera()->SetParent(nullptr);
 		}

@@ -11,10 +11,10 @@ void MeshRenderer::RenderMeshGroup(vector<Mesh*>& meshes)
 
 
 // Dynamic batching
-void MeshRenderer::RenderMeshes(vector<GameObject*>& objects)
+void MeshRenderer::RenderMeshes(vector<shared_ptr<GameObject>>& objects)
 {
 	// Basically a dictionary
-	static vector<Material*> materials;
+	static vector<Material*> materials; // It does NOT need to be a shared_ptr, and this way it's way faster
 	static vector<vector<Mesh*>> meshes;
 
 
@@ -33,12 +33,12 @@ void MeshRenderer::RenderMeshes(vector<GameObject*>& objects)
 				continue;
 			}
 
-			Mesh* mesh = (Mesh*)objects[i];
+			Mesh* mesh = (Mesh*)objects[i].get();
 			counter++;
 			bool found = false;
 			for (int j = 0; j < materials.size(); j++)
 			{
-				if (materials[j] == mesh->GetMaterial())
+				if (materials[j] == mesh->GetMaterial().get())
 				{
 					meshes[j].push_back(mesh);
 					found = true;
@@ -48,7 +48,7 @@ void MeshRenderer::RenderMeshes(vector<GameObject*>& objects)
 			if (!found)
 			{
 				// Add to dictionary
-				materials.push_back(mesh->GetMaterial());
+				materials.push_back(mesh->GetMaterial().get());
 				vector<Mesh*> newVector;
 				newVector.push_back(mesh);
 				meshes.push_back(newVector);

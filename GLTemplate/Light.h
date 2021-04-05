@@ -4,6 +4,7 @@
 #include "Mesh.h"
 #include "Cube.h"
 #include "Color.h"
+#include "AssetsLoader.h"
 //#include <glad/glad.h>
 
 class Light : public GameObject
@@ -19,14 +20,15 @@ public:
 
 class LightCube : public Mesh
 {
-	static Material* lightMat;
+	//static Material* lightMat;
+	static shared_ptr<Material> lightMat;
 public:
-	Light* light;
+	shared_ptr<Light> light;
 
 	LightCube()
 	{
 		light = AddComponent<Light>();
-		light->color = Color::Blue;
+		light.get()->color = Color::Blue;
 
 		// Debug
 		//Mesh::CopyFrom((float*)Cube::vertCube, Cube::vertCubeSize, (unsigned int*)Cube::indicesCube, Cube::indicesCubeSize);
@@ -36,13 +38,13 @@ public:
 		if (lightMat == nullptr)
 		{
 			//lightMat = Material::GetDefaultMaterial();
-			lightMat = new Material();
-			lightMat->shader = new Shader("VertexLightShader.vert", "FragmentLightShader.frag");
+			lightMat = shared_ptr<Material>(new Material()); //new Material();
+			lightMat->shader = AssetsLoader::LoadShader("VertexLightShader.vert", "FragmentLightShader.frag"); //shared_ptr<Shader>(new Shader("VertexLightShader.vert", "FragmentLightShader.frag"));
 		}
 
 		//SetShader(new Shader("VertexLightShader.vert", "FragmentLightShader.frag"));
 		SetMaterial(lightMat);
-		material->SetVec3("objectColor", Vector3(1.0, 1.0, 1.0));
-		material->SetVec3("lightColor", light->color.ToVector3());
+		material.get()->SetVec3("objectColor", Vector3(1.0, 1.0, 1.0));
+		material.get()->SetVec3("lightColor", light->color.ToVector3());
 	}
 };

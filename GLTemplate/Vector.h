@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <ctime>
+#include <limits>
 
 template<class Type>
 class Vector3Base
@@ -30,6 +31,22 @@ public:
 
 	template<class Type2>
 	Vector3Base<Type>& operator=(const Vector3Base<Type2>& b) { x = b.x; y = b.y; z = b.z; return *this; }
+
+	static Vector3Base<Type> Random()
+	{
+		return Random(0, std::numeric_limits<Type>::max() /* max value of this type */);
+	}
+
+	static Vector3Base<Type> Random(Type max)
+	{
+		return Random(0, max);
+	}
+
+	static Vector3Base<Type> Random(Type min, Type max)
+	{
+		//srand(time(NULL));
+		return Vector3Base<Type>((long)(rand() * 1000.0 / 50.0) % (long)(max - min) + min, (long)(rand() * 1512.0 / 156.0) % (long)(max - min) + min, (long)(rand() * 6312.0 / 362.0) % (long)(max - min) + min);
+	}
 };
 
 #define Vector3 Vector3Base<float>
@@ -109,8 +126,18 @@ public:
 
 	static Vector2Base<Type> Random()
 	{
+		return Random(0, std::numeric_limits<Type>::max());
+	}
+
+	static Vector2Base<Type> Random(Type max)
+	{
+		return Random(0, max);
+	}
+
+	static Vector2Base<Type> Random(Type min, Type max)
+	{
 		//srand(time(NULL));
-		return Vector2Base<Type>(rand() * 1000.0 / 50.0, rand() * 1512.0 / 156.0);
+		return Vector2Base<Type>((long)(rand() * 1000.0 / 50.0) % (long)(max - min) + min, (long)(rand() * 1512.0 / 156.0) % (long)(max-min) + min);
 	}
 };
 

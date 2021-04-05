@@ -4,15 +4,18 @@
 
 #include <iostream>
 #include <string>
+#include "Asset.h"
 
 using namespace std;
 
-class Shader
+class Shader : public Asset
 {
 	bool loaded = false;
 	string error = "";
 
-	static Shader* defaultShader;
+	//static Shader* defaultShader;
+	//static Asset<Shader> defaultShader;
+	static shared_ptr<Shader> defaultShader;
 
 public:
 	// Locations of uniforms
@@ -36,7 +39,8 @@ public:
 
 	GLuint ID = 0;
 
-	Shader(const char* vertexPath, const char* fragmentPath);
+	Shader() {}
+	Shader(string vertexPath, string fragmentPath);
 
 	/// <summary>
 	/// Load vertex and fragment shader from file, compiles it and combines them into a program
@@ -44,7 +48,7 @@ public:
 	/// <param name="vertexPath">Path to vertex shader</param>
 	/// <param name="fragmentPath">Path to fragment shader</param>
 	/// <returns>True if loaded and compiled successfully, false otherwise</returns>
-	bool LoadShaders(const char* vertexPath, const char* fragmentPath);
+	bool LoadShaders(string vertexPath, string fragmentPath);
 
 	void Use();
 
@@ -82,5 +86,5 @@ public:
 
 	GLint GetUniformLocation(string param);
 
-	static Shader* GetDefaultShader();
+	static shared_ptr<Shader> GetDefaultShader();
 };

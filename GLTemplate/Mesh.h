@@ -59,7 +59,7 @@ protected:
 	GLuint EBO = 0;
 
 	//Shader* shader;
-	Material* material;
+	shared_ptr<Material> material;
 	
 
 	void UpdateShaderInfo()
@@ -82,14 +82,14 @@ public:
 	Vector3 color;
 
 	//vec3 pos = vec3(0, 0, 0);
-	void SetMaterial (Material* mat)
+	void SetMaterial (shared_ptr<Material> mat)
 	{
 		this->material = mat;
 		UpdateShaderInfo();
 	}
 
 	//Shader* GetShader()
-	Material* GetMaterial()
+	shared_ptr<Material> GetMaterial()
 	{
 		return this->material;
 	}
@@ -173,6 +173,12 @@ public:
 		color = Vector3((rand() % 1000) / 1000.0, (rand() % 1000) / 1000.0, (rand() % 1000) / 1000.0);
 		glVertexAttrib3f(1, color.x, color.y, color.z);
 	}*/
+
+	void CopyFrom(Mesh* mesh)
+	{
+		CopyFrom(mesh->vertexData, mesh->indices);
+		SetMaterial(mesh->GetMaterial());
+	}
 
 	void CopyFrom(vector<Vertex> vertexData, vector<unsigned int> indices)
 	{

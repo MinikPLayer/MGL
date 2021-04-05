@@ -2,28 +2,28 @@
 #include "Util.h"
 #include <glad/glad.h>
 
-void Material::ParamT<float>::SetParam(Shader* shader)
+void Material::ParamT<float>::SetParam(shared_ptr<Shader>& shader)
 {
 	Param::SetParam(shader);
 
 	shader->SetFloat(location, value);
 }
 
-void Material::ParamT<Vector3>::SetParam(Shader* shader)
+void Material::ParamT<Vector3>::SetParam(shared_ptr<Shader>& shader)
 {
 	Param::SetParam(shader);
 
 	shader->SetVec3(location, value.x, value.y, value.z);
 }
 
-void Material::ParamT<int>::SetParam(Shader* shader)
+void Material::ParamT<int>::SetParam(shared_ptr<Shader>& shader)
 {
 	Param::SetParam(shader);
 
 	shader->SetInt(location, value);
 }
 
-void Material::ParamT<bool>::SetParam(Shader* shader)
+void Material::ParamT<bool>::SetParam(shared_ptr<Shader>& shader)
 {
 	Param::SetParam(shader);
 
@@ -50,53 +50,63 @@ void Material::SetVec3(string name, Vector3 value)
 
 Material Material::SILVER = Material({
 	//new ParamT<Vector3>("material.ambient", Vector3(0.19225, 0.19225, 0.19225)),
-	//new ParamT<Vector3>("material.diffuse", Vector3(0.50754, 0.50754, 0.50754)),
-	new ParamT<int>("material.diffuse", 0), // texture
-	new ParamT<Vector3>("material.specular", Vector3(0.508273, 0.508273, 0.508273)),
-	new ParamT<float>("material.shininess", 0.4)
-});
+	shared_ptr<Param>(new ParamT<Vector3>("material.diffuse.value", Vector3(0.50754, 0.50754, 0.50754))),
+	shared_ptr<Param>(new ParamT<Vector3>("material.specular.value", Vector3(0.508273, 0.508273, 0.508273))),
+	shared_ptr<Param>(new ParamT<float>("material.shininess", 0.4))
+}, nullptr, true);
 Material Material::RUBBER = Material({
 	//new ParamT<Vector3>("material.ambient", Vector3(0, 0.05, 0)),
-	//new ParamT<Vector3>("material.diffuse", Vector3(0.4, 0.5, 0.4)),
-	new ParamT<int>("material.diffuse", 0),
-	new ParamT<Vector3>("material.specular", Vector3(0.04, 0.7, 0.04)),
-	new ParamT<float>("material.shininess", 0.078125)
-});
+	shared_ptr<Param>(new ParamT<Vector3>("material.diffuse.value", Vector3(0.4, 0.5, 0.4))),
+	shared_ptr<Param>(new ParamT<Vector3>("material.specular.value", Vector3(0.04, 0.7, 0.04))),
+	shared_ptr<Param>(new ParamT<float>("material.shininess", 0.078125))
+}, nullptr, true);
 
-Material* Material::defaultMat = nullptr;
-Material* Material::GetDefaultMaterial()
+shared_ptr<Material> Material::defaultMat;
+shared_ptr<Material> Material::GetDefaultMaterial()
 {
-	if (defaultMat == nullptr)
+	if (defaultMat.get() == nullptr)
 	{
-		defaultMat = &SILVER; //new Material();
+		defaultMat = shared_ptr<Material>(Material::CreatePrefabedMaterial(SILVER)); //new Material();
 		defaultMat->shader = Shader::GetDefaultShader();
 	}
 
 	return Material::defaultMat;
 }
 
-void Material::SetTexture(const char* path, int slot)
+void Material::SetTextureSlot(const char* path, int slot)
 {
-	textures.push_back(Texture(path, slot));
+	textures.push_back(shared_ptr<Texture>(new Texture(path, slot)));
 }
 
-void Material::SetMaterialTexture(int slot)
+void Material::SetTextureSlot(shared_ptr<Texture> texture)
 {
-	SetInt("material.diffuse", slot);
-	SetBool("material.useTexture", false);
+	textures.push_back(texture);
 }
 
-void Material::SetMaterialTexture(const char* path, int slot)
+void Material::SetMaterialTexture(shared_ptr<Texture> texture, string texName)
 {
-	SetTexture(path, slot);
-	SetMaterialTexture(slot);
+	SetTextureSlot(texture);
+	SetInt("material." + texName + ".tex", texture.get()->GetSlot());
+	SetBool("material." + texName + ".useTex", true);
+}
+
+void Material::SetMaterialTexture(string texName, int slot)
+{
+	SetInt("material." + texName + ".tex", slot);
+	SetBool("material." + texName + ".useTex", true);
+}
+
+void Material::SetMaterialTexture(const char* path, string texName, int slot)
+{
+	SetTextureSlot(path, slot);
+	SetMaterialTexture(texName, slot);
 }
 
 void Material::__SendToShader()
 {
 	for (int i = 0; i < textures.size(); i++)
 	{
-		//textures[i].SetActive();
+		textures[i]->SetActive();
 	}
 
 	for (int i = 0; i < parameters.size(); i++)
@@ -105,10 +115,19 @@ void Material::__SendToShader()
 	}
 }
 
-Material::Material(initializer_list<Param*> params)
+Material::Material(initializer_list<shared_ptr<Param>> params, shared_ptr<Shader> shader, bool skipShaderInit)
 {
+	if (!skipShaderInit)
+	{
+		if (shader == nullptr)
+			this->shader = Shader::GetDefaultShader();
+		else
+			this->shader = shader;
+	}
+
 	for (auto param : params)
 	{
+		//parameters.push_back(param);
 		parameters.push_back(param);
 	}
 }

@@ -10,7 +10,7 @@ int GetProcessorCount()
 	return thread::hardware_concurrency();
 }
 
-string ReadAllText(const char* filePath)
+string ReadAllText(string filePath)
 {
 	string data = "";
 	
@@ -53,7 +53,7 @@ vector<string> ReadAllLines(const char* filePath)
 	return ret;
 }
 
-bool CompileShader(const char* path, GLuint type, GLuint& result)
+bool CompileShader(string path, GLuint type, GLuint& result)
 {
 	
 	string source = "";
@@ -65,7 +65,7 @@ bool CompileShader(const char* path, GLuint type, GLuint& result)
 	}
 	catch (IOException e)	// Loading failed
 	{
-		cout << "Error reading shader from \"" << path << "\"" << endl;
+		LOGE_E("Error reading shader from \"", path, "\"");
 		return -1;
 	}
 
@@ -83,7 +83,7 @@ bool CompileShader(const char* path, GLuint type, GLuint& result)
 		char infoLog[512];
 		glGetShaderInfoLog(shader, 512, NULL, infoLog);
 
-		cout << "Error compiling vertex shader: \n" << infoLog << endl;
+		LOGE_E("Error compiling vertex shader: \n", infoLog);
 		return false;
 	}
 
@@ -100,7 +100,7 @@ GLint LoadTexture(const char* path, bool flip, TextureFiltering minFilter, Textu
 
 	if (!data)
 	{
-		LOGE_E("Failed to load [", path, "]  texture!");
+		LOGF_E("Failed to load [", path, "]  texture!");
 		stbi_image_free(data);
 		return -1;
 	}

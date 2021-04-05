@@ -1,5 +1,6 @@
 #include "Debug.h"
 
+
 void Log_Recursive(const char* file, int line, LogTypes type, LogLevels level, std::ostringstream& msg)
 {
 	std::cout << "\033[";
@@ -37,4 +38,7 @@ void Log_Recursive(const char* file, int line, LogTypes type, LogLevels level, s
 	std::cout << "m";
 
     std::cout << file << "(" << line << "): " << msg.str() << std::endl;
+
+	if (type == LogTypes::FatalError)
+		throw std::exception(msg.str().c_str());
 }

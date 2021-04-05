@@ -4,7 +4,7 @@ Camera* Camera::rendering = nullptr;
 
 void Camera::UpdateProjectionMatrix(float aspectRatio)
 {
-	projectionMatrix = glm::perspective(glm::radians(GetFov()), aspectRatio, 0.1f, 100.0f);
+	projectionMatrix = glm::perspective(glm::radians(GetFov()), aspectRatio, 0.1f, 1000.0f);
 }
 
 Camera* Camera::__GetRenderingCamera()

@@ -28,7 +28,7 @@ int GetProcessorCount();
 /// </summary>
 /// <param name="filePath">Path to a file to be read</param>
 /// <returns>Contents of the specified file</returns>
-string ReadAllText(const char* filePath);
+string ReadAllText(string filePath);
 
 /// <summary>
 /// Reads lines from specified file
@@ -43,7 +43,7 @@ vector<string> ReadAllLines(const char* filePath);
 /// <param name="path">Path to the shader file</param>
 /// <param name="type">Type of shader ( GL_VERTEX_SHADER or GL_FRAGMENT_SHADER for example )</param>
 /// <returns>True if loaded and compiled successfully, false otherwise</returns>
-bool CompileShader(const char* path, GLuint type, GLuint& result);
+bool CompileShader(string path, GLuint type, GLuint& result);
 
 enum class TextureFiltering
 {

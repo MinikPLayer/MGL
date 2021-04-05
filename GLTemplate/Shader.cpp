@@ -1,4 +1,5 @@
 #include "Shader.h"
+#include "AssetsLoader.h"
 
 #include <glm/gtc/type_ptr.hpp>
 #include "Util.h"
@@ -14,12 +15,12 @@ void Shader::UpdateUniformsLocations()
 	projectionLocation = glGetUniformLocation(ID, "projection");
 }
 
-Shader::Shader(const char* vertexPath, const char* fragmentPath)
+Shader::Shader(string vertexPath, string fragmentPath)
 {
 	loaded = LoadShaders(vertexPath, fragmentPath);
 }
 
-bool Shader::LoadShaders(const char* vertexPath, const char* fragmentPath)
+bool Shader::LoadShaders(string vertexPath, string fragmentPath)
 {
 	// Init some variables
 	GLuint vertex = 0;
@@ -227,19 +228,22 @@ GLint Shader::GetUniformLocation(string param)
 	if (v < 0)
 	{
 		LOGE_E("Error getting uniform location for param: \"", param, "\"");
-		throw exception(("Error getting uniform location for param: " + param).c_str());
+		//throw exception(("Error getting uniform location for param: " + param).c_str());
 	}
 
 	return v;
 }
 
-Shader* Shader::defaultShader = nullptr;
-Shader* Shader::GetDefaultShader()
+//Shader* Shader::defaultShader = nullptr;
+//Asset<Shader> Shader::defaultShader;
+shared_ptr<Shader> Shader::defaultShader;//(new Shader("VertexShader.vert", "FragmentShader.frag"));
+shared_ptr<Shader> Shader::GetDefaultShader()
 {
-	if (defaultShader == nullptr)
+	if (defaultShader.get() == nullptr)
 	{
-		defaultShader = new Shader("VertexShader.vert", "FragmentShader.frag");
+		defaultShader = AssetsLoader::LoadShader("VertexShader.vert", "FragmentShader.frag");
 	}
 
+	LOG_E("Test");
 	return defaultShader;
 }

@@ -114,31 +114,37 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="AssetsLoader.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Asset.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Path.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="FragmentShader2.frag">
-      <Filter>Pliki zasobów</Filter>
-    </None>
-    <None Include="VertexLightShader.vert">
-      <Filter>Pliki zasobów</Filter>
-    </None>
-    <None Include="FragmentLightShader.frag">
-      <Filter>Pliki zasobów</Filter>
-    </None>
-    <None Include="FragmentShader.frag">
-      <Filter>Pliki zasobów</Filter>
-    </None>
-    <None Include="VertexShader.vert">
-      <Filter>Pliki zasobów</Filter>
-    </None>
-    <None Include="TriangleVertexShader.vert">
-      <Filter>Pliki zasobów</Filter>
-    </None>
     <None Include="GameObject.tpp">
       <Filter>Pliki źródłowe</Filter>
     </None>
-    <None Include="VertexShader2.vert">
+    <None Include="Assets\Shaders\FragmentShader.frag">
+      <Filter>Pliki zasobów</Filter>
+    </None>
+    <None Include="Assets\Shaders\VertexShader.vert">
+      <Filter>Pliki zasobów</Filter>
+    </None>
+    <None Include="Assets\Shaders\FragmentLightShader.frag">
+      <Filter>Pliki zasobów</Filter>
+    </None>
+    <None Include="Assets\Shaders\VertexLightShader.vert">
+      <Filter>Pliki zasobów</Filter>
+    </None>
+    <None Include="Assets\Shaders\SkyShader.vert">
+      <Filter>Pliki zasobów</Filter>
+    </None>
+    <None Include="Assets\Shaders\SkyShader.frag">
       <Filter>Pliki zasobów</Filter>
     </None>
   </ItemGroup>
@@ -219,6 +225,18 @@
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="Texture.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="AssetsLoader.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Path.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Asset_b.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Asset.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>

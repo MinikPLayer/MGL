@@ -5,7 +5,7 @@
 class FlybackCamera : public Camera
 {
 public:
-	float speed = 2.5f;
+	float speed = 20.5f;
 	float sensitivity = 0.1f;
 
 	void Start();

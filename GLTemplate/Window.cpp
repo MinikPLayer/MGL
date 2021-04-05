@@ -12,6 +12,11 @@ void Window::Use()
 
 Window::Window(Vector2 size, string title)
 {
+	glfwInit();
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 	this->size = size;
 	LOG_E("Window size: ", size.x, ", ", size.y);
 
@@ -20,9 +25,19 @@ Window::Window(Vector2 size, string title)
 	if (window == nullptr)
 	{
 		LOGF_E("Cannot create GLFW window");
-		throw exception("GLFW Window creation error", 0x4209);
 		return;
 	}
+
+	Use();
+
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	{
+		LOGF_E("Failed to initialize GLAD");
+		return;
+	}
+
+	glEnable(GL_DEPTH_TEST);
+	SetViewport();
 }
 
 float Window::GetAspectRatio()
@@ -37,9 +52,13 @@ Vector2i Window::GetSize()
 	return size;
 }
 
+void Window::SetViewport() { SetViewport(0, 0, size.x, size.y); }
+void Window::SetViewport(int x, int y, int width, int height) { glViewport(x, y, width, height); }
+
+
 void Window::PollEvents()
 {
-	glfwPollEvents();
+	//glfwPollEvents();
 
 	int w, h;
 	glfwGetFramebufferSize(window, &w, &h);

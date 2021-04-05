@@ -1,5 +1,8 @@
 #pragma once
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include "Vector.h"
 #include "Util.h"
 #include "Input.h"
@@ -25,6 +28,10 @@ public:
 
 	float GetAspectRatio();
 	Vector2i GetSize();
+
+	void SetViewport();
+	void SetViewport(int x, int y, int width, int height);
+	void InitGL();
 
 	void PollEvents();
 	bool ShouldClose();

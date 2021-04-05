@@ -7,6 +7,7 @@
 #include "Debug.h"
 #include "Vector.h"
 #include <typeinfo>
+#include <memory>
 #include "Util.h"
 using namespace std;
 
@@ -20,26 +21,43 @@ protected:
 	Vector3 rotation;
 	string name;
 
-	vector<GameObject*> components;
+	// Object child components
+	vector<shared_ptr<GameObject>> components;
+
+	// Object parent
 	GameObject* parent = nullptr;
 
+	// Type hash, used to check if object is a certain type
 	size_t typeHash = 0;
 
-	
-	bool transform;
+	// True for moveable gameobjects, false for components without any position / rotation
+	bool transformable;
 public:
-	GameObject() { transform = true; }
-	GameObject(GameObject* parent, bool transform = true) {
+	GameObject() { transformable = true; }
+
+	GameObject(GameObject* parent, bool transformable = true) {
 		parent->AddComponent(this);
-		this->transform = transform;
+		this->transformable = transformable;
 	}
 
-	static vector<GameObject*> __objects;
+	/// <summary>
+	/// [ENGINE] List of spawned objects 
+	/// </summary>
+	static vector<shared_ptr<GameObject>> __objects;
 
 
+	/// <summary>
+	/// Checks if this object is of specified type
+	/// </summary>
+	/// <typeparam name="Type">Type to compare</typeparam>
+	/// <returns>True if object is an instance of specified type, false otherwise</returns>
 	template<class Type>
 	bool IsType();
 
+	/// <summary>
+	/// [ENGINE] Sets object type
+	/// </summary>
+	/// <typeparam name="Type">Object type</typeparam>
 	template<class Type>
 	void __SetType();
 
@@ -51,46 +69,80 @@ public:
 	void SetParent(GameObject* parent);
 	GameObject* GetParent() { return parent; }
 
-	vector<GameObject*> GetComponents();
+	vector<shared_ptr<GameObject>> GetComponents();
 
+	/// <summary>
+	/// Instantiate object using it's default constructor
+	/// </summary>
+	/// <typeparam name="Type">Object type</typeparam>
+	/// <returns>Shared pointer to the spawned object</returns>
 	template<class Type>
-	static Type* Instantiate()
+	static shared_ptr<Type> Instantiate()
 	{
 		Type* t = new Type();
+		shared_ptr<Type> obj(t);
 		//t->typeHash = typeid(Type).hash_code();
 		t->__SetType<Type>();
-		__objects.push_back(t);
+		__objects.push_back(obj);
 		t->Start();
-		return t;
+		return obj;
 	}
 
+	/// <summary>
+	/// Instantiate object using a shared pointer to the prefab
+	/// </summary>
+	/// <typeparam name="Type">Object type</typeparam>
+	/// <param name="prefab">Shared pointer to the prefab</param>
+	/// <returns>Shared pointer to the spawned object</returns>
 	template<class Type>
-	static Type* Instantiate(Type* prefab)
+	static shared_ptr<Type> Instantiate(shared_ptr<Type> prefab)
 	{
-		//Type* t = new Type();
-		//prefab->SetPrefab(t);
-		//t->CopyValues(prefab);
-		//prefab->typeHash = typeid(Type).hash_code();
-		prefab->__SetType<Type>();
+		Type* ptr = prefab.get();
+		if (ptr == nullptr)
+		{
+			LOGF_E("Trying to instantiate null prefab");
+			return nullptr;
+		}
+
+		prefab.get()->__SetType<Type>();
 		__objects.push_back(prefab);
 
-		prefab->Start();
+		prefab.get()->Start();
 		return prefab;
 	}
 
+	/// <summary>
+	/// Instantiate object using a pointer to the prefab
+	/// </summary>
+	/// <typeparam name="Type">Object type</typeparam>
+	/// <param name="prefab">Pointer to the prefab</param>
+	/// <returns>Shared pointer to the spawned object</returns>
 	template<class Type>
-	void Destroy(Type*& instance)
+	static shared_ptr<Type> Instantiate(Type* prefab)
 	{
-		if (instance == nullptr)
+		prefab->__SetType<Type>();
+		shared_ptr<Type> ptr(prefab);
+		__objects.push_back(ptr);
+
+		prefab->Start();
+		return ptr;
+	}
+
+	template<class Type>
+	void Destroy(shared_ptr<Type>& instance)
+	{
+		Type* ptr = instance.get();
+
+		if (ptr == nullptr)
 		{
 			LOGW_E("Trying to destroy null object!");
 			return;
 		}
 
-		if (instance->GetParent() != nullptr)
+		if (ptr->GetParent() != nullptr)
 		{
-			instance->GetParent()->DestroyComponent(instance);
-			instance = nullptr;
+			ptr->GetParent()->DestroyComponent(instance);
+			instance.reset();
 			return;
 		}
 		else
@@ -99,10 +151,8 @@ public:
 			{
 				if (__objects[i] == instance)
 				{
+					// Clean and mark as disposed
 					__objects[i]->Dispose();
-					delete __objects[i];
-					__objects[i] == nullptr;
-					instance = nullptr;
 					return;
 				}
 			}
@@ -111,11 +161,10 @@ public:
 		LOGW_E("Trying to destroy instance not present in objects list!");
 	}
 
-
 	template<class Type>
-	void DestroyComponent(Type*& instance)
+	void DestroyComponent(shared_ptr<Type>& instance)
 	{
-		if (instance == nullptr)
+		if (instance.get() == nullptr)
 		{
 			LOGW_E("Trying to destroy null instance");
 			return;
@@ -125,10 +174,9 @@ public:
 		{
 			if (components[i] == instance)
 			{
+				// Clean and mark as disposed
 				components[i]->Dispose();
-				delete components[i];
-				components[i] = nullptr;
-				instance = nullptr;
+
 				return;
 			}
 		}
@@ -142,59 +190,135 @@ public:
 	/// </summary>
 	void Dispose();
 
-	template<class Type>
-	Type* AddComponent()
+	/// <summary>
+	/// Finds and returns shared pointer of this object (slow!)
+	/// </summary>
+	/// <returns>Shared pointer to this object, nullptr shared pointer if not found</returns>
+	shared_ptr<GameObject> GetSharedPointer()
 	{
-		/*Type* t = new Type();
-		t->parent = this;
-		typeHash = typeid(Type).hash_code();
-		//t->typeInfo = typeid(Type);
-		components.push_back(t);
-		t->Start();
+		return GetSharedPointer<GameObject>();
+	}
 
-		return t;*/
-		Type* t = Instantiate<Type>();
-		t->parent = this;
+	/// <summary>
+	/// Finds and returns shared pointer of this object (slow!)
+	/// </summary>
+	/// <typeparam name="Type">Shared pointer type</typeparam>
+	/// <returns>Shared pointer to this object, nullptr shared pointer if not found</returns>
+	template <class Type>
+	shared_ptr<Type> GetSharedPointer()
+	{
+		for (int i = 0; i < __objects.size(); i++)
+		{
+			if (__objects[i].get() == this)
+				return __objects[i];
+		}
+
+		LOGF_E("Cannot find shared pointer reference!");
+		return shared_ptr<Type>();
+	}
+
+	/// <summary>
+	/// Add component using it's default constructor
+	/// </summary>
+	/// <typeparam name="Type">Component type</typeparam>
+	/// <returns>Shared pointer to spawned component</returns>
+	template <class Type>
+	shared_ptr<Type> AddComponent()
+	{
+		shared_ptr<Type> t = Instantiate<Type>();
+		t.get()->parent = this;
+		components.push_back(t);
 		return t;
 	}
 
-	template<class Type>
-	Type* AddComponent(Type* prefab)
+	/// <summary>
+	/// Add component using shared pointer prefab
+	/// </summary>
+	/// <typeparam name="Type">Prefab type</typeparam>
+	/// <param name="prefab">Component prefab</param>
+	/// <returns>Shared pointer to spawned component</returns>
+	template <class Type>
+	shared_ptr<Type> AddComponent(shared_ptr<Type> prefab)
 	{
-		//Type* t = new Type();
+		prefab.get()->parent = this;
+		shared_ptr<Type> instance = Instantiate<Type>(prefab);
+		components.push_back(instance);
+
+		return instance;
+	}
+
+	/// <summary>
+	/// Add component using pointer prefab
+	/// </summary>
+	/// <typeparam name="Type">Component type</typeparam>
+	/// <param name="prefab">Component prefab</param>
+	/// <returns>Shared pointer to spawned component</returns>
+	template <class Type>
+	shared_ptr<Type> AddComponent(Type* prefab)
+	{
 		prefab->parent = this;
-		/*typeHash = typeid(Type).hash_code();
-		//prefab->typeInfo = typeid(Type);
-		//prefab->SetPrefab(t);
-		//t->CopyValues(prefab);
-		components.push_back(prefab);
-		prefab->Start();
+		shared_ptr<Type> instance = Instantiate<Type>(prefab);
+		components.push_back(instance);
 
-		return prefab;*/
-
-		return Instantiate<Type>(prefab);
+		return instance;
 	}
 
 	string GetName();
 	void SetName(string name);
 
+	/// <summary>
+	/// Move object
+	/// </summary>
+	/// <param name="moveVector">Move vector</param>
 	void Move(Vector3 moveVector);
 
+	/// <summary>
+	/// Rotate object
+	/// </summary>
+	/// <param name="rotVector">Rotate vector</param>
 	void Rotate(Vector3 rotVector);
 	Vector3 GetRotation();
 	virtual void SetRotation(Vector3 rot);
 
+	/// <summary>
+	/// Get object world position
+	/// </summary>
+	/// <returns>World position</returns>
 	Vector3 GetPosition();
+	/// <summary>
+	/// Set object world position
+	/// </summary>
+	/// <param name="pos">New world position</param>
 	virtual void SetPosition(Vector3 pos);
 
+	/// <summary>
+	/// Get object local position relative to it's parent
+	/// </summary>
+	/// <returns>Local position</returns>
 	Vector3 GetLocalPosition();
+	/// <summary>
+	/// Set object local position, relative to it's parent
+	/// </summary>
+	/// <param name="pos">New local position</param>
 	virtual void SetLocalPosition(Vector3 pos);
 
+	/// <summary>
+	/// Event fired when instantiated
+	/// </summary>
 	virtual void Start() {}
+	/// <summary>
+	/// Event fired every frame
+	/// </summary>
 	virtual void Update() {}
+	/// <summary>
+	/// Event fired when destroyed
+	/// </summary>
 	virtual void OnDestroy() {}
 	
 
+	/// <summary>
+	/// [ENGINE] Event used to draw object
+	/// </summary>
 	virtual void __Draw() {}
 };
 

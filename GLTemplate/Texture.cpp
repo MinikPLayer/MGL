@@ -20,6 +20,7 @@ Texture::~Texture()
 {
 	if (loaded)
 	{
+		LOGW_E("Deleting texture");
 		glDeleteTextures(1, &handle);
 	}
 }

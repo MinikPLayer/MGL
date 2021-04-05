@@ -8,7 +8,7 @@
 		mesh->__Draw();
 }*/
 
-bool Model::loadModel(string path)
+bool Model::loadModel(string path, shared_ptr<Material>& overrideMat)
 {
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
@@ -19,28 +19,30 @@ bool Model::loadModel(string path)
 		return false;
 	}
 
-	processNode(scene->mRootNode, scene);
+	processNode(scene->mRootNode, scene, overrideMat);
 	return true;
 }
 
-void Model::processNode(aiNode* node, const aiScene* scene)
+void Model::processNode(aiNode* node, const aiScene* scene, shared_ptr<Material>& overrideMat)
 {
 	// process all the node's meshes (if any)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		Mesh* m = processMesh(mesh, scene);
-		meshes.push_back(m);
-		AddComponent<Mesh>(m);
+		Mesh* m = processMesh(mesh, scene, overrideMat);
+		//meshes.push_back(ptr);
+		//shared_ptr<Mesh> ptr = AddComponent(m);
+		shared_ptr<Mesh> ptr(m);
+		meshes.push_back(ptr);
 	}
 	// then do the same for each of its children
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
-		processNode(node->mChildren[i], scene);
+		processNode(node->mChildren[i], scene, overrideMat);
 	}
 }
 
-Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene)
+Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, shared_ptr<Material>& overrideMat)
 {
 	vector<Vertex> vertexData;
 	vector<unsigned int> indicesData;
@@ -72,8 +74,12 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene)
 
 	Mesh* m = new Mesh();
 	m->CopyFrom(vertexData, indicesData);
-	m->SetMaterial(Material::GetDefaultMaterial());
-	m->SetParent(this);
+	if (overrideMat != nullptr)
+		m->SetMaterial(overrideMat);
+	else
+		m->SetMaterial(Material::GetDefaultMaterial());
+	//m->SetParent(this);
+	
 	//m->SetPosition(GetPosition());
 	//m.initialized = false;
 
@@ -99,4 +105,31 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	}
 
 	return m;
+}
+
+/*void Model::SpawnMesh(GameObject* parent)
+{
+	SpawnMesh(parent, Vector3(0, 0, 0));
+}
+
+void Model::SpawnMesh(Vector3 position)
+{
+	SpawnMesh(nullptr, position);
+}*/
+
+shared_ptr<GameObject> Model::SpawnMesh(shared_ptr<GameObject> parent, Vector3 positionOffset)
+{
+	// Create root object if needed
+	if (parent == nullptr)
+		parent = GameObject::Instantiate<GameObject>();
+
+	for (int i = 0; i < meshes.size(); i++)
+	{
+		shared_ptr<Mesh> m = parent->AddComponent<Mesh>();
+
+		m->SetLocalPosition(positionOffset);
+		m->CopyFrom(meshes[i].get());
+	}
+
+	return parent;
 }

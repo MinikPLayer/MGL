@@ -1,7 +1,7 @@
 #include "Light.h"
 
 
-Material* LightCube::lightMat = nullptr;
+shared_ptr<Material> LightCube::lightMat = nullptr;
 
 Light::Light(Color color, float intensity)
 {
