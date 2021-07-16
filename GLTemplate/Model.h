@@ -32,11 +32,11 @@ public:
     /// </summary>
     /// <param name="positionOffset">Position offset</param>
     /// <param name="parent">Meshes parent</param>
-    shared_ptr<GameObject> SpawnMesh(shared_ptr<GameObject> parent = nullptr, Vector3 positionOffset = Vector3(0,0,0));
+    shared_ptr<GameObject> SpawnMesh(shared_ptr<GameObject> parent, Vector3 positionOffset = Vector3(0,0,0), shared_ptr<Material> materialOverride = nullptr);
+    shared_ptr<GameObject> SpawnMesh(shared_ptr<GameObject> parent, shared_ptr<Material> materialOverride = nullptr);
+    shared_ptr<GameObject> SpawnMesh(shared_ptr<Material> materialOverride = nullptr);
 
-    //void Draw(Shader& shader);
 private:
-    //void __Draw();
 
     // model data
     vector<shared_ptr<Mesh>> meshes;
@@ -47,6 +47,5 @@ private:
     Mesh* processMesh(aiMesh* mesh, const aiScene* scene, shared_ptr<Material>& overrideMat);
 
     
-    /*vector<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type,
-        string typeName);*/
+    void loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
 };

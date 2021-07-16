@@ -28,6 +28,8 @@ public:
 	Vector3Base<Type> operator+(const Vector3Base& b) { return Vector3Base<Type>(x + b.x, y + b.y, z + b.z); }
 	Vector3Base<Type> operator-(const Vector3Base& b) { return Vector3Base<Type>(x - b.x, y - b.y, z - b.z); }
 	Vector3Base<Type>& operator+=(const Vector3Base& b) { x += b.x; y += b.y; z += b.z; return *this; }
+	Vector3Base<Type> operator/(const Vector3Base& b) { return Vector3Base<Type>(x / b.x, y / b.y, z / b.z); }
+	Vector3Base<Type> operator*(const Vector3Base& b) { return Vector3Base<Type>(x * b.x, y * b.y, z * b.z); }
 
 	template<class Type2>
 	Vector3Base<Type>& operator=(const Vector3Base<Type2>& b) { x = b.x; y = b.y; z = b.z; return *this; }

@@ -17,8 +17,9 @@ using namespace glm;
 class GameObject
 {
 protected:
-	Vector3 position;
-	Vector3 rotation;
+	Vector3 position = Vector3(0, 0, 0);
+	Vector3 rotation = Vector3(0, 0, 0);
+	Vector3 scale = Vector3(1, 1, 1);
 	string name;
 
 	// Object child components
@@ -301,6 +302,12 @@ public:
 	/// </summary>
 	/// <param name="pos">New local position</param>
 	virtual void SetLocalPosition(Vector3 pos);
+
+	Vector3 GetScale();
+	virtual void SetScale(Vector3 scale);
+
+	Vector3 GetLocalScale();
+	virtual void SetLocalScale(Vector3 scale);
 
 	/// <summary>
 	/// Event fired when instantiated

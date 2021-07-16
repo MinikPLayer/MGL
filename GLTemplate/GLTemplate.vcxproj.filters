@@ -123,6 +123,9 @@
     <ClCompile Include="Path.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="Sky.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -139,12 +142,6 @@
       <Filter>Pliki zasobów</Filter>
     </None>
     <None Include="Assets\Shaders\VertexLightShader.vert">
-      <Filter>Pliki zasobów</Filter>
-    </None>
-    <None Include="Assets\Shaders\SkyShader.vert">
-      <Filter>Pliki zasobów</Filter>
-    </None>
-    <None Include="Assets\Shaders\SkyShader.frag">
       <Filter>Pliki zasobów</Filter>
     </None>
   </ItemGroup>
@@ -237,6 +234,9 @@
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="Asset.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Sky.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>

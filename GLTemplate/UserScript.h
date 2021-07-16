@@ -4,6 +4,7 @@
 #include "Mesh.h"
 #include "Model.h"
 #include "Util.h"
+#include "Sky.h"
 
 #include "Cube.h"
 #include "Light.h"
@@ -12,6 +13,7 @@
 #include <glm/glm.hpp>
 #include <iostream>
 #include "Time.h"
+#include "Path.h"
 using namespace std;
 using namespace glm;
 
@@ -47,15 +49,17 @@ class UserScript : public GameObject
 	shared_ptr<Mesh> lightCube;
 	shared_ptr<Model> model;
 	Vector3 startPos;
-	float counter = 100;
+	float counter = 1;
 
 	const int max = 50;
 	const int radius = 20;
 
 	bool paused = true;
+
+	shared_ptr<GameObject> spawned;
 public:
 
-	shared_ptr<Material> mats[2];
+	shared_ptr<Material> mats[3];
 
 	int cubesSpawned = 0;
 
@@ -70,17 +74,22 @@ public:
 		//AddComponent<Mesh>(mesh);
 
 		//Model* model = new Model("cube.fbx", mats[rand() % 2]);
-		if(model.get() == nullptr)
-			model = AssetsLoader::LoadModel("cube.fbx", mats[rand() % 2]);
+		if (model.get() == nullptr)
+			// model = AssetsLoader::LoadModel(Path::Combine({ "Backpack", "backpack.obj" }), mats[0]);//mats[rand() % 2]);
+			model = AssetsLoader::LoadModel("rock1.fbx");
 
 		//Model* model = new Model("sphere.fbx", false);
 		//model->SetPosition(pos);
-		shared_ptr<GameObject> obj = model->SpawnMesh();
+		spawned = model->SpawnMesh(mats[1]);
+		spawned->SetParent(this);
+		spawned->SetPosition(Vector3(0, 10, -10));
+		spawned->SetScale(Vector3(0.1, 0.1, 0.1));
+		
 
-		RotatingCube* component = new RotatingCube(obj.get());
+		/*RotatingCube* component = new RotatingCube(obj.get());
 		component->angle = Vector2::Random().Normalized();
 		component->distance = (rand() * 151) % 25;
-		component->speed = (((rand() * 5311) % 1000) / 750.0) + 0.5;
+		component->speed = (((rand() * 5311) % 1000) / 750.0) + 0.5;*/
 
 		cubesSpawned++;
 	}
@@ -101,13 +110,27 @@ public:
 		srand(time(NULL));
 		LOG("UserScript start");
 
-		mats[0] = Material::CreatePrefabedMaterial(Material::RUBBER);
-		mats[1] = Material::CreatePrefabedMaterial(Material::SILVER);
-		
+		mats[0] = Material::CreatePrefabedMaterial(Material::SILVER);
+		mats[1] = Material::CreatePrefabedMaterial(Material::RUBBER);
+		mats[2] = Material::CreatePrefabedMaterial(Material::SILVER);
+
+		// Load textures
 		for (int i = 0; i < 2; i++)
 		{
-			mats[i].get()->SetMaterialTexture(AssetsLoader::LoadTexture("container.jpg"));
+			mats[i].get()->SetMaterialTexture(AssetsLoader::LoadTexture("container2.png"));
+			mats[i]->SetMaterialTexture(AssetsLoader::LoadTexture("container2_specular.png", 1), "specular");
 		}
+
+		mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture("grass.png"));
+		mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture("grass_specular.png", 1), "specular");
+		mats[2]->SetVec2("texScale", Vector2(0.1, 0.1));
+		mats[1]->SetVec2("texScale", Vector2(1, 1));
+
+		// Add floor
+		shared_ptr<Model> m = AssetsLoader::LoadModel("cube.fbx");
+		auto msh = m->SpawnMesh(mats[2]);
+		msh->SetScale(Vector3(100, 2, 100));
+		msh->SetPosition(Vector3(0, -3, 0));
 
 		// Add light cube
 		LightCube* cube = new LightCube();
@@ -128,6 +151,10 @@ public:
 		Input::RegisterAxis(Input::Axis("Pause", Input::Keyboard, Input::P));
 
 		Camera::GetMainCamera()->SetPosition(Vector3(-60, 0, 0));
+
+		Input::RegisterAxis(Input::Axis("LightX", Input::Devices::Keyboard, Input::KBButtons::RIGHT, Input::KBButtons::LEFT));
+		Input::RegisterAxis(Input::Axis("LightZ", Input::Devices::Keyboard, Input::KBButtons::UP, Input::KBButtons::DOWN));
+		Input::RegisterAxis(Input::Axis("LightY", Input::Devices::Keyboard, Input::KBButtons::PGUP, Input::KBButtons::PGDOWN));
 	}
 	
 	void Update()
@@ -140,16 +167,24 @@ public:
 		if (Input::GetKey(Input::Devices::Keyboard, Input::B))
 			lCube->light->color = Color::Blue;
 
+		const float lightMoveSpeed = 10;
+		Vector3 move(0, 0, 0);
+		move.x += Input::GetAxis("LightX") * Time::deltaTime * lightMoveSpeed;
+		move.y += Input::GetAxis("LightY") * Time::deltaTime * lightMoveSpeed;
+		move.z += -Input::GetAxis("LightZ") * Time::deltaTime * lightMoveSpeed;
+
+		lCube->Move(move);
+
+
 		Color color;
 		color.r = (sin(Time::elapsedTime * 0.6) + 1 ) * 255 / 2.f;
 		color.g = (sin(Time::elapsedTime * 0.8) + 1 ) * 255 / 2.f;
 		color.b = (sin(Time::elapsedTime * 1.1) + 1 ) * 255 / 2.f;
 		Vector3 lColor = color.ToVector3();
 
-
 		lCube->GetMaterial()->SetVec3("lightColor", lColor);
 
-		for (int i = 0; i < 2; i++)
+		for (int i = 2; i < 2; i++)
 		{
 			mats[i]->SetVec3("light.specular", lColor);
 			mats[i]->SetVec3("light.diffuse", lColor * 0.5);
@@ -173,7 +208,7 @@ public:
 			if (Input::GetButtonDown("AddCube"))
 				AddRandomCube();
 		}
-		if (counter > 1)
+		if (counter >= 1)
 		{
 			for (int i = 0; counter >= 1; i++)
 			{
@@ -194,6 +229,14 @@ public:
 				Camera::GetMainCamera()->SetParent(nullptr);
 		}
 
-		
+		float val = sin(Time::elapsedTime);
+		if (Input::GetKey(Input::Keyboard, Input::KBButtons::C))
+		{
+			LOG("Val: ", val);
+		}
+		//spawned->SetScale(Vector3(val, val, val));
+		lightCube->SetScale(Vector3(val, val, val));
+		this->SetScale(Vector3(val, val, val));
+		//spawned->SetScale(Vector3(0.00001f, 0.00001f, 0.00001f));
 	}
 };

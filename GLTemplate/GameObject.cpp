@@ -32,7 +32,11 @@ void GameObject::SetParent(GameObject* newParent)
 
 Vector3 GameObject::GetPosition() 
 { 
-	return GetParent() == nullptr ? GetLocalPosition() : (GetLocalPosition() + GetParent()->GetPosition());
+	GameObject* parent = GetParent();
+	if (parent == nullptr)
+		return GetLocalPosition();
+
+	return GetLocalPosition() * parent->GetLocalScale() + parent->GetPosition();
 }
 void GameObject::SetPosition(Vector3 pos)
 { 
@@ -85,4 +89,39 @@ void GameObject::SetLocalPosition(Vector3 pos)
 			parent->SetLocalPosition(pos);
 	else
 		position = pos;
+}
+
+Vector3 GameObject::GetScale()
+{
+	return GetParent() == nullptr ? GetLocalScale() : (GetLocalScale() * GetParent()->GetScale());
+}
+
+void GameObject::SetScale(Vector3 scale)
+{
+	if (GetParent() == nullptr)
+		SetLocalScale(scale);
+	else
+		SetLocalScale(scale / GetParent()->GetScale());
+}
+
+Vector3 GameObject::GetLocalScale()
+{
+	if (!transformable)
+		if (parent == nullptr)
+			LOGE_E("Non-transform object needs a parent");
+		else
+			return parent->GetLocalScale();
+	else
+		return scale;
+}
+
+void GameObject::SetLocalScale(Vector3 scale)
+{
+	if (!transformable)
+		if (parent == nullptr)
+			LOGE_E("Non-transform object needs a parent");
+		else
+			parent->SetLocalScale(scale);
+	else
+		this->scale = scale;
 }

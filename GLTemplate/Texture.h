@@ -2,6 +2,9 @@
 
 #include <glad/glad.h>
 #include "Asset.h"
+#include <string>
+
+using namespace std;
 
 class Texture : public Asset
 {

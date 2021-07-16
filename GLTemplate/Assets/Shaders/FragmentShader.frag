@@ -24,22 +24,23 @@ struct Light {
 	vec3 diffuse;
 	vec3 specular;
 	float strength;
-
-	vec3 GetAmbient()
-	{
-		return ambient * strength;
-	}
-
-	vec3 GetDiffuse()
-	{
-		return diffuse * strength;
-	}
-
-	vec3 GetSpecular()
-	{
-		return specular * strength;
-	}
 };
+
+vec3 GetLightAmbient(Light light)
+{
+	return light.ambient * light.strength;
+}
+
+vec3 GetLightDiffuse(Light light)
+{
+	return light.diffuse * light.strength;
+}
+
+vec3 GetLightSpecular(Light light)
+{
+	return light.specular * light.strength;
+}
+
 
 uniform Light light = Light(vec3(1), vec3(1), vec3(1), 1);
 
@@ -52,8 +53,7 @@ in vec3 lightPosition;
 //in vec2 UV;
 
 in vec2 TexCoords;
-
-
+uniform vec2 texScale = vec2(1,1);
 
 float specularStrength = 0.5;
 
@@ -70,7 +70,7 @@ vec3 GetTex2DVec3Value(Tex2DVec3 value, vec2 coords)
 void main()
 {
 	//vec3 ambient = (texture(material.diffuse, TexCoords)).rgb; // Just for debug purposes
-	vec3 ambient = light.GetAmbient() * GetTex2DVec3Value(material.diffuse, TexCoords);
+	vec3 ambient = GetLightAmbient(light) * GetTex2DVec3Value(material.diffuse, TexCoords / texScale);
 	/*if(material.useTexture)
 		ambient = light.ambient * (texture(material.diffuse, TexCoords)).rgb;
 	else
@@ -83,7 +83,7 @@ void main()
 	// Difuse lightning
 	//vec3 diffuse = (texture(material.diffuse, TexCoords)).rgb; // Just for debug purposes
 	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = diff * light.GetDiffuse() * GetTex2DVec3Value(material.diffuse, TexCoords);
+	vec3 diffuse = diff * GetLightDiffuse(light) * GetTex2DVec3Value(material.diffuse, TexCoords / texScale);
 
 	/*if(material.useTexture)
 		diffuse = diff * (texture(material.diffuse, TexCoords)).rgb * light.diffuse;
@@ -96,7 +96,7 @@ void main()
 	vec3 reflectDir = reflect(-lightDir, norm);
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess * 255);
 	//vec3 specular = specularStrength * (spec * material.specular) * light.specular;
-	vec3 specular = specularStrength * (spec * GetTex2DVec3Value(material.specular, TexCoords)) * light.GetSpecular();
+	vec3 specular = specularStrength * (spec * GetTex2DVec3Value(material.specular, TexCoords / texScale)) * GetLightSpecular(light);
 
 	vec3 result = (ambient + diffuse + specular) * vertColor;
 	fragColor = vec4(result, 1.0f); 

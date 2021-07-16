@@ -115,6 +115,7 @@ public:
 
 
 	void SetFloat(string name, float value) { SetParam<float>(name, value); }
+	void SetVec2(string name, Vector2 value) { SetParam<Vector2>(name, value); }
 	void SetVec3(string name, Vector3 value) { SetParam<Vector3>(name, value); }
 	void SetInt(string name, int value) { SetParam<int>(name, value); }
 	void SetBool(string name, bool value) 
@@ -125,7 +126,7 @@ public:
 	/// <summary>
 	/// Set material texture
 	/// </summary>
-	/// <param name="texName">Shader texture name, eg diffuse</param>
+	/// <param name="texName">Shader texture name, eg diffuse, specular</param>
 	/// <param name="slot">Texture slot</param>
 	void SetMaterialTexture(shared_ptr<Texture> texture, string texName = "diffuse");
 	void SetMaterialTexture(string texName = "diffuse", int slot = 0);

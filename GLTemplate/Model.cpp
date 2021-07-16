@@ -1,6 +1,7 @@
 #include "Model.h"
-
-
+#include "Path.h"
+#include "AssetsLoader.h"
+#include "Debug.h"
 
 /*void Model::__Draw()
 {
@@ -18,6 +19,9 @@ bool Model::loadModel(string path, shared_ptr<Material>& overrideMat)
 		LOGE_E("ERROR::ASSIMP::", importer.GetErrorString());
 		return false;
 	}
+
+	// retrieve the directory path of the filepath
+	directory = path.substr(0, path.find_last_of(Path::SEPARATOR));
 
 	processNode(scene->mRootNode, scene, overrideMat);
 	return true;
@@ -72,6 +76,14 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, shared_ptr<Material
 			indicesData.push_back(face.mIndices[j]);
 	}
 
+	if (mesh->mMaterialIndex >= 0)
+	{
+		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+		loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+		loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+		LOG_E("Loaded textures");
+	}
+
 	Mesh* m = new Mesh();
 	m->CopyFrom(vertexData, indicesData);
 	if (overrideMat != nullptr)
@@ -107,17 +119,63 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, shared_ptr<Material
 	return m;
 }
 
-/*void Model::SpawnMesh(GameObject* parent)
+void Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
 {
-	SpawnMesh(parent, Vector3(0, 0, 0));
+
+	for (int i = 0; i < mat->GetTextureCount(type); i++)
+	{
+		aiString str;
+		mat->GetTexture(type, i, &str);
+		
+		//shared_ptr<Texture> newTex(new Texture(Path::Combine({ directory, str.C_Str() }).c_str(), 0));
+		int slot = -1;
+		switch (type)
+		{
+		case aiTextureType_DIFFUSE:
+			slot = 0;
+			break;
+
+		case aiTextureType_SPECULAR:
+		case aiTextureType_AMBIENT:
+		case aiTextureType_EMISSIVE:
+		case aiTextureType_HEIGHT:
+		case aiTextureType_NORMALS:
+		case aiTextureType_SHININESS:
+		case aiTextureType_OPACITY:
+		case aiTextureType_DISPLACEMENT:
+		case aiTextureType_LIGHTMAP:
+		case aiTextureType_REFLECTION:	
+		case _aiTextureType_Force32Bit:
+			LOGW_E("Unsupported texture type");
+			break;
+		case aiTextureType_NONE:
+		case aiTextureType_UNKNOWN:
+		default:
+			LOGW_E("Trying to load none or unknown texture type");
+			break;
+		}
+
+		if (slot < 0)
+			continue;
+
+		string p = Path::Combine({ directory, str.C_Str() });
+		LOG("TexturePath: ", p);
+		// Load texture into assets
+		AssetsLoader::LoadTexture(p, slot, true);
+	}
 }
 
-void Model::SpawnMesh(Vector3 position)
+shared_ptr<GameObject> Model::SpawnMesh(shared_ptr<GameObject> parent, shared_ptr<Material> materialOverride)
 {
-	SpawnMesh(nullptr, position);
-}*/
+	return SpawnMesh(parent, Vector3(0, 0, 0), materialOverride);
+}
 
-shared_ptr<GameObject> Model::SpawnMesh(shared_ptr<GameObject> parent, Vector3 positionOffset)
+shared_ptr<GameObject> Model::SpawnMesh(shared_ptr<Material> materialOverride)
+{
+	return SpawnMesh(nullptr, Vector3(0, 0, 0), materialOverride);
+}
+
+shared_ptr<GameObject> Model::SpawnMesh(shared_ptr<GameObject> parent, Vector3 positionOffset, shared_ptr<Material> materialOverride)
 {
 	// Create root object if needed
 	if (parent == nullptr)
@@ -129,6 +187,9 @@ shared_ptr<GameObject> Model::SpawnMesh(shared_ptr<GameObject> parent, Vector3 p
 
 		m->SetLocalPosition(positionOffset);
 		m->CopyFrom(meshes[i].get());
+
+		if (materialOverride != nullptr)
+			m->SetMaterial(materialOverride);
 	}
 
 	return parent;

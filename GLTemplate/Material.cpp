@@ -9,6 +9,13 @@ void Material::ParamT<float>::SetParam(shared_ptr<Shader>& shader)
 	shader->SetFloat(location, value);
 }
 
+void Material::ParamT<Vector2>::SetParam(shared_ptr<Shader>& shader)
+{
+	Param::SetParam(shader);
+
+	shader->SetVec2(location, value.x, value.y);
+}
+
 void Material::ParamT<Vector3>::SetParam(shared_ptr<Shader>& shader)
 {
 	Param::SetParam(shader);

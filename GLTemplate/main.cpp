@@ -89,6 +89,7 @@ int main()
 	glfwSwapInterval(0);
 
 	glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
+	//glClearColor(0, 0, 0, 1);
 
 	registerBasicInput();
 

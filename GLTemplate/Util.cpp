@@ -115,7 +115,12 @@ GLint LoadTexture(const char* path, bool flip, TextureFiltering minFilter, Textu
 	if (magFilter != TextureFiltering::None)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (int)magFilter);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	if (nrChannels == 3)
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	else if (nrChannels == 4)
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	else
+		LOGE_E("Bad texture channels count: ", nrChannels);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	stbi_image_free(data);

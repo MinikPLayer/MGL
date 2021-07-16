@@ -200,8 +200,11 @@ public:
 
 		glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(Vertex), &(vertexData[0]), GL_STATIC_DRAW);
 
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &(indices[0]), GL_STATIC_DRAW);
+		if (indices.size() > 0)
+		{
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &(indices[0]), GL_STATIC_DRAW);
+		}
 
 		// Vertex pos
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);//offsetof(Vertex, pos));
@@ -258,8 +261,15 @@ public:
 	Mesh()
 	{
 		updateRenderer = true;
-		if (material == nullptr)
-			SetMaterial(Material::GetDefaultMaterial());
+		SetMaterial(Material::GetDefaultMaterial());
+
+		InitObjects();
+	}
+
+	Mesh(shared_ptr<Material> mat)
+	{
+		updateRenderer = true;
+		SetMaterial(mat);
 
 		InitObjects();
 	}
@@ -318,14 +328,17 @@ public:
 
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, GetPosition().GetGLVector());
+		model = glm::scale(model, GetScale().GetGLVector());
+
 		//Vector3 pos = meshes[i][j]->GetPosition();
 		material->shader->SetMat4(material->shader->modelLocation, glm::value_ptr(model));
 
-		//glBindVertexArray(VAO);
 
-		//glVertexAttrib3f(1, color.x, color.y, color.z);
-		//glDrawArrays(GL_TRIANGLES, 0, vertexDataSize / 5);
-		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);//indices.size(), GL_UNSIGNED_INT, 0);
+		// Draw by indices
+		if (indices.size() > 0)
+			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+		else // Draw by vertexes
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, vertexData.size());
 	}
 
 	void OnDestroy()
