@@ -14,6 +14,7 @@
 #include <iostream>
 #include "Time.h"
 #include "Path.h"
+
 using namespace std;
 using namespace glm;
 
@@ -49,7 +50,7 @@ class UserScript : public GameObject
 	shared_ptr<Mesh> lightCube;
 	shared_ptr<Model> model;
 	Vector3 startPos;
-	float counter = 1;
+	float counter = 0;
 
 	const int max = 50;
 	const int radius = 20;
@@ -59,7 +60,7 @@ class UserScript : public GameObject
 	shared_ptr<GameObject> spawned;
 public:
 
-	shared_ptr<Material> mats[3];
+	shared_ptr<Material> mats[5];
 
 	int cubesSpawned = 0;
 
@@ -76,11 +77,11 @@ public:
 		//Model* model = new Model("cube.fbx", mats[rand() % 2]);
 		if (model.get() == nullptr)
 			// model = AssetsLoader::LoadModel(Path::Combine({ "Backpack", "backpack.obj" }), mats[0]);//mats[rand() % 2]);
-			model = AssetsLoader::LoadModel("rock1.fbx");
+			model = AssetsLoader::LoadModel("rock6.fbx");
 
 		//Model* model = new Model("sphere.fbx", false);
 		//model->SetPosition(pos);
-		spawned = model->SpawnMesh(mats[1]);
+		spawned = model->SpawnMesh(mats[4]);
 		spawned->SetParent(this);
 		spawned->SetPosition(Vector3(0, 10, -10));
 		spawned->SetScale(Vector3(0.1, 0.1, 0.1));
@@ -113,6 +114,8 @@ public:
 		mats[0] = Material::CreatePrefabedMaterial(Material::SILVER);
 		mats[1] = Material::CreatePrefabedMaterial(Material::RUBBER);
 		mats[2] = Material::CreatePrefabedMaterial(Material::SILVER);
+		mats[3] = shared_ptr<Material>(new Material(AssetsLoader::LoadShader("SkyShader.vert", "SkyShader.frag")));
+		mats[4] = Material::CreatePrefabedMaterial(Material::SILVER);
 
 		// Load textures
 		for (int i = 0; i < 2; i++)
@@ -121,21 +124,44 @@ public:
 			mats[i]->SetMaterialTexture(AssetsLoader::LoadTexture("container2_specular.png", 1), "specular");
 		}
 
+		mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("rock6.png"));
+
+		//mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("rock1_specular.png", 1), "specular");
+
+		mats[3]->SetVec2("_resolution_", Vector2(1920, 1080));
+		mats[3]->SetVec2("sunPos", Vector2(900, 500));
+
 		mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture("grass.png"));
 		mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture("grass_specular.png", 1), "specular");
 		mats[2]->SetVec2("texScale", Vector2(0.1, 0.1));
 		mats[1]->SetVec2("texScale", Vector2(1, 1));
 
+		/*Cube* sky = new Cube();
+		sky->SetMaterial(mats[3]);
+		sky->SetScale(Vector3(100, 100, 100));
+		sky->SetPosition(Vector3(0, 0, 0));
+		AddComponent(sky);*/
+
 		// Add floor
-		shared_ptr<Model> m = AssetsLoader::LoadModel("cube.fbx");
+		/*shared_ptr<Model> m = AssetsLoader::LoadModel("cube.fbx");
 		auto msh = m->SpawnMesh(mats[2]);
 		msh->SetScale(Vector3(100, 2, 100));
-		msh->SetPosition(Vector3(0, -3, 0));
+		msh->SetPosition(Vector3(0, -3, 0));*/
+		// Add Floor
+		Mesh* m = new Mesh(mats[2]);
+		Vector2 sinMeshSize(100, 100);
+		m->SetPosition(-1.0f * Vector3(sinMeshSize.x / 2, 0, sinMeshSize.y / 2));
+		m->GenerateMesh(Vector2(50, 50), [](float x, float y) {
+			return sin(x) * sin(y);
+		});
+		AddComponent(m);
 
 		// Add light cube
 		LightCube* cube = new LightCube();
 		cube->SetPosition(Vector3(2, 2, 2));
 		lightCube = AddComponent(cube);
+
+
 
 		Material::GetDefaultMaterial()->SetVec3("lightPos", lightCube->GetPosition());
 
@@ -155,6 +181,10 @@ public:
 		Input::RegisterAxis(Input::Axis("LightX", Input::Devices::Keyboard, Input::KBButtons::RIGHT, Input::KBButtons::LEFT));
 		Input::RegisterAxis(Input::Axis("LightZ", Input::Devices::Keyboard, Input::KBButtons::UP, Input::KBButtons::DOWN));
 		Input::RegisterAxis(Input::Axis("LightY", Input::Devices::Keyboard, Input::KBButtons::PGUP, Input::KBButtons::PGDOWN));
+
+		Input::RegisterAxis(Input::Axis("RotationX", Input::Devices::Keyboard, Input::KBButtons::RIGHT_BRACKET, Input::KBButtons::LEFT_BRACKET));
+		Input::RegisterAxis(Input::Axis("RotationY", Input::Devices::Keyboard, Input::KBButtons::APOSTROPHE, Input::KBButtons::SEMICOLON));
+		Input::RegisterAxis(Input::Axis("RotationZ", Input::Devices::Keyboard, Input::KBButtons::SLASH, Input::KBButtons::PERIOD));
 	}
 	
 	void Update()
@@ -235,8 +265,11 @@ public:
 			LOG("Val: ", val);
 		}
 		//spawned->SetScale(Vector3(val, val, val));
-		lightCube->SetScale(Vector3(val, val, val));
-		this->SetScale(Vector3(val, val, val));
+		//lightCube->SetScale(Vector3(val, val, val));
+		//this->SetScale(Vector3(val, val, val));
+		//this->SetRotation(Vector3(val, val, val));
+		//spawned->Rotate(Vector3(Input::GetAxis("RotationX"), Input::GetAxis("RotationY"), Input::GetAxis("RotationZ")) * Time::deltaTime);
+		//mats[4]->SetVec2("texScale", Vector2(sin(Time::elapsedTime), cos(Time::elapsedTime)));
 		//spawned->SetScale(Vector3(0.00001f, 0.00001f, 0.00001f));
 	}
 };

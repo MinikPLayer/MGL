@@ -15,12 +15,19 @@ class Camera : public GameObject
 	static Camera* main;
 	static Camera* rendering;
 
+	glm::quat orientation;
+
 protected:
 	glm::mat4 projectionMatrix;
 	glm::mat4 viewMatrix;
 
 	void UpdateProjectionMatrix(float aspectRatio);
 
+	float drawDistance = 1000.f;
+	float aspectRatio = 0;
+
+	float pitch = 0;
+	float yaw = 90;
 
 	float fov = 45;
 
@@ -29,6 +36,9 @@ protected:
 	Vector3 right;
 	Vector3 worldUp = Vector3(0, 1, 0);
 public:
+	float GetDrawDistance();
+	void SetDrawDistance(float distance);
+
 	static Camera* __GetRenderingCamera();
 
 	/// <summary>

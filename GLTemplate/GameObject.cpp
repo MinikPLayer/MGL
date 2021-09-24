@@ -9,17 +9,44 @@ void GameObject::SetName(string name) { this->name = name; }
 
 void GameObject::Rotate(Vector3 rotVector)
 {
-	SetRotation(GetRotation() + rotVector);
+	SetLocalRotation(GetLocalRotation() + rotVector);
 }
 
-Vector3 GameObject::GetRotation()
+Quaternion GameObject::GetLocalRotation()
 {
 	return rotation;
 }
 
+Quaternion GameObject::GetRotation()
+{
+	return GetParent() == nullptr ? GetLocalRotation() : (GetLocalRotation() + GetParent()->GetRotation());
+}
+
+void GameObject::SetLocalRotation(Vector3 rot)
+{
+	SetLocalRotation(Quaternion(rot));
+}
+
+void GameObject::SetLocalRotation(Quaternion q)
+{
+	this->rotation = q;
+}
+
 void GameObject::SetRotation(Vector3 rot)
 {
-	this->rotation = rot;
+	SetRotation(Quaternion(rot));
+}
+
+void GameObject::SetRotation(Quaternion rot)
+{
+	if (GetParent() == nullptr)
+	{
+		SetLocalRotation(rot);
+		return;
+	}
+
+	//position = pos - GetParent()->GetPosition();
+	SetLocalRotation(rot - GetParent()->GetRotation());
 }
 
 void GameObject::SetParent(GameObject* newParent)
@@ -47,7 +74,7 @@ void GameObject::SetPosition(Vector3 pos)
 	}
 
 	//position = pos - GetParent()->GetPosition();
-	SetLocalPosition(pos - GetParent()->GetPosition());
+	SetLocalPosition(pos - GetParent()->GetPosition() / GetParent()->GetLocalScale());
 }
 
 void GameObject::Dispose()

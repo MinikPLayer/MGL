@@ -1,10 +1,25 @@
 #include "Camera.h"
+#include <glm/gtc/quaternion.hpp>
+#include <glm/glm.hpp>
+
 Camera* Camera::main = nullptr;
 Camera* Camera::rendering = nullptr;
 
 void Camera::UpdateProjectionMatrix(float aspectRatio)
 {
-	projectionMatrix = glm::perspective(glm::radians(GetFov()), aspectRatio, 0.1f, 1000.0f);
+	projectionMatrix = glm::perspective(glm::radians(GetFov()), aspectRatio, 0.1f, drawDistance);
+	this->aspectRatio = aspectRatio;
+}
+
+float Camera::GetDrawDistance()
+{
+	return drawDistance;
+}
+
+void Camera::SetDrawDistance(float distance)
+{
+	drawDistance = distance;
+	UpdateProjectionMatrix(aspectRatio);
 }
 
 Camera* Camera::__GetRenderingCamera()
@@ -108,22 +123,35 @@ glm::mat4 Camera::GetViewMatrix()
 
 void Camera::UpdateViewMatrix()
 {
-	Vector3 pos = GetPosition();
+	glm::quat qPitch = glm::angleAxis(-glm::radians(pitch), glm::vec3(1, 0, 0));
+	glm::quat qYaw = glm::angleAxis(glm::radians(yaw), glm::vec3(0, 1, 0));
 
-	//return glm::lookAt(pos.GetGLVector(), (pos + front).GetGLVector(), up.GetGLVector());
-	viewMatrix = glm::lookAt(pos.GetGLVector(), (pos + front).GetGLVector(), worldUp.GetGLVector());
+	//For a FPS camera we can omit roll
+	orientation = qPitch * qYaw;
+	orientation = glm::normalize(orientation);
+	glm::mat4 rotate = glm::mat4_cast(orientation);
+
+	glm::mat4 translate = glm::mat4(1.0f);
+	translate = glm::translate(translate, -GetPosition().GetGLVector());
+
+	viewMatrix = rotate * translate;
 }
 
 void Camera::UpdateCameraVectors()
 {
-	Vector3 rotation = GetRotation();
+	/*Vector3 rotation = GetRotation().ToEuler();
 
-	front.x = cos(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
-	front.y = sin(glm::radians(rotation.x));
-	front.z = sin(glm::radians(rotation.y)) * cos(glm::radians(rotation.x));
+	front.x = cos(rotation.y) * cos(rotation.x);
+	front.y = sin(rotation.x);
+	front.z = sin(rotation.y) * cos(rotation.x);
 
 	front.Normalize();
 
 	right = front.Cross(worldUp).Normalized(); //glm::normalize(glm::cross(front, worldUp));
-	up = right.Cross(front).Normalized(); //glm::normalize(glm::cross(right, front));
+	up = right.Cross(front).Normalized(); //glm::normalize(glm::cross(right, front));*/
+	UpdateViewMatrix();
+	//auto inverse = glm::inverse(orientation);
+	front = glm::rotate(glm::inverse(orientation), glm::vec3(0.0, 0.0, -1.0));
+	right = glm::rotate(glm::inverse(orientation), glm::vec3(1.0, 0.0, 0.0));
+	up = glm::vec3(0.0, 1.0, 0.0);
 }

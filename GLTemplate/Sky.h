@@ -1,15 +1,13 @@
 #pragma once
 
 #include "GameObject.h"
-#include "Mesh.h"
+#include "Cube.h"
 
-// NOT WORKING
-class Sky : public Mesh
+// Kinda not working
+class Sky : public Cube
 {
 public:
 
-	void __Draw();
-
-	void Update();
 	Sky();
+	void Update();
 };

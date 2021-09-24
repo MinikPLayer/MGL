@@ -24,15 +24,20 @@ public:
 	glm::vec3 GetGLVector();
 	Vector3Base<Type>(Type x = 0, Type y = 0, Type z = 0) { this->x = x; this->y = y; this->z = z; }
 
-	Vector3Base<Type> operator*(float b) { return Vector3Base<Type>(x * b, y * b, z * b); }
+
 	Vector3Base<Type> operator+(const Vector3Base& b) { return Vector3Base<Type>(x + b.x, y + b.y, z + b.z); }
 	Vector3Base<Type> operator-(const Vector3Base& b) { return Vector3Base<Type>(x - b.x, y - b.y, z - b.z); }
 	Vector3Base<Type>& operator+=(const Vector3Base& b) { x += b.x; y += b.y; z += b.z; return *this; }
 	Vector3Base<Type> operator/(const Vector3Base& b) { return Vector3Base<Type>(x / b.x, y / b.y, z / b.z); }
 	Vector3Base<Type> operator*(const Vector3Base& b) { return Vector3Base<Type>(x * b.x, y * b.y, z * b.z); }
 
+	friend Vector3Base<Type> operator*(const Vector3Base<Type> a, float b) { return Vector3Base<Type>(a.x * b, a.y * b, a.z * b); }
+	friend Vector3Base<Type> operator*(float b, const Vector3Base<Type> a) { return Vector3Base<Type>(b * a.x, b * a.y, b * a.z); }
+
 	template<class Type2>
 	Vector3Base<Type>& operator=(const Vector3Base<Type2>& b) { x = b.x; y = b.y; z = b.z; return *this; }
+	
+	Vector3Base<Type>& operator=(const glm::vec3& v) { x = v.x; y = v.y; z = v.z; return *this; }
 
 	static Vector3Base<Type> Random()
 	{
@@ -50,6 +55,7 @@ public:
 		return Vector3Base<Type>((long)(rand() * 1000.0 / 50.0) % (long)(max - min) + min, (long)(rand() * 1512.0 / 156.0) % (long)(max - min) + min, (long)(rand() * 6312.0 / 362.0) % (long)(max - min) + min);
 	}
 };
+
 
 #define Vector3 Vector3Base<float>
 #define Vector3i Vector3Base<int>
@@ -116,12 +122,22 @@ public:
 	glm::vec2 GetGLVector();
 	Vector2Base<Type>(Type x = 0, Type y = 0) { this->x = x; this->y = y;}
 
-	Vector2Base<Type> operator*(float b) { return Vector2Base<Type>(x * b, y * b); }
+	friend Vector2Base<Type> operator*(float a, const Vector2Base<Type>& b) { return Vector2Base<Type>(a * b.x, a * b.y); }
+	friend Vector2Base<Type> operator*(const Vector2Base<Type>& b, float a) { return Vector2Base<Type>(b.x * a, b.y * a); }
+
+	friend Vector2Base<Type> operator/(const Vector2Base<Type>& a, float b) { return Vector2Base<Type>(a.x / b, a.y / b); }
+	friend Vector2Base<Type> operator/(float b, const Vector2Base<Type>& a) { return Vector2Base<Type>(b / a.x, b / a.y); }
+
+	Vector2Base<Type> operator+(float b) { return Vector2Base<Type>(x + b, y + b); }
+	Vector2Base<Type> operator-(float b) { return Vector2Base<Type>(x - b, y - b); }
 	Vector2Base<Type> operator+(const Vector2Base& b) { return Vector2Base<Type>(x + b.x, y + b.y); }
 	Vector2Base<Type> operator-(const Vector2Base& b) { return Vector2Base<Type>(x - b.x, y - b.y); }
+
 	void operator+=(const Vector2Base& b) { x += b.x; y += b.y; }
 	bool operator==(const Vector2Base& b) { return x == b.x && y == b.y; }
 	bool operator!=(const Vector2Base& b) { return x != b.x || y != b.y; }
+
+	operator Vector3Base<Type>() { return Vector3Base<Type>(x, y, 0); }
 
 	template<class Type2>
 	Vector2Base<Type>& operator=(const Vector2Base<Type2>& b) { x = b.x; y = b.y; return *this; }

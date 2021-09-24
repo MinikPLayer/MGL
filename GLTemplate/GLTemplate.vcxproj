@@ -89,12 +89,13 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\Minik\Documents\LIB\CPP\OpenGL\include;C:\Users\Minik\Documents\LIB\CPP\Assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\Minik\Documents\LIB\CPP\OpenGL\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glfw3dll.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glfw3dll.lib;stb_image.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -106,6 +107,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\Minik\Documents\LIB\CPP\OpenGL\include;C:\Users\Minik\Documents\LIB\CPP\Assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -113,7 +115,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\Minik\Documents\LIB\CPP\OpenGL\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glfw3dll.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glfw3dll.lib;stb_image.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -123,12 +125,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\Minik\Documents\LIB\CPP\OpenGL\include;C:\Users\Minik\Documents\LIB\CPP\Assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\Minik\Documents\LIB\CPP\OpenGL\lib\x64;C:\Users\Minik\Documents\LIB\CPP\Assimp\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glfw3dll.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glfw3dll.lib;stb_image.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -140,6 +143,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLEW_STATIC</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Users\Minik\Documents\LIB\CPP\OpenGL\include;C:\Users\Minik\Documents\LIB\CPP\Assimp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,7 +151,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\Minik\Documents\LIB\CPP\OpenGL\lib\x64;C:\Users\Minik\Documents\LIB\CPP\Assimp\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;glfw3dll.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;glfw3dll.lib;stb_image.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -173,9 +177,9 @@
     <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Path.cpp" />
+    <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Sky.cpp" />
-    <ClCompile Include="stb_image.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Util.cpp" />
@@ -186,12 +190,15 @@
   <ItemGroup>
     <None Include="Assets\Shaders\FragmentLightShader.frag" />
     <None Include="Assets\Shaders\FragmentShader.frag" />
+    <None Include="Assets\Shaders\SkyShader.frag" />
+    <None Include="Assets\Shaders\SkyShader.vert" />
     <None Include="Assets\Shaders\VertexLightShader.vert" />
     <None Include="Assets\Shaders\VertexShader.vert" />
     <None Include="GameObject.tpp" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\Documents\LIB\CPP\OpenGL\include\glad\glad.h" />
     <ClInclude Include="Asset.h" />
     <ClInclude Include="Asset_b.h" />
     <ClInclude Include="AssetsLoader.h" />
@@ -212,9 +219,9 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="Path.h" />
+    <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Sky.h" />
-    <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="UserScript.h" />

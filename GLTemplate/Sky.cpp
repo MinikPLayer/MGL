@@ -1,35 +1,23 @@
 #include "Sky.h"
 #include "AssetsLoader.h"
 #include "Time.h"
-
-void Sky::__Draw()
-{
-	glDisable(GL_DEPTH_TEST);
-
-	Mesh::__Draw();
-
-	glEnable(GL_DEPTH_TEST);
-}
+#include "Camera.h"
 
 Sky::Sky()
-	:Mesh(shared_ptr<Material>(new Material()))
 {
-	this->material->shader = AssetsLoader::LoadShader("SkyShader.vert", "SkyShader.frag");
+	this->material = shared_ptr<Material>(new Material(AssetsLoader::LoadShader("SkyShader.vert", "SkyShader.frag")));
+	this->material->SetVec2("_resolution_", Vector2(1920, 1080));
+	//this->material->SetVec2("sunPos", Vector2(1700, 800));
+	this->material->SetVec2("sunPos", []() {
+		//return Vector2(sin(Time::elapsedTime) * 800 + 800, cos(Time::elapsedTime) * 800 + 400);
+		return Vector2(800, 600);
+	});
+	this->faceCulling = FaceCullingModes::Front;
 
-	// Generate plane
-	CopyFrom(vector<Vertex>({
-		Vertex(Vector3(0,0,0), Vector3(0,0,0), Vector2(0,0)),
-		Vertex(Vector3(0,0,0), Vector3(0,0,0), Vector2(0,0)),
-		Vertex(Vector3(0,0,0), Vector3(0,0,0), Vector2(0,0)),
-		Vertex(Vector3(0,0,0), Vector3(0,0,0), Vector2(0,0)),
-	}), vector<unsigned int>({}) // Emtpy indicies so we draw by vertex
-	);
+	this->SetScale(Vector3(1, 1, 1));
 }
 
 void Sky::Update()
 {
-	//Mesh::Update();
-
-	this->material->SetFloat("time", Time::elapsedTime * 5 );
-
+	this->position = Camera::GetMainCamera()->GetPosition();	
 }

@@ -39,6 +39,7 @@ Window::Window(Vector2 size, string title)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 	glEnable(GL_CULL_FACE);
+
 	SetViewport();
 }
 

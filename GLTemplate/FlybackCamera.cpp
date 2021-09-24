@@ -11,7 +11,9 @@ void FlybackCamera::Update()
 	Camera::Update();
 
 	float velocity = speed * Time::deltaTime * (Input::GetButton("Sprint") + 1);
-	Vector3 move;
+	Vector3 move(0, 0, 0);
+	
+
 	move += right * Input::GetAxis("Horizontal") * velocity;
 	move += front * Input::GetAxis("Vertical") * velocity;
 
@@ -28,25 +30,19 @@ void FlybackCamera::ProcessMouseMovement(float x, float y, bool constrainPitch)
 	x *= sensitivity;
 	y *= sensitivity;
 
-	Vector3 rot = GetRotation();
+	//Vector3 rot = GetRotation().ToEuler();
 
-	//yaw += x;
-	//pitch += y;
-	rot.y += x;
-	rot.x += y;
+	yaw += x;
+	pitch += y;
+	//rot.y += x;
+	//rot.x += y;
 
 
-	if (constrainPitch)
-	{
-		if (rot.x > 89)
-			rot.x = 89;
-		if (rot.x < -89)
-			rot.x = -89;
-	}
+	
 
 	// UpdateCameraVectors is already in SetRotation ( in base Camera class )
-	SetRotation(rot);
-	//UpdateCameraVectors();
+	//SetRotation(rot);
+	UpdateCameraVectors();
 }
 
 void FlybackCamera::ProcessMouseScroll(float offset)

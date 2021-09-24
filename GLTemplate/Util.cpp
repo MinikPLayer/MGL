@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include <thread>
 
-#include "stb_image.h"
+#include <stb_image.h>
 
 
 int GetProcessorCount()

@@ -24,6 +24,10 @@ struct Light {
 	vec3 diffuse;
 	vec3 specular;
 	float strength;
+
+	float constant;
+	float linear;
+	float quadratic;
 };
 
 vec3 GetLightAmbient(Light light)
@@ -42,7 +46,7 @@ vec3 GetLightSpecular(Light light)
 }
 
 
-uniform Light light = Light(vec3(1), vec3(1), vec3(1), 1);
+uniform Light light = Light(vec3(1), vec3(1), vec3(1), 1, 1, 0.09f, 0.032f);
 
 out vec4 fragColor;
 

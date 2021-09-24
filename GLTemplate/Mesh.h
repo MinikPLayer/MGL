@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 #include "Shader.h"
 #include "Material.h"
 #include "GameObject.h"
@@ -60,6 +62,16 @@ protected:
 
 	//Shader* shader;
 	shared_ptr<Material> material;
+
+	enum FaceCullingModes
+	{
+		Default,
+		Front,
+		Back,
+		FrontAndBack
+	};
+
+	FaceCullingModes faceCulling = FaceCullingModes::Default;
 	
 
 	void UpdateShaderInfo()
@@ -243,6 +255,81 @@ public:
 		CopyFrom(vertexes, indices);
 	}
 
+	Vector3 CalculateTriangleNormal(Vertex vtx1, Vertex vtx2, Vertex vtx3)
+	{
+		Vector3 v1, v2;
+		v1 = vtx2.pos - vtx1.pos;
+		v2 = vtx3.pos - vtx1.pos;
+
+		return Vector3(
+			v1.y * v2.z - v1.z * v2.y,
+			v1.z * v2.z - v1.x * v2.z,
+			v1.x * v2.y - v1.y * v2.x
+		);
+	}
+
+	void GenerateMesh(Vector2 size, float(*func)(float, float), float step = 0.1)
+	{
+		vector<Vertex> vertexArray;
+		vector<unsigned int> indicesArray;
+
+		int sizeX = size.x / step;
+		int sizeY = size.y / step;
+
+		// Generate verticies
+		for (int i = 0; i < sizeX * sizeY; i++)
+		{
+			int x = i % sizeX;
+			int y = i / sizeX;
+
+			Vertex v;
+			v.pos = Vector3(x, func(x, y), y);
+			v.UV = Vector2(0, 0);
+			v.normal = Vector3(0, 0, 0);
+
+			vertexArray.push_back(v);
+		}
+
+		for (int y = 0; y < sizeY - 1; y++)
+		{
+			for (int x = 0; x < sizeX - 1; x++)
+			{
+				// Creating 2 triangles to create rectangle
+				int ind[6];
+				ind[0] = y * sizeX + x;
+				ind[1] = (y + 1) * sizeX + x;
+				ind[2] = y * sizeX + (x + 1);
+				ind[3] = ind[2];
+				ind[4] = ind[1];
+				ind[5] = (y + 1) * sizeX + (x + 1);
+
+				for (int i = 0; i < 6; i++)
+					indicesArray.push_back(ind[i]);
+
+				// Generate normals
+				Vector3 n1, n2;
+
+				n1 = CalculateTriangleNormal(vertexArray[ind[0]], vertexArray[ind[1]], vertexArray[ind[2]]);
+				n2 = CalculateTriangleNormal(vertexArray[ind[3]], vertexArray[ind[4]], vertexArray[ind[5]]);
+
+				vertexArray[ind[0]].normal += n1;
+				vertexArray[ind[1]].normal += n1;
+				vertexArray[ind[2]].normal += n1;
+				vertexArray[ind[3]].normal += n2;
+				vertexArray[ind[4]].normal += n2;
+				vertexArray[ind[5]].normal += n2;
+			}
+		}
+
+		// Normalize normals
+		for (int i = 0; i < sizeX * sizeY; i++)
+		{
+			vertexArray[i].normal.Normalize();
+		}
+
+		CopyFrom(vertexArray, indicesArray);
+	}
+
 	/*Mesh(Shader* shader, float* vertexData, int size)
 	{
 		this->shader = shader;
@@ -318,7 +405,7 @@ public:
 
 			/*glBindBuffer(GL_ARRAY_BUFFER, VBO);
 			glBufferData(GL_ARRAY_BUFFER, vertexData.size() * sizeof(Vertex), &vertexData[0], GL_STATIC_DRAW);
-			
+
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 
@@ -326,19 +413,45 @@ public:
 			glEnableVertexAttribArray(0);*/
 		}
 
-		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, GetPosition().GetGLVector());
-		model = glm::scale(model, GetScale().GetGLVector());
+		glm::mat4 rotation = glm::toMat4(GetRotation().GetGlVector());
+
+
+		glm::mat4 translation = glm::translate(glm::mat4(1.0f), GetPosition().GetGLVector());
+		glm::mat4 scale = glm::scale(glm::mat4(1.0f), GetScale().GetGLVector());
+
+		glm::mat4 model = translation * rotation * scale;
 
 		//Vector3 pos = meshes[i][j]->GetPosition();
 		material->shader->SetMat4(material->shader->modelLocation, glm::value_ptr(model));
 
+		if (faceCulling != FaceCullingModes::Default)
+		{
+			glEnable(GL_CULL_FACE);
+			long mode = 0;
+			switch (faceCulling)
+			{
+			case Mesh::Front:
+				mode = GL_FRONT;
+				break;
+			case Mesh::Back:
+				mode = GL_BACK;
+				break;
+			case Mesh::FrontAndBack:
+				mode = GL_FRONT_AND_BACK;
+				break;
+			}
+
+			glCullFace(mode);
+		}
 
 		// Draw by indices
 		if (indices.size() > 0)
 			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 		else // Draw by vertexes
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, vertexData.size());
+
+		if (faceCulling != FaceCullingModes::Default)
+			glDisable(GL_CULL_FACE);
 	}
 
 	void OnDestroy()

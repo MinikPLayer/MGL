@@ -64,6 +64,7 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, shared_ptr<Material
 		else
 		{
 			v.UV = Vector2(0, 0);
+			LOG("No vertex UV");
 		}
 
 		vertexData.push_back(v);

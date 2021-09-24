@@ -6,6 +6,7 @@
 #include <vector>
 #include "Debug.h"
 #include "Vector.h"
+#include "Quaternion.h"
 #include <typeinfo>
 #include <memory>
 #include "Util.h"
@@ -18,7 +19,7 @@ class GameObject
 {
 protected:
 	Vector3 position = Vector3(0, 0, 0);
-	Vector3 rotation = Vector3(0, 0, 0);
+	Quaternion rotation;
 	Vector3 scale = Vector3(1, 1, 1);
 	string name;
 
@@ -278,8 +279,13 @@ public:
 	/// </summary>
 	/// <param name="rotVector">Rotate vector</param>
 	void Rotate(Vector3 rotVector);
-	Vector3 GetRotation();
+	Quaternion GetRotation();
 	virtual void SetRotation(Vector3 rot);
+	virtual void SetRotation(Quaternion rot);
+
+	Quaternion GetLocalRotation();
+	virtual void SetLocalRotation(Vector3 rot);
+	virtual void SetLocalRotation(Quaternion rot);
 
 	/// <summary>
 	/// Get object world position

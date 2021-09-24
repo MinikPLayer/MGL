@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include <glad/glad.h>
+
 #include "AssetsLoader.h"
 #include "Util.h"
 #include "Shader.h"
@@ -16,11 +18,10 @@
 #include "Material.h"
 using namespace std;
 
-
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
 
 float texMix = 0.2f;
 float window_width = 1280;
@@ -61,17 +62,7 @@ void RunEvent(void (GameObject::*callback)())
 		if (GameObject::__objects[i] == nullptr)
 			continue;
 
-		//objects[i]->Update();
 		(GameObject::__objects[i].get()->*(callback))();
-		/*vector<GameObject*> components = objects[i]->GetComponents();
-		for (int j = 0; j < components.size(); j++)
-		{
-			if (components[j] == nullptr)
-				continue;
-
-			//components[j]->Update();
-			(components[j]->*(callback))();
-		}*/
 	}
 }
 
@@ -91,6 +82,8 @@ int main()
 	glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
 	//glClearColor(0, 0, 0, 1);
 
+	
+
 	registerBasicInput();
 
 	LOG("Processor count: ", GetProcessorCount());
@@ -108,6 +101,9 @@ int main()
 		GameObject::Instantiate(s);
 
 	}
+
+	Sky* sky = new Sky();
+	//GameObject::Instantiate(sky);
 
 	LOG_E("Starting drawing loop...");
 
@@ -143,6 +139,11 @@ int main()
 					}
 				}
 		}
+
+		glDisable(GL_DEPTH_TEST);
+		sky->Update();
+		sky->__Draw();
+		glEnable(GL_DEPTH_TEST);
 
 		RunEvent(&GameObject::__Draw);
 

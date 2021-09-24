@@ -6,35 +6,40 @@ void Material::ParamT<float>::SetParam(shared_ptr<Shader>& shader)
 {
 	Param::SetParam(shader);
 
-	shader->SetFloat(location, value);
+	auto val = GetValue();
+	shader->SetFloat(location, val);
 }
 
 void Material::ParamT<Vector2>::SetParam(shared_ptr<Shader>& shader)
 {
 	Param::SetParam(shader);
 
-	shader->SetVec2(location, value.x, value.y);
+	auto val = GetValue();
+	shader->SetVec2(location, val.x, val.y);
 }
 
 void Material::ParamT<Vector3>::SetParam(shared_ptr<Shader>& shader)
 {
 	Param::SetParam(shader);
 
-	shader->SetVec3(location, value.x, value.y, value.z);
+	auto val = GetValue();
+	shader->SetVec3(location, val.x, val.y, val.z);
 }
 
 void Material::ParamT<int>::SetParam(shared_ptr<Shader>& shader)
 {
 	Param::SetParam(shader);
 
-	shader->SetInt(location, value);
+	auto val = GetValue();
+	shader->SetInt(location, val);
 }
 
 void Material::ParamT<bool>::SetParam(shared_ptr<Shader>& shader)
 {
 	Param::SetParam(shader);
 
-	shader->SetBool(location, value);
+	auto val = GetValue();
+	shader->SetBool(location, val);
 }
 
 /*void Material::SetFloat(string name, float value)
@@ -109,6 +114,25 @@ void Material::SetMaterialTexture(const char* path, string texName, int slot)
 	SetMaterialTexture(texName, slot);
 }
 
+void Material::DetectShaderFeatures()
+{
+	GLint count;
+	GLint size;
+	GLenum type;
+
+	const GLsizei bufSize = 64;
+	GLchar name[bufSize];
+	GLsizei length;
+
+	glGetProgramiv(shader->ID, GL_ACTIVE_UNIFORMS, &count);
+	for (GLint i = 0; i < count; i++)
+	{
+		glGetActiveUniform(shader->ID, (GLuint)i, bufSize, &length, &size, &type, name);
+
+		LOG("Uniform id ", i, " Type: ", type, " Name: ", name);
+	}
+}
+
 void Material::__SendToShader()
 {
 	for (int i = 0; i < textures.size(); i++)
@@ -130,6 +154,8 @@ Material::Material(initializer_list<shared_ptr<Param>> params, shared_ptr<Shader
 			this->shader = Shader::GetDefaultShader();
 		else
 			this->shader = shader;
+
+		DetectShaderFeatures();
 	}
 
 	for (auto param : params)

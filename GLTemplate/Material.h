@@ -64,10 +64,20 @@ class Material
 	{
 	public:
 		Type value;
+		Type(*funcPtr)() = nullptr;
+
+		Type GetValue() 
+		{ 
+			if (funcPtr != nullptr) 
+				value = funcPtr(); 
+			return value; 
+		}
+
 		void SetParam(shared_ptr<Shader>& shader);
 		
 		ParamT(string name) :Param(typeid(Type).hash_code()) { this->name = name; }
 		ParamT(string name, Type val) : Param(typeid(Type).hash_code()) { this->name = name; this->value = val; }
+		ParamT(string name, Type(*funcPtr)()) { this->name = name; this->funcPtr = funcPtr; }
 	};
 
 
@@ -75,7 +85,7 @@ class Material
 	vector<shared_ptr<Texture>> textures;
 
 	template<class Type>
-	void SetParam(string name, Type value)
+	void SetParam(string name, Type value, Type (*funcPtr)() = nullptr)
 	{
 		size_t hash = typeid(Type).hash_code();
 		for (int i = 0; i < parameters.size(); i++)
@@ -90,6 +100,7 @@ class Material
 
 				ParamT<Type>* p = (ParamT<Type>*)(name, parameters[i].get());
 				p->value = value;
+				p->funcPtr = funcPtr;
 
 				return;
 			}
@@ -97,6 +108,7 @@ class Material
 
 		ParamT<Type>* p = new ParamT<Type>(name);
 		p->value = value;
+		p->funcPtr = funcPtr;
 		parameters.push_back(std::shared_ptr<ParamT<Type>>(p));
 	}
 
@@ -115,7 +127,9 @@ public:
 
 
 	void SetFloat(string name, float value) { SetParam<float>(name, value); }
+	void SetFloat(string name, float (*func)()) { SetParam<float>(name, 0, func); }
 	void SetVec2(string name, Vector2 value) { SetParam<Vector2>(name, value); }
+	void SetVec2(string name, Vector2 (*func)()) { SetParam<Vector2>(name, Vector2(0,0), func); }
 	void SetVec3(string name, Vector3 value) { SetParam<Vector3>(name, value); }
 	void SetInt(string name, int value) { SetParam<int>(name, value); }
 	void SetBool(string name, bool value) 
@@ -151,6 +165,8 @@ public:
 		SetFloat("material.shininess", 0.4);
 	}*/
 
+	void DetectShaderFeatures();
+
 	/// <summary>
 	/// Creates functional prefabed material
 	/// </summary>
@@ -173,6 +189,8 @@ public:
 			this->shader = Shader::GetDefaultShader();
 		else
 			this->shader = shader;
+
+		DetectShaderFeatures();
 	}
 
 	Material(initializer_list<shared_ptr<Param>> params, shared_ptr<Shader> shader = nullptr, bool skipShaderInit = false);
