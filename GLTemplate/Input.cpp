@@ -98,6 +98,10 @@ float Input::GetKeyValue(GLFWwindow* window, int device, int positiveKey, int ne
             (negativeKey == MouseAxis::MOUSE_Y) * mouseMove.y;
         break;
 
+    case Devices::MouseButton: 
+        value = (glfwGetMouseButton(window, positiveKey) == GLFW_PRESS) - (glfwGetMouseButton(window, negativeKey) == GLFW_PRESS);
+        break;
+
     default:
         LOGW_E("Cannot find device with id ", device);
         break;
@@ -163,7 +167,7 @@ void Input::__Update(GLFWwindow* window)
 
 
 
-void Input::__SetMousePos(double xPos, double yPos)
+void Input::__SetMousePos(double xPos, double yPos, bool ignoreChange)
 {
     static bool firstMouse = true;
 
@@ -173,8 +177,10 @@ void Input::__SetMousePos(double xPos, double yPos)
         firstMouse = false;
     }
 
-
     mousePos = Vector3(xPos, yPos);
+    if (ignoreChange) {
+        lastMousePos = mousePos;
+    }
 }
 
 void Input::Axis::UpdateValue(float value)

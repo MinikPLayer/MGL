@@ -152,6 +152,12 @@ public:
 		MOUSE_Y
 	};
 
+	enum MouseButtons {
+		LMB = GLFW_MOUSE_BUTTON_LEFT,
+		RMB = GLFW_MOUSE_BUTTON_RIGHT,
+		MMB = GLFW_MOUSE_BUTTON_MIDDLE
+	};
+
 	enum Devices
 	{
 		UNKNOWN = -1,
@@ -160,6 +166,7 @@ public:
 		JOY3 = 2,
 		JOY4 = 3,
 		Mouse = 1000,
+		MouseButton = 1001,
 		Keyboard = 100
 	};
 
@@ -259,6 +266,12 @@ public:
 	static bool GetButton(string name);
 	static float GetAxis(string name);
 
-	static void __SetMousePos(double xPos, double yPos);
+	/// <summary>
+	/// Updates mouse position
+	/// </summary>
+	/// <param name="xPos">MouseX pos</param>
+	/// <param name="yPos">MouseY pos</param>
+	/// <param name="ignoreChange">True to ignore mouse poition change</param>
+	static void __SetMousePos(double xPos, double yPos, bool ignoreChange = false);
 	static void __Update(GLFWwindow* window);
 };

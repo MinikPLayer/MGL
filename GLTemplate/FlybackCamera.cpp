@@ -18,9 +18,6 @@ void FlybackCamera::Update()
 	move += front * Input::GetAxis("Vertical") * velocity;
 
 	Move(move);
-
-	//LOG("Input::GetAxis(MouseX): ", Input::GetAxis("MouseX"), ", mouseY: ", Input::GetAxis("MouseY"));
-
 	ProcessMouseMovement(Input::GetAxis("MouseX"), Input::GetAxis("MouseY"));
 }
 
@@ -30,18 +27,8 @@ void FlybackCamera::ProcessMouseMovement(float x, float y, bool constrainPitch)
 	x *= sensitivity;
 	y *= sensitivity;
 
-	//Vector3 rot = GetRotation().ToEuler();
-
 	yaw += x;
 	pitch += y;
-	//rot.y += x;
-	//rot.x += y;
-
-
-	
-
-	// UpdateCameraVectors is already in SetRotation ( in base Camera class )
-	//SetRotation(rot);
 	UpdateCameraVectors();
 }
 

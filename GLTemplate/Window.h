@@ -11,6 +11,8 @@ using namespace std;
 
 class Window
 {
+	static Window* mainWindow;
+
 	GLFWwindow* window = nullptr;
 	Vector2i size;
 
@@ -23,15 +25,18 @@ public:
 		Hidden
 	};
 
+	static Window* GetMainWindow();
+
 	void Use();
-	Window(Vector2 size, string title);
+	Window(Vector2 size, string title, bool main);
+	~Window();
 
 	float GetAspectRatio();
 	Vector2i GetSize();
 
 	void SetViewport();
 	void SetViewport(int x, int y, int width, int height);
-	void InitGL();
+	void DrawGUI();
 
 	void PollEvents();
 	bool ShouldClose();

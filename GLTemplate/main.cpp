@@ -16,6 +16,7 @@
 #include "FlybackCamera.h"
 #include "MeshRenderer.h"
 #include "Material.h"
+#include "lib/ImGui/imgui.h"
 using namespace std;
 
 #include <glm/glm.hpp>
@@ -70,8 +71,9 @@ int main()
 {
 	srand(time(NULL));
 
+	ImGui::CreateContext();
 	
-	Window window(Vector2(window_width, window_height), "LearnOpenGL");
+	Window window(Vector2(window_width, window_height), "LearnOpenGL", true);
 	
 	// Setup input
 	window.SetCursorMode(Window::CursorModes::Disabled);
@@ -146,9 +148,11 @@ int main()
 		glEnable(GL_DEPTH_TEST);
 
 		RunEvent(&GameObject::__Draw);
+		
 
 		Camera::__SetRenderingCamera(nullptr);
 
+		window.DrawGUI();
 		window.SwapBuffers();
 		glfwPollEvents();
 	}

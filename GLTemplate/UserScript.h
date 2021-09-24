@@ -14,6 +14,7 @@
 #include <iostream>
 #include "Time.h"
 #include "Path.h"
+#include "Window.h"
 
 using namespace std;
 using namespace glm;
@@ -264,6 +265,14 @@ public:
 		{
 			LOG("Val: ", val);
 		}
+
+		if (Input::GetKey(Input::Keyboard, Input::KBButtons::LCTRL)) {
+			Window::GetMainWindow()->SetCursorMode(Window::CursorModes::Enabled);
+		}
+		else {
+			Window::GetMainWindow()->SetCursorMode(Window::CursorModes::Disabled);
+		}
+
 		//spawned->SetScale(Vector3(val, val, val));
 		//lightCube->SetScale(Vector3(val, val, val));
 		//this->SetScale(Vector3(val, val, val));

@@ -28,8 +28,14 @@
     <Filter Include="Pliki źródłowe\FBX">
       <UniqueIdentifier>{69f0484c-356b-4985-b616-8e1eab74ed16}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Pliki nagłówkowe\zlib">
-      <UniqueIdentifier>{d624ac69-72e7-40f2-a263-aa7080dcc823}</UniqueIdentifier>
+    <Filter Include="Libraries">
+      <UniqueIdentifier>{5e26d343-6c9c-451f-839a-90478ac5e327}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries\ImGui">
+      <UniqueIdentifier>{dc1b974a-55b6-4a2c-a185-d0e4b9f52dbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libraries\zlib">
+      <UniqueIdentifier>{f7418357-9652-4d8f-a747-cddc1bf70e7d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -90,9 +96,6 @@
     <ClCompile Include="FBX\fbxutil.cpp">
       <Filter>Pliki źródłowe\FBX</Filter>
     </ClCompile>
-    <ClCompile Include="zlib\miniz.c">
-      <Filter>Pliki nagłówkowe\zlib</Filter>
-    </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
@@ -125,6 +128,33 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Documents\LIB\CPP\OpenGL\src\glad.c">
       <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\ImGui\imgui_demo.cpp">
+      <Filter>Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\ImGui\imgui_draw.cpp">
+      <Filter>Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\ImGui\imgui_tables.cpp">
+      <Filter>Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\ImGui\imgui_widgets.cpp">
+      <Filter>Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\ImGui\backends\imgui_impl_glfw.cpp">
+      <Filter>Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\ImGui\backends\imgui_impl_opengl3.cpp">
+      <Filter>Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\ImGui\misc\cpp\imgui_stdlib.cpp">
+      <Filter>Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\ImGui\imgui.cpp">
+      <Filter>Libraries\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="zlib\miniz.cpp">
+      <Filter>Libraries\zlib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -215,9 +245,6 @@
     <ClInclude Include="FBX\fbxutil.h">
       <Filter>Pliki nagłówkowe\FBX</Filter>
     </ClInclude>
-    <ClInclude Include="zlib\miniz.h">
-      <Filter>Pliki nagłówkowe\zlib</Filter>
-    </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
@@ -247,6 +274,42 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Documents\LIB\CPP\OpenGL\include\glad\glad.h">
       <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\ImGui\imgui.h">
+      <Filter>Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\ImGui\imgui_internal.h">
+      <Filter>Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\ImGui\imstb_rectpack.h">
+      <Filter>Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\ImGui\imstb_textedit.h">
+      <Filter>Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\ImGui\imstb_truetype.h">
+      <Filter>Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\ImGui\backends\imgui_impl_glfw.h">
+      <Filter>Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\ImGui\backends\imgui_impl_opengl3.h">
+      <Filter>Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\ImGui\backends\imgui_impl_opengl3_loader.h">
+      <Filter>Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\ImGui\misc\cpp\imgui_stdlib.h">
+      <Filter>Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\ImGui\misc\single_file\imgui_single_file.h">
+      <Filter>Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\ImGui\imconfig.h">
+      <Filter>Libraries\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib\miniz.h">
+      <Filter>Libraries\zlib</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
