@@ -133,6 +133,7 @@ public:
 	Vector2Base<Type> operator+(const Vector2Base& b) { return Vector2Base<Type>(x + b.x, y + b.y); }
 	Vector2Base<Type> operator-(const Vector2Base& b) { return Vector2Base<Type>(x - b.x, y - b.y); }
 	Vector2Base<Type> operator*(const Vector2Base& b) { return Vector2Base<Type>(x * b.x, y * b.y); }
+	Vector2Base<Type> operator/(const Vector2Base& b) { return Vector2Base<Type>(x / b.x, y / b.y); }
 
 	void operator+=(const Vector2Base& b) { x += b.x; y += b.y; }
 	bool operator==(const Vector2Base& b) { return x == b.x && y == b.y; }

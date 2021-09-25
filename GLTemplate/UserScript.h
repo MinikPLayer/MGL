@@ -48,8 +48,11 @@ public:
 class UserScript : public GameObject
 {
 	shared_ptr<Mesh> mesh;
-	shared_ptr<Mesh> lightCube;
+	const static int lightCubesCount = 1;
+	shared_ptr<Mesh> lightCubes[lightCubesCount];
 	shared_ptr<Model> model;
+	shared_ptr<Mesh> floorMesh;
+	float floorOffset = 0;
 	Vector3 startPos;
 	float counter = 0;
 
@@ -113,9 +116,12 @@ public:
 		LOG("UserScript start");
 
 		// Add light cube
-		LightCube* cube = new LightCube();
-		cube->SetPosition(Vector3(0, 0, 0));
-		lightCube = AddComponent(cube);
+		for (int i = 0; i < lightCubesCount; i++) {
+			LightCube* cube = new LightCube();
+			cube->SetPosition(Vector3(i, i + 1, i));
+			lightCubes[i] = AddComponent(cube);
+		}
+
 
 		mats[0] = Material::CreatePrefabedMaterial(Material::SILVER);
 		mats[1] = Material::CreatePrefabedMaterial(Material::RUBBER);
@@ -126,13 +132,46 @@ public:
 		// Load textures
 		for (int i = 0; i < 3; i++)
 		{
-			mats[i].get()->SetMaterialTexture(AssetsLoader::LoadTexture("container2.png"));
-			mats[i]->SetMaterialTexture(AssetsLoader::LoadTexture("container2_specular.png", 1), "specular");
+			//mats[i].get()->SetMaterialTexture(AssetsLoader::LoadTexture("container2.png"));
+			//mats[i]->SetMaterialTexture(AssetsLoader::LoadTexture("container2_specular.png", 1), "specular");
+			mats[i].get()->SetMaterialTexture(AssetsLoader::LoadTexture("poland.png"));
+			mats[i]->SetMaterialTexture(AssetsLoader::LoadTexture("poland_specular.png", 1), "specular");
 
-			mats[i]->SetVec3("lightPos", [&]() -> Vector3 {
-				LOG("LightCube pos: ", lightCube->GetPosition().x, ", ", lightCube->GetPosition().z);
-				return lightCube == nullptr ? Vector3(0, 0, 0) : lightCube->GetPosition();
+			mats[i]->SetInt("pointLightsCount", lightCubesCount);
+			mats[i]->SetVec3("dirLight.direction", Vector3(-0.2f, -0.3f, -0.3f));
+			mats[i]->SetVec3("dirLight.ambient", Vector3(0.05f, 0.05f, 0.05f));
+			mats[i]->SetVec3("dirLight.diffuse", Vector3(0.4f, 0.4f, 0.4f));
+			mats[i]->SetVec3("dirLight.specular", Vector3(0.5f, 0.5f, 0.5f));
+			mats[i]->SetFloat("dirLight.strength", 1.0f);
+
+			mats[i]->SetVec3("viewPos", []() {
+				return Camera::GetMainCamera()->GetPosition();
 			});
+
+			for (int j = 0; j < lightCubesCount; j++) {
+				string prefix = "pointLights[" + to_string(j) + "].";
+				mats[i]->SetFloat(prefix + "constant", 1.0f);
+				mats[i]->SetFloat(prefix + "linear", 0.09f);
+				mats[i]->SetFloat(prefix + "quadratic", 0.032f);
+				mats[i]->SetFloat(prefix + "strength", 1);
+
+				mats[i]->SetVec3(prefix + "specular", [*this, j]() {
+					LightCube* c = (LightCube*)lightCubes[j].get();
+					return c->light->GetColorVector();
+				});
+				mats[i]->SetVec3(prefix + "diffuse", [*this, j]() {
+					LightCube* c = (LightCube*)lightCubes[j].get();
+					return c->light->GetColorVector() * 0.8;
+				});
+				mats[i]->SetVec3(prefix + "ambient", [*this, j]() {
+					LightCube* c = (LightCube*)lightCubes[j].get();
+					return c->light->GetColorVector() * 0.5;
+				});
+
+				mats[i]->SetVec3(prefix + "position", [*this, j]() {
+					return lightCubes[j]->GetPosition();
+				}); 
+			}
 		}
 
 		mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("rock6.png"));
@@ -144,37 +183,15 @@ public:
 
 		mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture("grass.png"));
 		mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture("grass_specular.png", 1), "specular");
-		mats[2]->SetVec2("texScale", Vector2(0.1, 0.1));
-		mats[1]->SetVec2("texScale", Vector2(1, 1));
 
-		/*Cube* sky = new Cube();
-		sky->SetMaterial(mats[3]);
-		sky->SetScale(Vector3(100, 100, 100));
-		sky->SetPosition(Vector3(0, 0, 0));
-		AddComponent(sky);*/
-
-		// Add floor
-		/*shared_ptr<Model> m = AssetsLoader::LoadModel("cube.fbx");
-		auto msh = m->SpawnMesh(mats[2]);
-		msh->SetScale(Vector3(100, 2, 100));
-		msh->SetPosition(Vector3(0, -3, 0));*/
 		// Add Floor
-		Mesh* m = new Mesh(mats[2]);
+		floorMesh = shared_ptr<Mesh>(new Mesh(mats[0]));
 		Vector2 sinMeshSize(25, 25);
-		m->SetLocalPosition(-1.0f * Vector3(sinMeshSize.x / 2, 0, sinMeshSize.y / 2));
-		m->GenerateMesh(sinMeshSize, [](float x, float y) {
+		floorMesh->SetLocalPosition(-1.0f * Vector3(sinMeshSize.x / 2, 0, sinMeshSize.y / 2));
+		floorMesh->GenerateMesh(sinMeshSize, [](float x, float y) {
 			return sin(x/2.0f) * sin(y/2.0f);
-		});
-		AddComponent(m);
-
-		LOG("Mesh position: ", m->GetPosition().x, ", ", m->GetPosition().y, ", ", m->GetPosition().z);
-
-		Cube* cb = new Cube();
-		cb->SetMaterial(mats[3]);
-		//AddComponent(cb);
-
-		Vector3 clr = cube->light->color.ToVector3();
-		cube->GetMaterial()->SetVec3("lightColor", clr);
+		}, nullptr, 0.5);
+		AddComponent(floorMesh);
 
 		startPos = GetPosition();
 
@@ -195,39 +212,30 @@ public:
 		Input::RegisterAxis(Input::Axis("RotationZ", Input::Devices::Keyboard, Input::KBButtons::SLASH, Input::KBButtons::PERIOD));
 	}
 	
+	void AnimFloorMesh() {
+		floorMesh->UpdateGeneratedMesh([*this](float x, float y) {
+			x += floorOffset;
+			y += floorOffset / 15;
+			x = (int)x;
+			y = (int)y;
+			return sin(x) * sin(y);
+		});
+
+		floorOffset += 15.f * Time::deltaTime;
+	}
+
 	void Update()
 	{
-		LightCube* lCube = (LightCube*)lightCube.get();
-		if (Input::GetKey(Input::Devices::Keyboard, Input::R))
-			lCube->light->color = Color::Red;
-		if (Input::GetKey(Input::Devices::Keyboard, Input::G))
-			lCube->light->color = Color::Green;
-		if (Input::GetKey(Input::Devices::Keyboard, Input::B))
-			lCube->light->color = Color::Blue;
+		for (int i = 0; i < lightCubesCount; i++) {
+			LightCube* lCube = (LightCube*)lightCubes[i].get();
 
-		const float lightMoveSpeed = 10;
-		Vector3 move(0, 0, 0);
-		move.x += Input::GetAxis("LightX") * Time::deltaTime * lightMoveSpeed;
-		move.y += Input::GetAxis("LightY") * Time::deltaTime * lightMoveSpeed;
-		move.z += -Input::GetAxis("LightZ") * Time::deltaTime * lightMoveSpeed;
+			const float lightMoveSpeed = 10;
+			Vector3 move(0, 0, 0);
+			move.x += Input::GetAxis("LightX") * Time::deltaTime * lightMoveSpeed;
+			move.y += Input::GetAxis("LightY") * Time::deltaTime * lightMoveSpeed;
+			move.z += -Input::GetAxis("LightZ") * Time::deltaTime * lightMoveSpeed;
 
-		lCube->Move(move);
-
-
-		Color color;
-		color.r = (sin(Time::elapsedTime * 0.6) + 1 ) * 255 / 2.f;
-		color.g = (sin(Time::elapsedTime * 0.8) + 1 ) * 255 / 2.f;
-		color.b = (sin(Time::elapsedTime * 1.1) + 1 ) * 255 / 2.f;
-		Vector3 lColor = color.ToVector3();
-
-		lCube->GetMaterial()->SetVec3("lightColor", lColor);
-
-		for (int i = 0; i < 3; i++)
-		{
-			mats[i]->SetVec3("light.specular", lColor);
-			mats[i]->SetVec3("light.diffuse", lColor * 0.8);
-			mats[i]->SetVec3("light.ambient", lColor * 0.5);
-			mats[i]->SetVec3("light.strength", 1);
+			lCube->Move(move * (i+1));
 		}
 
 		if (Input::GetButtonDown("Pause"))
@@ -278,6 +286,8 @@ public:
 		else {
 			Window::GetMainWindow()->SetCursorMode(Window::CursorModes::Disabled);
 		}
+
+		AnimFloorMesh();
 
 		//spawned->SetScale(Vector3(val, val, val));
 		//lightCube->SetScale(Vector3(val, val, val));

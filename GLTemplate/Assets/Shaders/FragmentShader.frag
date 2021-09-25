@@ -9,57 +9,54 @@ struct Tex2DVec3
 };
 
 struct Material {
-	//bool useDiffTex;
-	//sampler2D diffuse;
-    //vec3 specular;
 	Tex2DVec3 diffuse;
 	Tex2DVec3 specular;
     float shininess;
 }; 
-  
-uniform Material material;
 
-struct Light {
-    vec3 ambient;
+struct DirLight {
+	vec3 direction;
+	float strength;
+
+	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+};
+
+struct PointLight {
+	vec3 position;
 	float strength;
 
 	float constant;
 	float linear;
 	float quadratic;
+
+	vec3 ambient;
+	vec3 diffuse;
+	vec3 specular;
 };
 
-vec3 GetLightAmbient(Light light)
-{
-	return light.ambient * light.strength;
-}
 
-vec3 GetLightDiffuse(Light light)
-{
-	return light.diffuse * light.strength;
-}
-
-vec3 GetLightSpecular(Light light)
-{
-	return light.specular * light.strength;
-}
-
-
-uniform Light light = Light(vec3(1), vec3(1), vec3(1), 1, 1, 0.09f, 0.032f);
 
 out vec4 fragColor;
-
 in vec3 vertColor;
 in vec3 Normal;
 in vec3 FragPos;
-in vec3 lightPosition;
 //in vec2 UV;
 
 in vec2 TexCoords;
+uniform vec3 viewPos;
 uniform vec2 texScale = vec2(1,1);
 
 float specularStrength = 0.5;
+
+  
+uniform Material material;
+uniform DirLight dirLight;
+
+uniform int pointLightsCount = 0;
+const int MAX_LIGHTS_COUNT = 4;
+uniform PointLight pointLights[MAX_LIGHTS_COUNT];
 
 
 vec3 GetTex2DVec3Value(Tex2DVec3 value, vec2 coords)
@@ -70,28 +67,50 @@ vec3 GetTex2DVec3Value(Tex2DVec3 value, vec2 coords)
 		return value.value;
 }
 
+vec3 CalcLight_Dir(DirLight light, vec3 normal, vec3 viewDir) {
+    vec3 lightDir = normalize(-light.direction);
+    // diffuse shading
+    float diff = max(dot(normal, lightDir), 0.0);
+    // specular shading
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess * 255);
+    // combine results
+    vec3 ambient = light.ambient * light.strength * GetTex2DVec3Value(material.diffuse, TexCoords);
+    vec3 diffuse = light.diffuse * light.strength * diff * GetTex2DVec3Value(material.diffuse, TexCoords);
+    vec3 specular = light.specular * light.strength * spec * GetTex2DVec3Value(material.specular, TexCoords);
+    return (ambient + diffuse + specular);
+}
+
+vec3 CalcLight_Point(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
+    vec3 lightDir = normalize(light.position - fragPos);
+    // diffuse shading
+    float diff = max(dot(normal, lightDir), 0.0);
+    // specular shading
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess * 255);
+    // attenuation
+    float distance    = length(light.position - fragPos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
+    // combine results
+    vec3 ambient  = light.ambient * light.strength * GetTex2DVec3Value(material.diffuse, TexCoords);
+    vec3 diffuse  = light.diffuse  * light.strength * diff * GetTex2DVec3Value(material.diffuse, TexCoords);
+    vec3 specular = light.specular * light.strength * spec * GetTex2DVec3Value(material.specular, TexCoords);
+    ambient  *= attenuation;
+    diffuse  *= attenuation;
+    specular *= attenuation;
+    return (ambient + diffuse + specular);
+}
 
 void main()
 {
-
-	vec3 ambient = GetLightAmbient(light) * GetTex2DVec3Value(material.diffuse, TexCoords / texScale);
-
 	vec3 norm = normalize(Normal);
-	vec3 lightDir = normalize(lightPosition - FragPos);
+	vec3 viewDir = normalize(viewPos - FragPos);
 
+	vec3 result = CalcLight_Dir(dirLight, norm, viewDir);
+	for(int i = 0;i<pointLightsCount;i++) {
+		result += CalcLight_Point(pointLights[i], norm, FragPos, viewDir);
+	}
 
-	// Difuse lightning
-	float diff = max(dot(norm, lightDir), 0.0);
-	vec3 diffuse = diff * GetLightDiffuse(light) * GetTex2DVec3Value(material.diffuse, TexCoords / texScale);
-
-
-	// Specular lightning
-	vec3 viewDir = normalize(-FragPos);
-	vec3 reflectDir = reflect(-lightDir, norm);
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess * 255);
-	vec3 specular = specularStrength * (spec * GetTex2DVec3Value(material.specular, TexCoords / texScale)) * GetLightSpecular(light);
-
-	vec3 result = (ambient + diffuse + specular) * vertColor;
-	fragColor = vec4(result, 1.0f); 
-
+	fragColor = vec4(result, 1.0);
+	//fragColor = vec4(0,1,0,1);
 }

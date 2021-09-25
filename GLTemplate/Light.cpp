@@ -9,6 +9,11 @@ Light::Light(Color color, float intensity)
 	this->intensity = intensity;
 }
 
+void Light::SetColor(Color c)
+{
+	this->color = c;
+}
+
 Vector3 Light::GetColorVector()
 {
 	return color.ToVector3() * intensity;
