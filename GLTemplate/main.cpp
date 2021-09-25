@@ -105,6 +105,7 @@ int main()
 	}
 
 	Sky* sky = new Sky();
+	sky->SetPosition(Vector3(0, 0, 0));
 	//GameObject::Instantiate(sky);
 
 	LOG_E("Starting drawing loop...");
@@ -142,12 +143,16 @@ int main()
 				}
 		}
 
+
 		glDisable(GL_DEPTH_TEST);
 		sky->Update();
 		sky->__Draw();
 		glEnable(GL_DEPTH_TEST);
 
 		RunEvent(&GameObject::__Draw);
+		
+		//sky->Update();
+		//sky->__Draw();
 		
 
 		Camera::__SetRenderingCamera(nullptr);

@@ -180,6 +180,15 @@
     <None Include="Assets\Shaders\SkyShader.vert">
       <Filter>Pliki zasobów</Filter>
     </None>
+    <None Include="atmosphere.glsl">
+      <Filter>Pliki zasobów</Filter>
+    </None>
+    <None Include="Assets\Shaders\SkyShader2.frag">
+      <Filter>Pliki zasobów</Filter>
+    </None>
+    <None Include="Assets\Shaders\SkyShader2.vert">
+      <Filter>Pliki zasobów</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Util.h">

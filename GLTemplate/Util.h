@@ -45,6 +45,9 @@ vector<string> ReadAllLines(const char* filePath);
 /// <returns>True if loaded and compiled successfully, false otherwise</returns>
 bool CompileShader(string path, GLuint type, GLuint& result);
 
+double deg2rad(double deg);
+double rad2deg(double rad);
+
 enum class TextureFiltering
 {
 	None,

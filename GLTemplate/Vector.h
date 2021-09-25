@@ -132,12 +132,14 @@ public:
 	Vector2Base<Type> operator-(float b) { return Vector2Base<Type>(x - b, y - b); }
 	Vector2Base<Type> operator+(const Vector2Base& b) { return Vector2Base<Type>(x + b.x, y + b.y); }
 	Vector2Base<Type> operator-(const Vector2Base& b) { return Vector2Base<Type>(x - b.x, y - b.y); }
+	Vector2Base<Type> operator*(const Vector2Base& b) { return Vector2Base<Type>(x * b.x, y * b.y); }
 
 	void operator+=(const Vector2Base& b) { x += b.x; y += b.y; }
 	bool operator==(const Vector2Base& b) { return x == b.x && y == b.y; }
 	bool operator!=(const Vector2Base& b) { return x != b.x || y != b.y; }
 
 	operator Vector3Base<Type>() { return Vector3Base<Type>(x, y, 0); }
+	operator Vector2Base<float>();
 
 	template<class Type2>
 	Vector2Base<Type>& operator=(const Vector2Base<Type2>& b) { x = b.x; y = b.y; return *this; }

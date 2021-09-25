@@ -279,8 +279,8 @@ public:
 		// Generate verticies
 		for (int i = 0; i < sizeX * sizeY; i++)
 		{
-			int x = i % sizeX;
-			int y = i / sizeX;
+			float x = (i % sizeX) * step;
+			float y = (i / sizeX) * step;
 
 			Vertex v;
 			v.pos = Vector3(x, func(x, y), y);

@@ -60,7 +60,7 @@ bool Shader::LoadShaders(string vertexPath, string fragmentPath)
 		char infoLog[512];
 		glGetProgramInfoLog(program, 512, NULL, infoLog);
 
-		cout << "Error linking shader program: \n" << infoLog << endl;
+		LOGE_E("Error linking shader program: \n", infoLog);
 
 		return false;
 	}
@@ -243,7 +243,5 @@ shared_ptr<Shader> Shader::GetDefaultShader()
 	{
 		defaultShader = AssetsLoader::LoadShader("VertexShader.vert", "FragmentShader.frag");
 	}
-
-	LOG_E("Test");
 	return defaultShader;
 }

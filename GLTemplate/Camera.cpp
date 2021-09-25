@@ -11,6 +11,16 @@ void Camera::UpdateProjectionMatrix(float aspectRatio)
 	this->aspectRatio = aspectRatio;
 }
 
+float Camera::GetAspectRatio()
+{
+	return aspectRatio;
+}
+
+Vector2 Camera::GetCameraRotation()
+{
+	return Vector2(pitch, yaw);
+}
+
 float Camera::GetDrawDistance()
 {
 	return drawDistance;

@@ -58,3 +58,9 @@ inline void Vector2Base<Type>::Normalize()
     y = v.y;
 }
 
+
+Vector2Base<int>::operator Vector2Base<float>()
+{   
+    return Vector2Base<float>(x, y);
+}
+

@@ -8,8 +8,10 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+uniform vec2 _resolution_;
+
 out vec3 pos;
-out vec3 fsun;
+out vec2 fsun;
 
 uniform float time = 0.0;
 
@@ -20,8 +22,8 @@ vec2(-1.0, 1.0), vec2(-1.0, -1.0));
 
 void main()
 {
-	//gl_Position = vec4(data[gl_VertexID], 0.0, 1.0);
 	gl_Position = vec4(aPos, 1.0);
 	pos = transpose(mat3(view)) * (inverse(projection) * gl_Position).xyz;
-	fsun = vec3(0.0, sin(time * 0.01), cos(time * 0.01));
+	//fsun = vec2(sin(time * 0.1), cos(time * 0.1)) * _resolution_;
+	fsun = vec2(800, 600);
 }

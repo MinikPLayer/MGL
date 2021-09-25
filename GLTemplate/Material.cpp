@@ -114,8 +114,14 @@ void Material::SetMaterialTexture(const char* path, string texName, int slot)
 	SetMaterialTexture(texName, slot);
 }
 
+// Used to detect shader features, like vertex position, lights, material properties, etc
+// TODO: Finish implementation
 void Material::DetectShaderFeatures()
 {
+
+	// Implementation not complete
+	return;
+
 	GLint count;
 	GLint size;
 	GLenum type;

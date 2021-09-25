@@ -112,6 +112,11 @@ public:
 		srand(time(NULL));
 		LOG("UserScript start");
 
+		// Add light cube
+		LightCube* cube = new LightCube();
+		cube->SetPosition(Vector3(0, 0, 0));
+		lightCube = AddComponent(cube);
+
 		mats[0] = Material::CreatePrefabedMaterial(Material::SILVER);
 		mats[1] = Material::CreatePrefabedMaterial(Material::RUBBER);
 		mats[2] = Material::CreatePrefabedMaterial(Material::SILVER);
@@ -119,10 +124,15 @@ public:
 		mats[4] = Material::CreatePrefabedMaterial(Material::SILVER);
 
 		// Load textures
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			mats[i].get()->SetMaterialTexture(AssetsLoader::LoadTexture("container2.png"));
 			mats[i]->SetMaterialTexture(AssetsLoader::LoadTexture("container2_specular.png", 1), "specular");
+
+			mats[i]->SetVec3("lightPos", [&]() -> Vector3 {
+				LOG("LightCube pos: ", lightCube->GetPosition().x, ", ", lightCube->GetPosition().z);
+				return lightCube == nullptr ? Vector3(0, 0, 0) : lightCube->GetPosition();
+			});
 		}
 
 		mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("rock6.png"));
@@ -150,21 +160,18 @@ public:
 		msh->SetPosition(Vector3(0, -3, 0));*/
 		// Add Floor
 		Mesh* m = new Mesh(mats[2]);
-		Vector2 sinMeshSize(100, 100);
-		m->SetPosition(-1.0f * Vector3(sinMeshSize.x / 2, 0, sinMeshSize.y / 2));
-		m->GenerateMesh(Vector2(50, 50), [](float x, float y) {
-			return sin(x) * sin(y);
+		Vector2 sinMeshSize(25, 25);
+		m->SetLocalPosition(-1.0f * Vector3(sinMeshSize.x / 2, 0, sinMeshSize.y / 2));
+		m->GenerateMesh(sinMeshSize, [](float x, float y) {
+			return sin(x/2.0f) * sin(y/2.0f);
 		});
 		AddComponent(m);
 
-		// Add light cube
-		LightCube* cube = new LightCube();
-		cube->SetPosition(Vector3(2, 2, 2));
-		lightCube = AddComponent(cube);
+		LOG("Mesh position: ", m->GetPosition().x, ", ", m->GetPosition().y, ", ", m->GetPosition().z);
 
-
-
-		Material::GetDefaultMaterial()->SetVec3("lightPos", lightCube->GetPosition());
+		Cube* cb = new Cube();
+		cb->SetMaterial(mats[3]);
+		//AddComponent(cb);
 
 		Vector3 clr = cube->light->color.ToVector3();
 		cube->GetMaterial()->SetVec3("lightColor", clr);
@@ -215,13 +222,12 @@ public:
 
 		lCube->GetMaterial()->SetVec3("lightColor", lColor);
 
-		for (int i = 2; i < 2; i++)
+		for (int i = 0; i < 3; i++)
 		{
 			mats[i]->SetVec3("light.specular", lColor);
-			mats[i]->SetVec3("light.diffuse", lColor * 0.5);
-			mats[i]->SetVec3("light.ambient", lColor * 0.1);
+			mats[i]->SetVec3("light.diffuse", lColor * 0.8);
+			mats[i]->SetVec3("light.ambient", lColor * 0.5);
 			mats[i]->SetVec3("light.strength", 1);
-			mats[i]->SetVec3("lightPos", lightCube->GetPosition());
 		}
 
 		if (Input::GetButtonDown("Pause"))

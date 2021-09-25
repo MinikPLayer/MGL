@@ -6,6 +6,7 @@
 #include "Vector.h"
 #include "Texture.h"
 #include <vector>
+#include <functional>
 
 class Material
 {
@@ -64,7 +65,7 @@ class Material
 	{
 	public:
 		Type value;
-		Type(*funcPtr)() = nullptr;
+		function<Type()> funcPtr = nullptr;
 
 		Type GetValue() 
 		{ 
@@ -77,7 +78,7 @@ class Material
 		
 		ParamT(string name) :Param(typeid(Type).hash_code()) { this->name = name; }
 		ParamT(string name, Type val) : Param(typeid(Type).hash_code()) { this->name = name; this->value = val; }
-		ParamT(string name, Type(*funcPtr)()) { this->name = name; this->funcPtr = funcPtr; }
+		ParamT(string name, function<Type()> funcPtr) : Param(typeid(Type).hash_code()) { this->name = name; this->funcPtr = funcPtr; }
 	};
 
 
@@ -85,7 +86,7 @@ class Material
 	vector<shared_ptr<Texture>> textures;
 
 	template<class Type>
-	void SetParam(string name, Type value, Type (*funcPtr)() = nullptr)
+	void SetParam(string name, Type value, function<Type()> funcPtr = nullptr)
 	{
 		size_t hash = typeid(Type).hash_code();
 		for (int i = 0; i < parameters.size(); i++)
@@ -127,10 +128,11 @@ public:
 
 
 	void SetFloat(string name, float value) { SetParam<float>(name, value); }
-	void SetFloat(string name, float (*func)()) { SetParam<float>(name, 0, func); }
+	void SetFloat(string name, function<float()> func) { SetParam<float>(name, 0, func); }
 	void SetVec2(string name, Vector2 value) { SetParam<Vector2>(name, value); }
-	void SetVec2(string name, Vector2 (*func)()) { SetParam<Vector2>(name, Vector2(0,0), func); }
+	void SetVec2(string name, function<Vector2()> func) { SetParam<Vector2>(name, Vector2(0,0), func); }
 	void SetVec3(string name, Vector3 value) { SetParam<Vector3>(name, value); }
+	void SetVec3(string name, function<Vector3()> func) { SetParam<Vector3>(name, Vector3(0, 0, 0), func); }
 	void SetInt(string name, int value) { SetParam<int>(name, value); }
 	void SetBool(string name, bool value) 
 	{ 

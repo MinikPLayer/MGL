@@ -119,8 +119,6 @@ void Window::PollEvents()
 
 	Input::__SetMousePos(x, y, cursorMode == GLFW_CURSOR_NORMAL);
 
-	LOG("Cursor pos: ", x, " ", y);
-
 	Input::__Update(window);
 
 

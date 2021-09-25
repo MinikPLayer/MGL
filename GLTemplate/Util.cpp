@@ -91,6 +91,17 @@ bool CompileShader(string path, GLuint type, GLuint& result)
 	return true;
 }
 
+#define PI 3.14159265
+double deg2rad(double deg)
+{
+	return deg * PI / 180.0;
+}
+
+double rad2deg(double rad)
+{
+	return rad * 180.0 / PI;
+}
+
 GLint LoadTexture(const char* path, bool flip, TextureFiltering minFilter, TextureFiltering magFilter)
 {
 	// Load texture

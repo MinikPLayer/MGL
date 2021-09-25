@@ -200,8 +200,11 @@
     <None Include="Assets\Shaders\FragmentShader.frag" />
     <None Include="Assets\Shaders\SkyShader.frag" />
     <None Include="Assets\Shaders\SkyShader.vert" />
+    <None Include="Assets\Shaders\SkyShader2.frag" />
+    <None Include="Assets\Shaders\SkyShader2.vert" />
     <None Include="Assets\Shaders\VertexLightShader.vert" />
     <None Include="Assets\Shaders\VertexShader.vert" />
+    <None Include="atmosphere.glsl" />
     <None Include="GameObject.tpp" />
     <None Include="packages.config" />
   </ItemGroup>

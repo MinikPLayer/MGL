@@ -8,6 +8,8 @@ class Sky : public Cube
 {
 public:
 
+	Vector2 sunPos = Vector2(0.5, 0.5);
+
 	Sky();
 	void Update();
 };
