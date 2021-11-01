@@ -14,11 +14,12 @@ protected:
 	Color color;
 	float intensity;
 
-	ShadowMap shadowMap;
 public:
-
+	ShadowMap* shadowMap = nullptr;
+	GLuint GetShadowMapTextureID();
 
 	Light(Color color = Color(255, 255, 255, 255), float intensity = 1);
+	~Light();
 
 	Color GetColor() { return this->color; }
 	virtual void SetColor(Color c);

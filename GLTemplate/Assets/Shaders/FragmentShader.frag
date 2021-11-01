@@ -36,7 +36,9 @@ struct PointLight {
 	vec3 specular;
 };
 
-
+in vec4 FragPosLightSpace;
+uniform sampler2D shadowMap;
+uniform vec3 shadowPos;
 
 out vec4 fragColor;
 in vec3 vertColor;
@@ -58,6 +60,18 @@ uniform int pointLightsCount = 0;
 const int MAX_LIGHTS_COUNT = 4;
 uniform PointLight pointLights[MAX_LIGHTS_COUNT];
 
+float ShadowCalculation(vec4 lightSpace)
+{
+	vec3 projCoords = lightSpace.xyz / lightSpace.w;
+	projCoords = projCoords * 0.5 + 0.5;
+
+	float closestDepth = texture(shadowMap, projCoords.xy).r;
+	float currentDepth = projCoords.z;
+
+	float shadow = currentDepth > closestDepth ? 1.0 : 0.0;
+
+	return shadow;
+}
 
 vec3 GetTex2DVec3Value(Tex2DVec3 value, vec2 coords)
 {
@@ -65,6 +79,7 @@ vec3 GetTex2DVec3Value(Tex2DVec3 value, vec2 coords)
 		return texture(value.tex, coords).rgb;
 	else
 		return value.value;
+	//return texture(shadowMap, coords).rgb;
 }
 
 vec3 CalcLight_Dir(DirLight light, vec3 normal, vec3 viewDir) {
@@ -78,7 +93,10 @@ vec3 CalcLight_Dir(DirLight light, vec3 normal, vec3 viewDir) {
     vec3 ambient = light.ambient * light.strength * GetTex2DVec3Value(material.diffuse, TexCoords);
     vec3 diffuse = light.diffuse * light.strength * diff * GetTex2DVec3Value(material.diffuse, TexCoords);
     vec3 specular = light.specular * light.strength * spec * GetTex2DVec3Value(material.specular, TexCoords);
-    return (ambient + diffuse + specular);
+    
+	float shadow = ShadowCalculation(FragPosLightSpace);
+    return (ambient + (1.0 - shadow) * (diffuse + specular));
+	//return (ambient + diffuse + specular);
 }
 
 vec3 CalcLight_Point(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
@@ -99,7 +117,10 @@ vec3 CalcLight_Point(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) 
     ambient  *= attenuation;
     diffuse  *= attenuation;
     specular *= attenuation;
-    return (ambient + diffuse + specular);
+
+	float shadow = ShadowCalculation(FragPosLightSpace);
+    return (ambient + (1.0 - shadow) * (diffuse + specular));
+	//return (ambient + diffuse + specular);
 }
 
 void main()

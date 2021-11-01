@@ -135,6 +135,7 @@ public:
 	void SetVec2(string name, function<Vector2()> func) { SetParam<Vector2>(name, Vector2(0,0), func); }
 	void SetVec3(string name, Vector3 value) { SetParam<Vector3>(name, value); }
 	void SetVec3(string name, function<Vector3()> func) { SetParam<Vector3>(name, Vector3(0, 0, 0), func); }
+	void SetMat4(string name, function<glm::mat4()> func) { SetParam<glm::mat4>(name, glm::mat4(1), func); }
 	void SetInt(string name, int value) { SetParam<int>(name, value); }
 	void SetBool(string name, bool value) 
 	{ 

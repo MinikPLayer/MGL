@@ -50,7 +50,7 @@ class UserScript : public GameObject
 {
 	shared_ptr<Mesh> mesh;
 	const static int lightCubesCount = 1;
-	shared_ptr<Mesh> lightCubes[lightCubesCount];
+	shared_ptr<Mesh> lightCubes[lightCubesCount + 1];
 	shared_ptr<Model> model;
 	shared_ptr<Mesh> floorMesh;
 	float floorOffset = 0;
@@ -127,6 +127,7 @@ public:
 
 		dirLight = shared_ptr<DirectionalLight>(new DirectionalLight());
 		dirLight->SetPosition(Vector3(2.f, 3.f, 3.f));
+		//dirLight->SetPosition(Vector3(0, 1, 0));
 
 		Camera::GetMainCamera()->SetPosition(dirLight->GetPosition());
 		Camera::GetMainCamera()->LookAt(Vector3(0, 0, 0));
@@ -182,6 +183,19 @@ public:
 					return lightCubes[j]->GetPosition();
 				}); 
 			}
+
+			// TODO: Add engine wise lightning and shadowmaps
+			auto shadowMap = dirLight->shadowMap;
+			//auto shadowMap = ShadowMap::__ShadowMaps__[0];
+			auto txt = shared_ptr<Texture>(new Texture(shadowMap->GetDepthMapID(), 15));
+			mats[i]->SetTextureSlot(txt);
+			mats[i]->SetMat4("lightSpaceMatrix", [this]() {
+				//auto sm = ShadowMap::__ShadowMaps__[0];
+				//return sm->lightSpaceMatrix;
+				auto sm = dirLight->shadowMap;
+				return sm->lightSpaceMatrix;
+			});
+			mats[i]->SetInt("shadowMap", 15);
 		}
 
 

@@ -15,6 +15,7 @@ class Texture : public Asset
 public:
 	Texture() {}
 	Texture(const char* path, int slot);
+	Texture(GLuint handleID, int slot);
 
 	int GetSlot() { return this->slot; }
 	void SetActive();

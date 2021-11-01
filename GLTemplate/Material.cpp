@@ -1,6 +1,7 @@
 #include "Material.h"
 #include "Util.h"
 #include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
 
 void Material::ParamT<float>::SetParam(shared_ptr<Shader>& shader)
 {
@@ -24,6 +25,14 @@ void Material::ParamT<Vector3>::SetParam(shared_ptr<Shader>& shader)
 
 	auto val = GetValue();
 	shader->SetVec3(location, val.x, val.y, val.z);
+}
+
+void Material::ParamT<glm::mat4>::SetParam(shared_ptr<Shader>& shader)
+{
+	Param::SetParam(shader);
+
+	auto val = GetValue();
+	shader->SetMat4(location, glm::value_ptr(val));
 }
 
 void Material::ParamT<int>::SetParam(shared_ptr<Shader>& shader)

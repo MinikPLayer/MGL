@@ -10,6 +10,14 @@ Texture::Texture(const char* path, int slot)
 	loaded = true;
 }
 
+Texture::Texture(GLuint handleID, int slot)
+{
+	this->handle = handleID;
+	this->slot = slot;
+
+	loaded = true;
+}
+
 void Texture::SetActive()
 {
 	glActiveTexture(GL_TEXTURE0 + slot);

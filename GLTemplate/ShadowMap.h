@@ -12,14 +12,18 @@ class ShadowMap : public Framebuffer {
 	GLuint depthMap;
 
 	Vector2i size;
+
 public:
+	glm::mat4 lightSpaceMatrix;
+	GLuint GetDepthMapID() { return depthMap; }
+
+	function<Vector3()> posFunc;
+
 	// List of shadow maps, used for rendering
 	static std::vector<ShadowMap*> __ShadowMaps__;
 
-	ShadowMap(GLuint width = 1024, GLuint height = 1024);
+	ShadowMap(GLuint width = 512, GLuint height = 512);
 	~ShadowMap();
-
-	Vector3 pos;
 
 	void Render();
 

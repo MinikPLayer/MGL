@@ -31,8 +31,8 @@ ShadowMap::ShadowMap(GLuint width, GLuint height)
 			
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
 	// Bind underlaying framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
@@ -81,32 +81,21 @@ void ShadowMap::Render()
 	const float nearPlane = 0.1f;
 	const float farPlane = 75.f;
 
-	glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, nearPlane, farPlane);
-	glm::mat4 lightView = glm::lookAt( pos.GetGLVector(), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	Vector3 pos = Vector3(0, 0, 0);
+	if (posFunc != nullptr)
+		pos = posFunc();
+
+	glm::mat4 lightProjection = glm::ortho(-20.0f, 20.0f, -40.0f, 40.0f, nearPlane, farPlane);
+	glm::mat4 lightView = glm::lookAt((pos).GetGLVector(), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	
-	glm::mat4 lightSpaceMatrix = lightProjection * lightView;
+	lightSpaceMatrix = lightProjection * lightView;
 	shared_ptr<Material> mat = shared_ptr<Material>(new Material(shadowMapShader));
 	shadowMapShader->SetMat4("lightSpaceMatrix", glm::value_ptr(lightSpaceMatrix));
-	
 	shadowMapShader->Use();
-	auto mainCamera = Camera::GetMainCamera();
-	Camera::__SetRenderingCamera(mainCamera);
-
-	mainCamera->LookAt(Vector3(0,0,0));
-
-	//glDisable(GL_DEPTH_TEST);
-	//sky->Update();
-	//sky->__Draw();
-	//glEnable(GL_DEPTH_TEST);
 
 	Material::disableTextures = true;
 	Shader::prohibitShaderChange = true;
 	RenderScene(nullptr, mat);
-
-	/*Cube* testCube = new Cube();
-	testCube->SetPosition(Vector3(0, 0, 0));
-	testCube->__Draw(mat);*/
-
 	Shader::prohibitShaderChange = false;
 	Material::disableTextures = false;
 
