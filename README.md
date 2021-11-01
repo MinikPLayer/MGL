@@ -1,5 +1,5 @@
 # MGL
-W.I.P. MGL engine
+W.I.P. MGL Game engine
 
 # Libraries
 - STB_Image (static library version): https://github.com/MinikPLayer/STB_Image_static_library 
