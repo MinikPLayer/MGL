@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <ctime>
 #include <limits>
+#include <string>
 
 template<class Type>
 class Vector3Base
@@ -38,6 +39,11 @@ public:
 	Vector3Base<Type>& operator=(const Vector3Base<Type2>& b) { x = b.x; y = b.y; z = b.z; return *this; }
 	
 	Vector3Base<Type>& operator=(const glm::vec3& v) { x = v.x; y = v.y; z = v.z; return *this; }
+
+	std::string ToString()
+	{
+		return "(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
+	}
 
 	static Vector3Base<Type> Random()
 	{

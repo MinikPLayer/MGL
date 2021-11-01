@@ -6,13 +6,14 @@
 #include <iostream>
 #include <streambuf>
 #include <vector>
+#include <functional>
 #include "Debug.h"
 #include "Vector.h"
 
 using namespace std;
 
 
-
+class Sky;
 
 class IOException : exception
 {
@@ -21,7 +22,8 @@ public:
 		:exception(error) {}
 };
 
-int GetProcessorCount();
+void SplitToThreads1D(int start, int end, std::function<void(int)> func, int threadCount = 0);
+
 
 /// <summary>
 /// Reads text from specified file
@@ -64,5 +66,7 @@ enum class TextureFiltering
 /// <param name="magFilter">Maginifaction filter, defaults to Nearest</param>
 /// <returns>GL handle to texture</returns>
 GLint LoadTexture(const char* path, bool flip = true, TextureFiltering minFilter = TextureFiltering::Nearest, TextureFiltering magFilter = TextureFiltering::Nearest);
+
+extern Sky* sky;
 
 //#include "GameObject.h"

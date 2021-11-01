@@ -7,7 +7,14 @@ Camera* Camera::rendering = nullptr;
 
 void Camera::UpdateProjectionMatrix(float aspectRatio)
 {
-	projectionMatrix = glm::perspective(glm::radians(GetFov()), aspectRatio, 0.1f, drawDistance);
+	const float near_plane = 0.1f;
+	if(projectionType == Camera::ProjectionTypes::Perspective)
+		projectionMatrix = glm::perspective(glm::radians(GetFov()), aspectRatio, 0.1f, drawDistance);
+	else
+	{
+		auto fov = GetFov() / 2.0f;
+		projectionMatrix = glm::ortho(-fov, fov, -fov, fov, 0.1f, drawDistance);
+	}
 	this->aspectRatio = aspectRatio;
 }
 
@@ -50,6 +57,11 @@ void Camera::__SetRenderingCamera(Camera* cam, float aspectRatio)
 Camera* Camera::GetMainCamera()
 {
     return Camera::main;
+}
+
+void Camera::LookAt(Vector3 pos)
+{
+	orientation = glm::lookAt(GetPosition().GetGLVector(), pos.GetGLVector(), glm::vec3(0, 1, 0));
 }
 
 void Camera::SetAsMainCamera()

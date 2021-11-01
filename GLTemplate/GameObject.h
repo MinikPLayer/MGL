@@ -38,7 +38,6 @@ public:
 	GameObject() { transformable = true; }
 
 	GameObject(GameObject* parent, bool transformable = true) {
-		parent->AddComponent(this);
 		this->transformable = transformable;
 	}
 

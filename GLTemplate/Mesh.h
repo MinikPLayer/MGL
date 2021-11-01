@@ -44,6 +44,8 @@ public:
 
 	
 protected:
+	shared_ptr<bool> refCounter = nullptr;
+
 	//vector<Vertex> vertexData;
 	//vector<unsigned int> indices;
 	shared_ptr<Vertex> vertexData = nullptr;
@@ -69,13 +71,13 @@ protected:
 public:
 	enum class FaceCullingModes
 	{
-		Default,
-		Front,
 		Back,
-		FrontAndBack
+		Front,
+		FrontAndBack,
+		Disabled
 	};
 
-	FaceCullingModes faceCulling = FaceCullingModes::Default;
+	FaceCullingModes faceCulling = FaceCullingModes::Back;
 
 	void SetMaterial(shared_ptr<Material> mat);
 	shared_ptr<Material> GetMaterial();
@@ -85,7 +87,8 @@ public:
 	void CopyFrom(vector<Vector3> vertex, vector<Vector3> normals, vector<Vector2> uv, vector<unsigned int> indices);
 	void CopyFrom(Vertex* vertexArray, int vSize, unsigned int* indicesArray, int iSize);
 
-	Vector3 CalculateTriangleNormal(Vertex vtx1, Vertex vtx2, Vertex vtx3);
+	void CalculateMeshNormals();
+	static Vector3 CalculateTriangleNormal(Vertex vtx1, Vertex vtx2, Vertex vtx3);
 
 	void UpdateGeneratedMesh(std::function<float(float, float)> heightFunc);
 
@@ -96,7 +99,5 @@ public:
 	~Mesh();
 
 	void __Draw();
-	void __Draw(bool useShader);
-	
-	void OnDestroy();
+	void __Draw(shared_ptr<Material> materialOverride);
 };

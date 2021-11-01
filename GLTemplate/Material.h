@@ -116,6 +116,8 @@ class Material
 	static shared_ptr<Material> defaultMat;
 	
 public:
+	static bool disableTextures;
+
 	// DO NOT USE DIRECTLY, use with CreatePrefabedMaterial(Material::SILVER)	
 	static Material SILVER;
 	// DO NOT USE DIRECTLY, use with CreatePrefabedMaterial(Material::RUBBER)	

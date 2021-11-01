@@ -18,6 +18,8 @@ class Shader : public Asset
 	static shared_ptr<Shader> defaultShader;
 
 public:
+	static bool prohibitShaderChange;
+
 	// Locations of uniforms
 	GLint modelLocation = 0;
 	GLint viewLocation = 0;
@@ -25,6 +27,8 @@ public:
 	//GLint shaderModelPosition = 0;
 
 	void UpdateUniformsLocations();
+
+	GLuint ID = 0;
 
 public:
 	const static string TYPE_VERTEX;
@@ -37,7 +41,9 @@ public:
 			:exception(("Error loading " + type + " shader, error: " + message).c_str()) {}
 	};
 
-	GLuint ID = 0;
+	GLuint GetProgramID() {
+		return ID;
+	}
 
 	Shader() {}
 	Shader(string vertexPath, string fragmentPath);

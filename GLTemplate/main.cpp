@@ -4,6 +4,7 @@
 
 #include "AssetsLoader.h"
 #include "Util.h"
+#include "EngineUtil.h"
 #include "Shader.h"
 #include "stb_image.h"
 #include "Camera.h"
@@ -17,6 +18,7 @@
 #include "MeshRenderer.h"
 #include "Material.h"
 #include "lib/ImGui/imgui.h"
+#include "SystemInfo.h"
 using namespace std;
 
 #include <glm/glm.hpp>
@@ -56,17 +58,6 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 	//camera->ProcessMouseScroll(yoffset);
 }
 
-void RunEvent(void (GameObject::*callback)())
-{
-	for (int i = 0; i < GameObject::__objects.size(); i++)
-	{
-		if (GameObject::__objects[i] == nullptr)
-			continue;
-
-		(GameObject::__objects[i].get()->*(callback))();
-	}
-}
-
 int main()
 {
 	srand(time(NULL));
@@ -88,7 +79,7 @@ int main()
 
 	registerBasicInput();
 
-	LOG("Processor count: ", GetProcessorCount());
+	LOG("Processor count: ", SystemInfo::GetThreadCount());
 
 
 	camera = new FlybackCamera();
@@ -104,7 +95,8 @@ int main()
 
 	}
 
-	Sky* sky = new Sky();
+	//Sky* sky = new Sky();
+	sky = new Sky();
 	sky->SetPosition(Vector3(0, 0, 0));
 	//GameObject::Instantiate(sky);
 
@@ -144,13 +136,25 @@ int main()
 		}
 
 
+		// Render shadow maps
+		for (int i = 0; i < ShadowMap::__ShadowMaps__.size(); i++) {
+			ShadowMap::__ShadowMaps__[i]->Render();
+		}
+
+		Camera::__SetRenderingCamera(Camera::GetMainCamera());
+			
 		glDisable(GL_DEPTH_TEST);
 		sky->Update();
 		sky->__Draw();
 		glEnable(GL_DEPTH_TEST);
 
-		RunEvent(&GameObject::__Draw);
-		
+		RenderScene();
+
+		if (Input::GetKey(Input::Keyboard, Input::KBButtons::O)) {
+			glDisable(GL_DEPTH_TEST);
+			ShadowMap::__ShadowMaps__[0]->DebugDraw();
+			glEnable(GL_DEPTH_TEST);
+		}
 
 		
 

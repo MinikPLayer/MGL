@@ -73,6 +73,8 @@ Material Material::RUBBER = Material({
 	shared_ptr<Param>(new ParamT<float>("material.shininess", 0.078125))
 }, nullptr, true);
 
+bool Material::disableTextures = false;
+
 shared_ptr<Material> Material::defaultMat;
 shared_ptr<Material> Material::GetDefaultMaterial()
 {
@@ -141,9 +143,10 @@ void Material::DetectShaderFeatures()
 
 void Material::__SendToShader()
 {
-	for (int i = 0; i < textures.size(); i++)
-	{
-		textures[i]->SetActive();
+	if (!disableTextures) {
+		for (int i = 0; i < textures.size(); i++) {
+			textures[i]->SetActive();
+		}
 	}
 
 	for (int i = 0; i < parameters.size(); i++)

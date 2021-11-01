@@ -36,6 +36,13 @@ protected:
 	Vector3 right;
 	Vector3 worldUp = Vector3(0, 1, 0);
 public:
+	enum class ProjectionTypes {
+		Perspective,
+		Ortographic
+	};
+
+	ProjectionTypes projectionType = ProjectionTypes::Perspective;
+
 	float GetAspectRatio();
 
 	Vector2 GetCameraRotation();
@@ -65,6 +72,8 @@ public:
 
 
 	}*/
+
+	void LookAt(Vector3 pos);
 
 	void SetAsMainCamera();
 

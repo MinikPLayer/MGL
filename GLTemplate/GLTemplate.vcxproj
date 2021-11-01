@@ -29,26 +29,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -162,12 +162,14 @@
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Debug.cpp" />
+    <ClCompile Include="EngineUtil.cpp" />
     <ClCompile Include="FBX\fbxdocument.cpp" />
     <ClCompile Include="FBX\fbxdump.cpp" />
     <ClCompile Include="FBX\fbxnode.cpp" />
     <ClCompile Include="FBX\fbxproperty.cpp" />
     <ClCompile Include="FBX\fbxutil.cpp" />
     <ClCompile Include="FlybackCamera.cpp" />
+    <ClCompile Include="Framebuffer.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Input.cpp" />
     <ClCompile Include="lib\ImGui\backends\imgui_impl_glfw.cpp" />
@@ -185,9 +187,12 @@
     <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Path.cpp" />
+    <ClCompile Include="PlaneMesh.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="Sky.cpp" />
+    <ClCompile Include="SystemInfo.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Util.cpp" />
@@ -196,8 +201,12 @@
     <ClCompile Include="zlib\miniz.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Shaders\DepthMapShader.frag" />
+    <None Include="Assets\Shaders\DepthMapShader.vert" />
     <None Include="Assets\Shaders\FragmentLightShader.frag" />
     <None Include="Assets\Shaders\FragmentShader.frag" />
+    <None Include="Assets\Shaders\ShadowMapFragmentShader.frag" />
+    <None Include="Assets\Shaders\ShadowMapVertexShader.vert" />
     <None Include="Assets\Shaders\SkyShader.frag" />
     <None Include="Assets\Shaders\SkyShader.vert" />
     <None Include="Assets\Shaders\SkyShader2.frag" />
@@ -217,11 +226,14 @@
     <ClInclude Include="Color.h" />
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Debug.h" />
+    <ClInclude Include="DirecitonalLight.h" />
+    <ClInclude Include="EngineUtil.h" />
     <ClInclude Include="FBX\fbxdocument.h" />
     <ClInclude Include="FBX\fbxnode.h" />
     <ClInclude Include="FBX\fbxproperty.h" />
     <ClInclude Include="FBX\fbxutil.h" />
     <ClInclude Include="FlybackCamera.h" />
+    <ClInclude Include="Framebuffer.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Input.h" />
     <ClInclude Include="lib\ImGui\backends\imgui_impl_glfw.h" />
@@ -241,9 +253,12 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="Path.h" />
+    <ClInclude Include="PlaneMesh.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="Sky.h" />
+    <ClInclude Include="SystemInfo.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="UserScript.h" />

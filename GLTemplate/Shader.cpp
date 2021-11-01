@@ -8,6 +8,8 @@
 const string Shader::TYPE_FRAGMENT = "fragment";
 const string Shader::TYPE_VERTEX = "vertex";
 
+bool Shader::prohibitShaderChange = false;
+
 void Shader::UpdateUniformsLocations()
 {
 	modelLocation = glGetUniformLocation(ID, "model");
@@ -73,7 +75,7 @@ bool Shader::LoadShaders(string vertexPath, string fragmentPath)
 
 void Shader::Use()
 {
-	if (!loaded)
+	if (!loaded || prohibitShaderChange)
 		return;
 
 	glUseProgram(ID);

@@ -15,6 +15,7 @@
 #include "Time.h"
 #include "Path.h"
 #include "Window.h"
+#include "DirecitonalLight.h"
 
 using namespace std;
 using namespace glm;
@@ -62,6 +63,7 @@ class UserScript : public GameObject
 	bool paused = true;
 
 	shared_ptr<GameObject> spawned;
+	shared_ptr<DirectionalLight> dirLight;
 public:
 
 	shared_ptr<Material> mats[5];
@@ -123,10 +125,16 @@ public:
 		}
 
 
+		dirLight = shared_ptr<DirectionalLight>(new DirectionalLight());
+		dirLight->SetPosition(Vector3(2.f, 3.f, 3.f));
+
+		Camera::GetMainCamera()->SetPosition(dirLight->GetPosition());
+		Camera::GetMainCamera()->LookAt(Vector3(0, 0, 0));
+
 		mats[0] = Material::CreatePrefabedMaterial(Material::SILVER);
 		mats[1] = Material::CreatePrefabedMaterial(Material::RUBBER);
 		mats[2] = Material::CreatePrefabedMaterial(Material::SILVER);
-		mats[3] = shared_ptr<Material>(new Material(AssetsLoader::LoadShader("SkyShader.vert", "SkyShader.frag")));
+		mats[3] = Material::CreatePrefabedMaterial(Material::SILVER);
 		mats[4] = Material::CreatePrefabedMaterial(Material::SILVER);
 
 		// Load textures
@@ -134,11 +142,13 @@ public:
 		{
 			//mats[i].get()->SetMaterialTexture(AssetsLoader::LoadTexture("container2.png"));
 			//mats[i]->SetMaterialTexture(AssetsLoader::LoadTexture("container2_specular.png", 1), "specular");
-			mats[i].get()->SetMaterialTexture(AssetsLoader::LoadTexture("poland.png"));
-			mats[i]->SetMaterialTexture(AssetsLoader::LoadTexture("poland_specular.png", 1), "specular");
+
 
 			mats[i]->SetInt("pointLightsCount", lightCubesCount);
-			mats[i]->SetVec3("dirLight.direction", Vector3(-0.2f, -0.3f, -0.3f));
+			//mats[i]->SetVec3("dirLight.direction", Vector3(-0.2f, -0.3f, -0.3f));
+			mats[i]->SetVec3("dirLight.direction", [this]() {
+				return -1 * dirLight->GetPosition();
+			});
 			mats[i]->SetVec3("dirLight.ambient", Vector3(0.05f, 0.05f, 0.05f));
 			mats[i]->SetVec3("dirLight.diffuse", Vector3(0.4f, 0.4f, 0.4f));
 			mats[i]->SetVec3("dirLight.specular", Vector3(0.5f, 0.5f, 0.5f));
@@ -155,43 +165,55 @@ public:
 				mats[i]->SetFloat(prefix + "quadratic", 0.032f);
 				mats[i]->SetFloat(prefix + "strength", 1);
 
-				mats[i]->SetVec3(prefix + "specular", [*this, j]() {
+				mats[i]->SetVec3(prefix + "specular", [this, j]() {
 					LightCube* c = (LightCube*)lightCubes[j].get();
 					return c->light->GetColorVector();
 				});
-				mats[i]->SetVec3(prefix + "diffuse", [*this, j]() {
+				mats[i]->SetVec3(prefix + "diffuse", [this, j]() {
 					LightCube* c = (LightCube*)lightCubes[j].get();
 					return c->light->GetColorVector() * 0.8;
 				});
-				mats[i]->SetVec3(prefix + "ambient", [*this, j]() {
+				mats[i]->SetVec3(prefix + "ambient", [this, j]() {
 					LightCube* c = (LightCube*)lightCubes[j].get();
 					return c->light->GetColorVector() * 0.5;
 				});
 
-				mats[i]->SetVec3(prefix + "position", [*this, j]() {
+				mats[i]->SetVec3(prefix + "position", [this, j]() {
 					return lightCubes[j]->GetPosition();
 				}); 
 			}
 		}
 
-		mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("rock6.png"));
 
-		//mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("rock1_specular.png", 1), "specular");
 
-		mats[3]->SetVec2("_resolution_", Vector2(1920, 1080));
-		mats[3]->SetVec2("sunPos", Vector2(900, 500));
+		mats[0].get()->SetMaterialTexture(AssetsLoader::LoadTexture("poland.png"));
+		mats[0]->SetMaterialTexture(AssetsLoader::LoadTexture("poland_specular.png", 1), "specular");
 
 		mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture("grass.png"));
 		mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture("grass_specular.png", 1), "specular");
 
+		mats[3]->SetMaterialTexture(AssetsLoader::LoadTexture("tall_grass.png"));
+		mats[3]->SetMaterialTexture(AssetsLoader::LoadTexture("grass_specular.png", 1), "specular");
+
+		mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("rock6.png"));
+		mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("rock1_specular.png", 1), "specular");
+
 		// Add Floor
-		floorMesh = shared_ptr<Mesh>(new Mesh(mats[0]));
-		Vector2 sinMeshSize(25, 25);
+		floorMesh = shared_ptr<Mesh>(new Mesh(mats[2]));
+		Vector2 sinMeshSize(50, 50);
 		floorMesh->SetLocalPosition(-1.0f * Vector3(sinMeshSize.x / 2, 0, sinMeshSize.y / 2));
 		floorMesh->GenerateMesh(sinMeshSize, [](float x, float y) {
-			return sin(x/2.0f) * sin(y/2.0f);
+			//return sin(x/2.0f) * sin(y/2.0f);
+			return 0.0f;
 		}, nullptr, 0.5);
 		AddComponent(floorMesh);
+
+		PlaneMesh* plane = new PlaneMesh();
+		plane->SetMaterial(mats[3]);
+		plane->SetScale(Vector3(5, 5, 5));
+		plane->SetPosition(Vector3(5, 10, 5));
+		plane->faceCulling = Mesh::FaceCullingModes::Disabled;
+		AddComponent(plane);
 
 		startPos = GetPosition();
 
@@ -200,8 +222,6 @@ public:
 		Input::RegisterAxis(Input::Axis("AddCube", Input::Keyboard, Input::NUM_ADD));
 		Input::RegisterAxis(Input::Axis("BindCamera", Input::Keyboard, Input::B));
 		Input::RegisterAxis(Input::Axis("Pause", Input::Keyboard, Input::P));
-
-		Camera::GetMainCamera()->SetPosition(Vector3(-60, 0, 0));
 
 		Input::RegisterAxis(Input::Axis("LightX", Input::Devices::Keyboard, Input::KBButtons::RIGHT, Input::KBButtons::LEFT));
 		Input::RegisterAxis(Input::Axis("LightZ", Input::Devices::Keyboard, Input::KBButtons::UP, Input::KBButtons::DOWN));
@@ -212,18 +232,6 @@ public:
 		Input::RegisterAxis(Input::Axis("RotationZ", Input::Devices::Keyboard, Input::KBButtons::SLASH, Input::KBButtons::PERIOD));
 	}
 	
-	void AnimFloorMesh() {
-		floorMesh->UpdateGeneratedMesh([*this](float x, float y) {
-			x += floorOffset;
-			y += floorOffset / 15;
-			x = (int)x;
-			y = (int)y;
-			return sin(x) * sin(y);
-		});
-
-		floorOffset += 15.f * Time::deltaTime;
-	}
-
 	void Update()
 	{
 		for (int i = 0; i < lightCubesCount; i++) {
@@ -244,26 +252,6 @@ public:
 			LOG("Paused: ", paused);
 		}
 
-		if (!paused)
-		{
-			counter += Time::deltaTime * (cubesSpawned / 10.0);
-		}
-		else
-		{
-			if (Input::GetButtonDown("AddCube"))
-				AddRandomCube();
-		}
-		if (counter >= 1)
-		{
-			for (int i = 0; counter >= 1; i++)
-			{
-				AddRandomCube();
-				counter--;
-			}
-
-			LOG("Cubes spawned: ", cubesSpawned);
-		}
-
 		if (Input::GetButtonDown("BindCamera"))
 		{
 			LOG("Bind camera");
@@ -281,13 +269,16 @@ public:
 		}
 
 		if (Input::GetKey(Input::Keyboard, Input::KBButtons::LCTRL)) {
+			glDisable(GL_FRAMEBUFFER_SRGB);
 			Window::GetMainWindow()->SetCursorMode(Window::CursorModes::Enabled);
 		}
 		else {
+			glEnable(GL_FRAMEBUFFER_SRGB);
 			Window::GetMainWindow()->SetCursorMode(Window::CursorModes::Disabled);
 		}
 
-		AnimFloorMesh();
+		if(!paused)
+			floorMesh->Rotate(Vector3(0, Time::deltaTime, 0));
 
 		//spawned->SetScale(Vector3(val, val, val));
 		//lightCube->SetScale(Vector3(val, val, val));

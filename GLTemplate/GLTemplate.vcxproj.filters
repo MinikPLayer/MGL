@@ -37,6 +37,9 @@
     <Filter Include="Libraries\zlib">
       <UniqueIdentifier>{f7418357-9652-4d8f-a747-cddc1bf70e7d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pliki zasobów\Engine">
+      <UniqueIdentifier>{527735a1-c0b4-4221-b311-3a7bfb5c816a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -156,6 +159,21 @@
     <ClCompile Include="zlib\miniz.cpp">
       <Filter>Libraries\zlib</Filter>
     </ClCompile>
+    <ClCompile Include="SystemInfo.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="PlaneMesh.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Framebuffer.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="EngineUtil.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMap.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -187,6 +205,18 @@
       <Filter>Pliki zasobów</Filter>
     </None>
     <None Include="Assets\Shaders\SkyShader2.vert">
+      <Filter>Pliki zasobów</Filter>
+    </None>
+    <None Include="Assets\Shaders\ShadowMapVertexShader.vert">
+      <Filter>Pliki zasobów\Engine</Filter>
+    </None>
+    <None Include="Assets\Shaders\ShadowMapFragmentShader.frag">
+      <Filter>Pliki zasobów\Engine</Filter>
+    </None>
+    <None Include="Assets\Shaders\DepthMapShader.frag">
+      <Filter>Pliki zasobów</Filter>
+    </None>
+    <None Include="Assets\Shaders\DepthMapShader.vert">
       <Filter>Pliki zasobów</Filter>
     </None>
   </ItemGroup>
@@ -319,6 +349,24 @@
     </ClInclude>
     <ClInclude Include="zlib\miniz.h">
       <Filter>Libraries\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="SystemInfo.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="PlaneMesh.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Framebuffer.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineUtil.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMap.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="DirecitonalLight.h">
+      <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

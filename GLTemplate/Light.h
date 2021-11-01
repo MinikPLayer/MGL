@@ -6,7 +6,7 @@
 #include "Color.h"
 #include "AssetsLoader.h"
 #include "Time.h"
-//#include <glad/glad.h>
+#include "ShadowMap.h"
 
 class Light : public GameObject
 {
@@ -14,6 +14,7 @@ protected:
 	Color color;
 	float intensity;
 
+	ShadowMap shadowMap;
 public:
 
 
@@ -23,6 +24,8 @@ public:
 	virtual void SetColor(Color c);
 
 	Vector3 GetColorVector();
+
+	void SetLocalPosition(Vector3 pos);
 };
 
 class LightCube : public Mesh
@@ -52,7 +55,7 @@ public:
 		//SetShader(new Shader("VertexLightShader.vert", "FragmentLightShader.frag"));
 		SetMaterial(lightMat);
 		material.get()->SetVec3("objectColor", Vector3(1.0, 1.0, 1.0));
-		material.get()->SetVec3("lightColor", [*this]() {
+		material.get()->SetVec3("lightColor", [this]() {
 			return light->GetColorVector();
 		}); 
 	}

@@ -18,3 +18,10 @@ Vector3 Light::GetColorVector()
 {
 	return color.ToVector3() * intensity;
 }
+
+void Light::SetLocalPosition(Vector3 pos)
+{
+	GameObject::SetLocalPosition(pos);
+
+	this->shadowMap.pos = pos;
+}

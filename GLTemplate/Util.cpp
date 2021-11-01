@@ -3,11 +3,57 @@
 #include <thread>
 
 #include <stb_image.h>
+#include "SystemInfo.h"
 
+#include "Sky.h"
 
-int GetProcessorCount()
+Sky* sky;
+
+void SplitToThreads1D(int start, int end, std::function<void(int)> func, int threadCount)
 {
-	return thread::hardware_concurrency();
+	if (end - start < 1) {
+		return;
+	}
+
+	if (threadCount == 0) {
+		threadCount = SystemInfo::GetThreadCount() - 1;
+	}
+
+	if (end - start < threadCount) {
+		threadCount = end - start;
+	}
+
+	thread** threads = new thread * [threadCount];
+	int* startOffsets = new int[threadCount];
+	int* sizes = new int[threadCount];
+
+	int left = end - start;
+	int step = left / threadCount;
+	for (int i = 0; i < threadCount; i++) {
+		startOffsets[i] = start + step * i;
+		sizes[i] = step;
+		left -= step;
+	}
+
+	sizes[threadCount - 1] += left;
+	left = 0;
+
+	for (int i = 0; i < threadCount; i++) {
+		threads[i] = new thread([&func, startOffsets, sizes, i]() {
+			for (int j = 0; j < sizes[i]; j++) {
+				func(startOffsets[i] + j);
+			}
+		});
+	}
+
+	for (int i = 0; i < threadCount; i++) {
+		threads[i]->join();
+		delete threads[i];
+	}
+
+	delete[] threads;
+	delete[] startOffsets;
+	delete[] sizes;
 }
 
 string ReadAllText(string filePath)
@@ -125,6 +171,9 @@ GLint LoadTexture(const char* path, bool flip, TextureFiltering minFilter, Textu
 
 	if (magFilter != TextureFiltering::None)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (int)magFilter);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 	if (nrChannels == 3)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);

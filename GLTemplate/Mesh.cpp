@@ -1,6 +1,8 @@
 #include "Mesh.h"
 #include "OBJLoader.h"
 #include "FBX/fbxdocument.h"
+#include "SystemInfo.h"
+#include <thread>
 
 bool Mesh::updateRenderer = false;
 
@@ -138,6 +140,37 @@ void Mesh::CopyFrom(Vertex* vertexArray, int vSize, unsigned int* indicesArray, 
 	CopyFromInit();
 }
 
+void Mesh::CalculateMeshNormals()
+{
+	if (indicesDataSize == 0 || indicesDataSize % 3 != 0) {
+		LOGE_E("Bad indices count");
+		return;
+	}
+
+	for (int i = 0; i < indicesDataSize; i += 3) {
+		int ind[3] = { indices.get()[i], indices.get()[i + 1], indices.get()[i + 2] };
+		Vertex* v[3];
+
+		for (int j = 0; j < 3; j++) {
+			// Check to eliminate out of bounds reads / writes
+			if (ind[j] < 0 || ind[j] >= vertexDataSize) {
+				LOGE_E("Invalid vertex index");
+				return;
+			}
+
+			v[j] = &vertexData.get()[ind[j]];
+		}
+
+		auto ret = CalculateTriangleNormal(*v[0], *v[1], *v[2]);
+		for (int j = 0; j < 3; j++) {
+			v[j]->normal += ret;
+		}
+	}
+
+	for (int i = 0; i < vertexDataSize; i++) {
+		vertexData.get()[i].normal.Normalize();
+	}
+}
 
 Vector3 Mesh::CalculateTriangleNormal(Vertex vtx1, Vertex vtx2, Vertex vtx3)
 {
@@ -179,14 +212,13 @@ void Mesh::GenerateMesh(Vector2 size, std::function<float(float, float)> heightF
 	int vIt = 0;
 	int iIt = 0;
 
-	for (int i = 0; i < sizeX * sizeY; i++)
-	{
+	for (int i = 0; i < sizeX * sizeY;i++) {
 		float x = (i % sizeX) * step;
 		float y = (i / sizeX) * step;
 
 		Vertex v;
 		v.pos = Vector3(x, heightFunc(x, y), y);
-		
+
 		if (uvFunc == nullptr) {
 			v.UV = Vector2(x, y) / size;
 		}
@@ -198,38 +230,38 @@ void Mesh::GenerateMesh(Vector2 size, std::function<float(float, float)> heightF
 		vertexArray[vIt++] = v;
 	}
 
-	for (int y = 0; y < sizeY - 1; y++)
+	for (int i = 0; i < (sizeY - 1) * (sizeX - 1); i++)
 	{
-		for (int x = 0; x < sizeX - 1; x++)
-		{
-			// Creating 2 triangles to create rectangle
-			//unsigned int ind[6];
-			indicesArray[iIt + 0] = y * sizeX + x;
-			indicesArray[iIt + 1] = (y + 1) * sizeX + x;
-			indicesArray[iIt + 2] = y * sizeX + (x + 1);
-			indicesArray[iIt + 3] = indicesArray[iIt + 2];
-			indicesArray[iIt + 4] = indicesArray[iIt + 1];
-			indicesArray[iIt + 5] = (y + 1) * sizeX + (x + 1);
+		int x = i % (sizeY - 1);
+		int y = i / (sizeY - 1);
 
-			//for (int i = 0; i < 6; i++)
-			//	indicesArray.push_back(ind[i]);
+		// Creating 2 triangles to create rectangle
+		//unsigned int ind[6];
+		indicesArray[iIt + 0] = y * sizeX + x;
+		indicesArray[iIt + 1] = (y + 1) * sizeX + x;
+		indicesArray[iIt + 2] = y * sizeX + (x + 1);
+		indicesArray[iIt + 3] = indicesArray[iIt + 2];
+		indicesArray[iIt + 4] = indicesArray[iIt + 1];
+		indicesArray[iIt + 5] = (y + 1) * sizeX + (x + 1);
+
+		//for (int i = 0; i < 6; i++)
+		//	indicesArray.push_back(ind[i]);
 
 
-			// Generate normals
-			Vector3 n1, n2;
+		// Generate normals
+		Vector3 n1, n2;
 
-			n1 = CalculateTriangleNormal(vertexArray[indicesArray[iIt + 0]], vertexArray[indicesArray[iIt + 1]], vertexArray[indicesArray[iIt + 2]]);
-			n2 = CalculateTriangleNormal(vertexArray[indicesArray[iIt + 3]], vertexArray[indicesArray[iIt + 4]], vertexArray[indicesArray[iIt + 5]]);
+		n1 = CalculateTriangleNormal(vertexArray[indicesArray[iIt + 0]], vertexArray[indicesArray[iIt + 1]], vertexArray[indicesArray[iIt + 2]]);
+		n2 = CalculateTriangleNormal(vertexArray[indicesArray[iIt + 3]], vertexArray[indicesArray[iIt + 4]], vertexArray[indicesArray[iIt + 5]]);
 
-			vertexArray[indicesArray[iIt + 0]].normal += n1;
-			vertexArray[indicesArray[iIt + 1]].normal += n1;
-			vertexArray[indicesArray[iIt + 2]].normal += n1;
-			vertexArray[indicesArray[iIt + 3]].normal += n2;
-			vertexArray[indicesArray[iIt + 4]].normal += n2;
-			vertexArray[indicesArray[iIt + 5]].normal += n2;
+		vertexArray[indicesArray[iIt + 0]].normal += n1;
+		vertexArray[indicesArray[iIt + 1]].normal += n1;
+		vertexArray[indicesArray[iIt + 2]].normal += n1;
+		vertexArray[indicesArray[iIt + 3]].normal += n2;
+		vertexArray[indicesArray[iIt + 4]].normal += n2;
+		vertexArray[indicesArray[iIt + 5]].normal += n2;
 
-			iIt += 6;
-		}
+		iIt += 6;
 	}
 
 	// Normalize normals
@@ -264,65 +296,64 @@ Mesh::Mesh(shared_ptr<Material> mat)
 	InitObjects();
 }
 
-Mesh::~Mesh()
-{
-
-}
-
 void Mesh::__Draw()
 {
-	__Draw(true);
+	__Draw(nullptr);
 }
 
-void Mesh::__Draw(bool useShader)
+void Mesh::__Draw(shared_ptr<Material> mat)
 {
-	if (useShader)
+	if (mat == nullptr)
 	{
-		if (!initialized)
-		{
-			//InitObjects();
-			//CopyFrom(vertexData, indices);
-			CopyFromInit();
-		}
-
 		if (material == nullptr)
 		{
 			LOGW_E("Material is not definied, setting Material shader");
-			material = Material::GetDefaultMaterial();
+			mat = Material::GetDefaultMaterial();
 		}
-
-		material->shader->Use();
-		material->__SendToShader();
-
-		glBindVertexArray(VAO);
+		else {
+			mat = material;
+		}
 	}
+
+	if (!initialized)
+	{
+		//InitObjects();
+		//CopyFrom(vertexData, indices);
+		CopyFromInit();
+	}
+
+	mat->shader->Use();
+	mat->__SendToShader();
+
+	glBindVertexArray(VAO);
+	
 
 	glm::mat4 rotation = glm::toMat4(GetRotation().GetGlVector());
 	glm::mat4 translation = glm::translate(glm::mat4(1.0f), GetPosition().GetGLVector());
 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), GetScale().GetGLVector());
 	glm::mat4 model = translation * rotation * scale;
 
-	material->shader->SetMat4(material->shader->modelLocation, glm::value_ptr(model));
+	mat->shader->SetMat4(mat->shader->modelLocation, glm::value_ptr(model));
 
-	if (faceCulling != FaceCullingModes::Default)
+	glEnable(GL_CULL_FACE);
+	long mode = GL_BACK;;
+	switch (faceCulling)
 	{
-		glEnable(GL_CULL_FACE);
-		long mode = GL_BACK;;
-		switch (faceCulling)
-		{
-		case FaceCullingModes::Front:
-			mode = GL_FRONT;
-			break;
-		case FaceCullingModes::Back:
-			mode = GL_BACK;
-			break;
-		case FaceCullingModes::FrontAndBack:
-			mode = GL_FRONT_AND_BACK;
-			break;
-		}
+	case FaceCullingModes::Disabled:
+		glDisable(GL_CULL_FACE);
+		break;
 
-		glCullFace(mode);
+	case FaceCullingModes::Front:
+		mode = GL_FRONT;
+		break;
+	case FaceCullingModes::Back:
+		mode = GL_BACK;
+		break;
+	case FaceCullingModes::FrontAndBack:
+		mode = GL_FRONT_AND_BACK;
+		break;
 	}
+	glCullFace(mode);
 
 	// Draw by indices
 	if (indicesDataSize > 0)
@@ -330,15 +361,12 @@ void Mesh::__Draw(bool useShader)
 	else // Draw by vertexes
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, vertexDataSize);
 
-	if (faceCulling != FaceCullingModes::Default)
-		glDisable(GL_CULL_FACE);
+
+	glDisable(GL_CULL_FACE);
 }
 
-void Mesh::OnDestroy()
+Mesh::~Mesh()
 {
-	cout << "Mesh destructor" << endl;
-
-
 	if (initialized)
 	{
 		glDeleteBuffers(1, &VBO);

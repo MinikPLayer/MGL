@@ -17,27 +17,6 @@ float yfov_to_xfov(float yfov, float aspect) {
 // Why not working??
 Sky::Sky()
 {
-
-	vector<Vector3> v = {
-		Vector3(-1, -1, -1),
-		Vector3(1, -1, -1),
-		Vector3(1, 1, -1),
-		Vector3(-1, 1, -1),
-	};
-
-	vector<unsigned int> ind = {
-		0, 1, 2, 0, 2, 3
-	};
-
-	vector<Vector2> nullVector;
-	vector<Vector3> nullVector3;
-	for (int i = 0; i < 4; i++) {
-		nullVector.push_back(Vector2(0, 0));
-		nullVector3.push_back(Vector3(0, 0, 0));
-	}
-
-
-	this->CopyFrom(v, nullVector3, nullVector, ind);
 	this->SetMaterial(shared_ptr<Material>(new Material(AssetsLoader::LoadShader("SkyShader.vert", "SkyShader.frag"))));
 
 	this->material->SetFloat("time", []() {

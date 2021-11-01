@@ -119,7 +119,7 @@ void MeshRenderer::RenderMeshes(vector<shared_ptr<GameObject>>& objects)
 			//Vector3 pos = meshes[i][j]->GetPosition();
 			materials[i]->shader->SetMat4(materials[i]->shader->modelLocation, glm::value_ptr(model));
 
-			meshes[i][j]->__Draw(false);
+			meshes[i][j]->__Draw(shared_ptr<Material>(materials[i]));
 		}
 
 		glDeleteBuffers(1, &EBO);

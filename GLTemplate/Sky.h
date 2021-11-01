@@ -1,10 +1,10 @@
 #pragma once
 
 #include "GameObject.h"
-#include "Cube.h"
+#include "PlaneMesh.h"
 
 // Kinda not working
-class Sky : public Cube
+class Sky : public PlaneMesh
 {
 public:
 
