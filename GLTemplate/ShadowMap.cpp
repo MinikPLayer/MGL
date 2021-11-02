@@ -27,12 +27,14 @@ ShadowMap::ShadowMap(GLuint width, GLuint height)
 	if(color)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	else
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
 			
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borders[] = { 1, 1, 1, 1 };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borders);
 
 	// Bind underlaying framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
@@ -78,14 +80,14 @@ void ShadowMap::Render()
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 
-	const float nearPlane = 0.1f;
-	const float farPlane = 75.f;
+	const float nearPlane = 0.0f;
+	const float farPlane = 100.f;
 
 	Vector3 pos = Vector3(0, 0, 0);
 	if (posFunc != nullptr)
 		pos = posFunc();
 
-	glm::mat4 lightProjection = glm::ortho(-20.0f, 20.0f, -40.0f, 40.0f, nearPlane, farPlane);
+	glm::mat4 lightProjection = glm::ortho(-40.0f, 40.0f, -20.0f, 20.0f, nearPlane, farPlane);
 	glm::mat4 lightView = glm::lookAt((pos).GetGLVector(), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	
 	lightSpaceMatrix = lightProjection * lightView;
@@ -95,7 +97,7 @@ void ShadowMap::Render()
 
 	Material::disableTextures = true;
 	Shader::prohibitShaderChange = true;
-	RenderScene(nullptr, mat);
+	RenderScene(nullptr, mat, true);
 	Shader::prohibitShaderChange = false;
 	Material::disableTextures = false;
 

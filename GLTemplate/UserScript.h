@@ -126,7 +126,7 @@ public:
 
 
 		dirLight = shared_ptr<DirectionalLight>(new DirectionalLight());
-		dirLight->SetPosition(Vector3(2.f, 3.f, 3.f));
+		dirLight->SetPosition(Vector3(20.f, 30.f, 30.f));
 		//dirLight->SetPosition(Vector3(0, 1, 0));
 
 		Camera::GetMainCamera()->SetPosition(dirLight->GetPosition());
@@ -137,6 +137,8 @@ public:
 		mats[2] = Material::CreatePrefabedMaterial(Material::SILVER);
 		mats[3] = Material::CreatePrefabedMaterial(Material::SILVER);
 		mats[4] = Material::CreatePrefabedMaterial(Material::SILVER);
+
+		AddCube();
 
 		// Load textures
 		for (int i = 0; i < 3; i++)
@@ -214,10 +216,10 @@ public:
 
 		// Add Floor
 		floorMesh = shared_ptr<Mesh>(new Mesh(mats[2]));
-		Vector2 sinMeshSize(50, 50);
+		Vector2 sinMeshSize(100, 100);
 		floorMesh->SetLocalPosition(-1.0f * Vector3(sinMeshSize.x / 2, 0, sinMeshSize.y / 2));
 		floorMesh->GenerateMesh(sinMeshSize, [](float x, float y) {
-			//return sin(x/2.0f) * sin(y/2.0f);
+			//return 4 * sin(x/4.f) * sin(y/4.f);
 			return 0.0f;
 		}, nullptr, 0.5);
 		AddComponent(floorMesh);
@@ -248,6 +250,10 @@ public:
 	
 	void Update()
 	{
+		float radius = 40;
+		Vector3 dlpos = Vector3(radius * sin(Time::elapsedTime), 2, radius * cos(Time::elapsedTime));
+		dirLight->SetPosition(dlpos);
+
 		for (int i = 0; i < lightCubesCount; i++) {
 			LightCube* lCube = (LightCube*)lightCubes[i].get();
 

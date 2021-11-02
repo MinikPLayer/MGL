@@ -13,7 +13,7 @@ void RunEvent(void (GameObject::* callback)())
 	}
 }
 
-void RenderScene(Camera* cam, shared_ptr<Material> matOverride)
+void RenderScene(Camera* cam, shared_ptr<Material> matOverride, bool forceFrontCull)
 {
 	if (cam == nullptr) {
 		cam = Camera::GetMainCamera();
@@ -29,7 +29,7 @@ void RenderScene(Camera* cam, shared_ptr<Material> matOverride)
 
 		if (GameObject::__objects[i]->IsType<Mesh>()) {
 			Mesh* m = (Mesh*)GameObject::__objects[i].get();
-			m->__Draw(matOverride);
+			m->__Draw(matOverride, forceFrontCull);
 		}
 
 		GameObject::__objects[i].get()->__Draw();

@@ -5,4 +5,4 @@
 class Camera;
 
 void RunEvent(void (GameObject::* callback)());
-void RenderScene(Camera* cam = nullptr, shared_ptr<Material> matOverride = nullptr);
+void RenderScene(Camera* cam = nullptr, shared_ptr<Material> matOverride = nullptr, bool forceFrontCull = false);

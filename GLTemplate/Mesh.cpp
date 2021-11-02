@@ -301,7 +301,7 @@ void Mesh::__Draw()
 	__Draw(nullptr);
 }
 
-void Mesh::__Draw(shared_ptr<Material> mat)
+void Mesh::__Draw(shared_ptr<Material> mat, bool forceFrontCull)
 {
 	if (mat == nullptr)
 	{
@@ -353,6 +353,7 @@ void Mesh::__Draw(shared_ptr<Material> mat)
 		mode = GL_FRONT_AND_BACK;
 		break;
 	}
+
 	glCullFace(mode);
 
 	// Draw by indices

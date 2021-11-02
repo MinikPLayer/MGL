@@ -99,5 +99,5 @@ public:
 	~Mesh();
 
 	void __Draw();
-	void __Draw(shared_ptr<Material> materialOverride);
+	void __Draw(shared_ptr<Material> materialOverride, bool forceFrontCull = false);
 };
