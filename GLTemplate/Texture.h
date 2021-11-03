@@ -11,8 +11,11 @@ class Texture : public Asset
 	bool loaded = false;
 	GLuint handle = -1;
 	int slot = -1;
+	int channelsCount = 0;
 
 public:
+	int GetChannelsCount() { return this->channelsCount; }
+
 	Texture() {}
 	Texture(const char* path, int slot);
 	Texture(GLuint handleID, int slot);

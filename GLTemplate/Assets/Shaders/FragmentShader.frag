@@ -4,6 +4,7 @@
 struct Tex2DVec3
 {
 	bool useTex;
+	bool useOnlyRed;
 	sampler2D tex;
 	vec3 value;
 };
@@ -113,7 +114,13 @@ float ShadowCalculation(vec4 lightSource)
 vec3 GetTex2DVec3Value(Tex2DVec3 value, vec2 coords)
 {
 	if(value.useTex)
-		return texture(value.tex, coords).rgb;
+		if(value.useOnlyRed)
+		{
+			float val = texture(value.tex, coords).r;
+			return vec3(val, val, val);
+		}
+		else
+			return texture(value.tex, coords).rgb;
 	else
 		return value.value;
 	//return texture(shadowMap, coords).rgb;

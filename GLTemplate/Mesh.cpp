@@ -41,7 +41,7 @@ void Mesh::CopyFromInit()
 	}
 
 	// Vertex pos
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);//offsetof(Vertex, pos));
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, pos));
 	glEnableVertexAttribArray(0);
 
 	// Normal

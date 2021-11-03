@@ -57,6 +57,15 @@ enum class TextureFiltering
 	Linear = GL_LINEAR
 };
 
+struct TextureInfo
+{
+public:
+	GLint ID;
+	int channels;
+
+	TextureInfo(GLint ID, int channels);
+};
+
 /// <summary>
 /// Loads texture from file
 /// </summary>
@@ -65,7 +74,7 @@ enum class TextureFiltering
 /// <param name="minFilter">Minimization filter, defaults to Nearest</param>
 /// <param name="magFilter">Maginifaction filter, defaults to Nearest</param>
 /// <returns>GL handle to texture</returns>
-GLint LoadTexture(const char* path, bool flip = true, TextureFiltering minFilter = TextureFiltering::Nearest, TextureFiltering magFilter = TextureFiltering::Nearest);
+TextureInfo LoadTexture(const char* path, bool flip = true, TextureFiltering minFilter = TextureFiltering::Nearest, TextureFiltering magFilter = TextureFiltering::Nearest);
 
 extern Sky* sky;
 

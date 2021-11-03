@@ -111,18 +111,27 @@ void Material::SetMaterialTexture(shared_ptr<Texture> texture, string texName)
 	SetTextureSlot(texture);
 	SetInt("material." + texName + ".tex", texture.get()->GetSlot());
 	SetBool("material." + texName + ".useTex", true);
+
+	if(texture->GetChannelsCount() == 1)
+		SetBool("material." + texName + ".useOnlyRed", true);
 }
 
-void Material::SetMaterialTexture(string texName, int slot)
+void Material::SetMaterialTexture(string texName, int slot, bool useOnlyRed)
 {
 	SetInt("material." + texName + ".tex", slot);
 	SetBool("material." + texName + ".useTex", true);
+
+	if(useOnlyRed)
+		SetBool("material." + texName + ".useOnlyRed", true);
 }
 
 void Material::SetMaterialTexture(const char* path, string texName, int slot)
 {
-	SetTextureSlot(path, slot);
-	SetMaterialTexture(texName, slot);
+	//SetTextureSlot(path, slot);
+	//SetMaterialTexture(texName, slot);
+	auto txt = shared_ptr<Texture>(new Texture(path, slot));
+	SetTextureSlot(txt);
+	SetMaterialTexture(txt, texName);
 }
 
 // Used to detect shader features, like vertex position, lights, material properties, etc

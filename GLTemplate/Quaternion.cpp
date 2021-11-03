@@ -1,4 +1,5 @@
 #include "Quaternion.h"
+#include "Util.h"
 
 Quaternion Quaternion::FromEuler(Vector3 euler)
 {
@@ -32,6 +33,7 @@ Quaternion::Quaternion(float x, float y, float z)
 
 Quaternion::Quaternion(Vector3 rot)
 {
+    rot = Vector3(deg2rad(rot.x), deg2rad(rot.y), deg2rad(rot.z));
     this->quaternion = glm::quat(rot.GetGLVector());
 }
 

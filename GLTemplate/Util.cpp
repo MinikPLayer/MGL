@@ -148,7 +148,7 @@ double rad2deg(double rad)
 	return rad * 180.0 / PI;
 }
 
-GLint LoadTexture(const char* path, bool flip, TextureFiltering minFilter, TextureFiltering magFilter)
+TextureInfo LoadTexture(const char* path, bool flip, TextureFiltering minFilter, TextureFiltering magFilter)
 {
 	// Load texture
 	int width, height, nrChannels;
@@ -159,7 +159,7 @@ GLint LoadTexture(const char* path, bool flip, TextureFiltering minFilter, Textu
 	{
 		LOGF_E("Failed to load [", path, "]  texture!");
 		stbi_image_free(data);
-		return -1;
+		return TextureInfo(-1, -1);
 	}
 
 	GLuint texture;
@@ -179,12 +179,19 @@ GLint LoadTexture(const char* path, bool flip, TextureFiltering minFilter, Textu
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 	else if (nrChannels == 4)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	else if (nrChannels == 1)
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RED, GL_UNSIGNED_BYTE, data);
 	else
 		LOGE_E("Bad texture channels count: ", nrChannels);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	stbi_image_free(data);
 
-	return texture;
+	return TextureInfo(texture, nrChannels);
 }
 
+TextureInfo::TextureInfo(GLint ID, int channels)
+{
+	this->ID = ID;
+	this->channels = channels;
+}

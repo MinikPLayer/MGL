@@ -148,7 +148,7 @@ public:
 	/// <param name="texName">Shader texture name, eg diffuse, specular</param>
 	/// <param name="slot">Texture slot</param>
 	void SetMaterialTexture(shared_ptr<Texture> texture, string texName = "diffuse");
-	void SetMaterialTexture(string texName = "diffuse", int slot = 0);
+	void SetMaterialTexture(string texName = "diffuse", int slot = 0, bool useOnlyRed = false);
 	void SetMaterialTexture(const char* path, string texName = "diffuse", int slot = 0);
 
 	

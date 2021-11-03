@@ -17,6 +17,9 @@
 #include "Window.h"
 #include "DirecitonalLight.h"
 
+#include <math.h>
+#define M_PI   3.14159265358979323846264338327950288
+
 using namespace std;
 using namespace glm;
 
@@ -82,15 +85,17 @@ public:
 
 		//Model* model = new Model("cube.fbx", mats[rand() % 2]);
 		if (model.get() == nullptr)
-			// model = AssetsLoader::LoadModel(Path::Combine({ "Backpack", "backpack.obj" }), mats[0]);//mats[rand() % 2]);
-			model = AssetsLoader::LoadModel("rock6.fbx");
+			 model = AssetsLoader::LoadModel("teapot1_01.FBX", mats[0]);//mats[rand() % 2]);
+			//model = AssetsLoader::LoadModel("rock1.fbx");
 
 		//Model* model = new Model("sphere.fbx", false);
 		//model->SetPosition(pos);
-		spawned = model->SpawnMesh(mats[4]);
+		//spawned = model->SpawnMesh(mats[0]);
+		spawned = model->SpawnMesh();
 		spawned->SetParent(this);
-		spawned->SetPosition(Vector3(0, 10, -10));
-		spawned->SetScale(Vector3(0.1, 0.1, 0.1));
+		spawned->SetPosition(Vector3(0, 0, -10));
+		spawned->SetScale(Vector3(1, 1, 1));
+		spawned->SetRotation(Vector3(-90, 0, 0));
 		
 
 		/*RotatingCube* component = new RotatingCube(obj.get());
@@ -202,8 +207,11 @@ public:
 
 
 
-		mats[0].get()->SetMaterialTexture(AssetsLoader::LoadTexture("poland.png"));
-		mats[0]->SetMaterialTexture(AssetsLoader::LoadTexture("poland_specular.png", 1), "specular");
+		//mats[0].get()->SetMaterialTexture(AssetsLoader::LoadTexture("poland.png"));
+		//mats[0]->SetMaterialTexture(AssetsLoader::LoadTexture("cube_texture.png"));
+		mats[0]->SetMaterialTexture(AssetsLoader::LoadTexture("TeaPot_low_map_A_teapot1_BaseColor.jpg"));
+		//mats[0]->SetMaterialTexture(AssetsLoader::LoadTexture("TeaPot_low_map_A_teapot1_Metallic.jpg", 1), "specular");
+		mats[0]->SetMaterialTexture(AssetsLoader::LoadTexture("TeaPot_low_map_A_teapot1_Metallic.jpg", 1), "specular");
 
 		mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture("grass.png"));
 		mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture("grass_specular.png", 1), "specular");
@@ -211,8 +219,9 @@ public:
 		mats[3]->SetMaterialTexture(AssetsLoader::LoadTexture("tall_grass.png"));
 		mats[3]->SetMaterialTexture(AssetsLoader::LoadTexture("grass_specular.png", 1), "specular");
 
-		mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("rock6.png"));
-		mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("rock1_specular.png", 1), "specular");
+		//mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("rock1.png"));
+		//mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("rock1_specular.png", 1), "specular");
+		mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("TeaPot_low_map_A_teapot1_BaseColor.jpg"));
 
 		// Add Floor
 		floorMesh = shared_ptr<Mesh>(new Mesh(mats[2]));
@@ -252,7 +261,7 @@ public:
 	{
 		float radius = 40;
 		Vector3 dlpos = Vector3(radius * sin(Time::elapsedTime), 2, radius * cos(Time::elapsedTime));
-		dirLight->SetPosition(dlpos);
+		//dirLight->SetPosition(dlpos);
 
 		for (int i = 0; i < lightCubesCount; i++) {
 			LightCube* lCube = (LightCube*)lightCubes[i].get();
