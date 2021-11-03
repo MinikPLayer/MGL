@@ -80,16 +80,18 @@ void ShadowMap::Render()
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 
-	const float nearPlane = 0.0f;
+	const float nearPlane = 0.1f;
 	const float farPlane = 100.f;
 
 	Vector3 pos = Vector3(0, 0, 0);
 	if (posFunc != nullptr)
 		pos = posFunc();
 
-	glm::mat4 lightProjection = glm::ortho(-40.0f, 40.0f, -20.0f, 20.0f, nearPlane, farPlane);
-	glm::mat4 lightView = glm::lookAt((pos).GetGLVector(), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-	
+	//glm::mat4 lightProjection = glm::ortho(-40.0f, 40.0f, -20.0f, 20.0f, nearPlane, farPlane);
+	glm::mat4 lightProjection = glm::perspective(1.8f, 2.f, nearPlane, farPlane);
+	//glm::mat4 lightView = glm::lookAt((pos).GetGLVector(), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+	glm::mat4 lightView = glm::translate(glm::mat4(1.0f), -pos.GetGLVector());
+
 	lightSpaceMatrix = lightProjection * lightView;
 	shared_ptr<Material> mat = shared_ptr<Material>(new Material(shadowMapShader));
 	shadowMapShader->SetMat4("lightSpaceMatrix", glm::value_ptr(lightSpaceMatrix));

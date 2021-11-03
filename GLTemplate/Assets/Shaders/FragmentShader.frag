@@ -61,7 +61,7 @@ uniform int pointLightsCount = 0;
 const int MAX_LIGHTS_COUNT = 4;
 uniform PointLight pointLights[MAX_LIGHTS_COUNT];
 
-float ShadowCalculation2(vec4 lightSpace)
+/*float ShadowCalculation2(vec4 lightSpace)
 {
 	vec3 projCoords = lightSpace.xyz / lightSpace.w;
 	projCoords = projCoords * 0.5 + 0.5;
@@ -76,16 +76,17 @@ float ShadowCalculation2(vec4 lightSpace)
 
 	//float bias = clamp(0.000005 * tan(acos(cosTheta)), 0.0001, 0.005);
 	//float bias = clamp(0.000005 * tan(acos(cosTheta)), 0.0001, 0.005);
-	float bias = max(0.001 * (1.0 - dot(Normal, lightDir)), 0.001);  
-	//float bias = 0.0002;
+	//float bias = max(0.001 * (1.0 - dot(Normal, lightDir)), 0.001);  
+	float bias = 0;
 	float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
 
 	return shadow;
-}
+}*/
 
 float ShadowCalculation(vec4 lightSource)
 {
 	vec3 L = normalize(-dirLight.direction - FragPos);
+	//vec3 L = normalize(pointLights[0].position - FragPos);
 	vec3 N = normalize(Normal);
 
 	float NdL = max(dot(N,L), 0.0);
@@ -104,8 +105,9 @@ float ShadowCalculation(vec4 lightSource)
     float currentDepth = projCoords.z;
     // Check whether current frag pos is in shadow
 
-    float bias = max(0.025 * (1.0 - NdL), 0.001);
-    float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
+    //float bias = max(0.000025 * (1.0 - NdL), 0.0001);
+	float bias = 0.00001;
+	float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
     //float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
 
     return shadow;

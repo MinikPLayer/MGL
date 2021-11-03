@@ -75,33 +75,15 @@ public:
 
 	void AddCube(Vector3 pos = Vector3(0, 0, 0))
 	{
-
-		//Mesh* mesh = new Mesh();
-		//mesh->SetMaterial(Material::GetDefaultMaterial());
-		//mesh->SetPosition(Vector3(0, 0, 0));
-		//mesh->loadModel("monkey_high.fbx");
-
-		//AddComponent<Mesh>(mesh);
-
-		//Model* model = new Model("cube.fbx", mats[rand() % 2]);
 		if (model.get() == nullptr)
-			 model = AssetsLoader::LoadModel("teapot1_01.FBX", mats[0]);//mats[rand() % 2]);
-			//model = AssetsLoader::LoadModel("rock1.fbx");
+			 model = AssetsLoader::LoadModel("teapot1_01.FBX", mats[0]);
 
-		//Model* model = new Model("sphere.fbx", false);
-		//model->SetPosition(pos);
-		//spawned = model->SpawnMesh(mats[0]);
 		spawned = model->SpawnMesh();
 		spawned->SetParent(this);
 		spawned->SetPosition(Vector3(0, 0, -10));
 		spawned->SetScale(Vector3(1, 1, 1));
 		spawned->SetRotation(Vector3(-90, 0, 0));
-		
 
-		/*RotatingCube* component = new RotatingCube(obj.get());
-		component->angle = Vector2::Random().Normalized();
-		component->distance = (rand() * 151) % 25;
-		component->speed = (((rand() * 5311) % 1000) / 750.0) + 0.5;*/
 
 		cubesSpawned++;
 	}
@@ -131,7 +113,8 @@ public:
 
 
 		dirLight = shared_ptr<DirectionalLight>(new DirectionalLight());
-		dirLight->SetPosition(Vector3(20.f, 30.f, 30.f));
+		dirLight->SetPosition(Vector3(20.f, 20.f, 30.f));
+		dirLight->AddComponent(new Cube());
 		//dirLight->SetPosition(Vector3(0, 1, 0));
 
 		Camera::GetMainCamera()->SetPosition(dirLight->GetPosition());
@@ -193,6 +176,7 @@ public:
 
 			// TODO: Add engine wise lightning and shadowmaps
 			auto shadowMap = dirLight->shadowMap;
+			//auto shadowMap = ((LightCube*)lightCubes[0].get())->light->shadowMap;
 			//auto shadowMap = ShadowMap::__ShadowMaps__[0];
 			auto txt = shared_ptr<Texture>(new Texture(shadowMap->GetDepthMapID(), 15));
 			mats[i]->SetTextureSlot(txt);
@@ -201,6 +185,9 @@ public:
 				//return sm->lightSpaceMatrix;
 				auto sm = dirLight->shadowMap;
 				return sm->lightSpaceMatrix;
+				//LightCube* c = (LightCube*)lightCubes[0].get();
+				//auto sm = c->light->shadowMap;
+				//return sm->lightSpaceMatrix;
 			});
 			mats[i]->SetInt("shadowMap", 15);
 		}
@@ -221,7 +208,7 @@ public:
 
 		//mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("rock1.png"));
 		//mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("rock1_specular.png", 1), "specular");
-		mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("TeaPot_low_map_A_teapot1_BaseColor.jpg"));
+		//mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("TeaPot_low_map_A_teapot1_BaseColor.jpg"));
 
 		// Add Floor
 		floorMesh = shared_ptr<Mesh>(new Mesh(mats[2]));
@@ -229,7 +216,8 @@ public:
 		floorMesh->SetLocalPosition(-1.0f * Vector3(sinMeshSize.x / 2, 0, sinMeshSize.y / 2));
 		floorMesh->GenerateMesh(sinMeshSize, [](float x, float y) {
 			//return 4 * sin(x/4.f) * sin(y/4.f);
-			return 0.0f;
+			return 2 * sin(x / 4.f) * sin(y / 2.f) + sin(x/3.f);
+			//return 0.0f;
 		}, nullptr, 0.5);
 		AddComponent(floorMesh);
 

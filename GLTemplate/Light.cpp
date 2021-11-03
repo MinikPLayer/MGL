@@ -13,7 +13,7 @@ Light::Light(Color color, float intensity)
 	this->color = color;
 	this->intensity = intensity;
 
-	const int size = 1024;
+	const int size = 4096;
 	this->shadowMap = new ShadowMap(size, size);
 
 	this->shadowMap->posFunc = [this] {
