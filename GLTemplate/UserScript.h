@@ -113,7 +113,7 @@ public:
 
 
 		dirLight = shared_ptr<DirectionalLight>(new DirectionalLight());
-		dirLight->SetPosition(Vector3(20.f, 20.f, 30.f));
+		dirLight->SetPosition(Vector3(20.f, 10.f, 30.f));
 		dirLight->AddComponent(new Cube());
 		//dirLight->SetPosition(Vector3(0, 1, 0));
 
@@ -199,6 +199,7 @@ public:
 		mats[0]->SetMaterialTexture(AssetsLoader::LoadTexture("TeaPot_low_map_A_teapot1_BaseColor.jpg"));
 		//mats[0]->SetMaterialTexture(AssetsLoader::LoadTexture("TeaPot_low_map_A_teapot1_Metallic.jpg", 1), "specular");
 		mats[0]->SetMaterialTexture(AssetsLoader::LoadTexture("TeaPot_low_map_A_teapot1_Metallic.jpg", 1), "specular");
+		mats[0]->SetMaterialTexture(AssetsLoader::LoadTexture("TeaPot_low_map_A_teapot1_Normal.jpg", 2), "normal");
 
 		mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture("grass.png"));
 		mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture("grass_specular.png", 1), "specular");
@@ -216,8 +217,8 @@ public:
 		floorMesh->SetLocalPosition(-1.0f * Vector3(sinMeshSize.x / 2, 0, sinMeshSize.y / 2));
 		floorMesh->GenerateMesh(sinMeshSize, [](float x, float y) {
 			//return 4 * sin(x/4.f) * sin(y/4.f);
-			return 2 * sin(x / 4.f) * sin(y / 2.f) + sin(x/3.f);
-			//return 0.0f;
+			//return 2 * sin(x / 4.f) * sin(y / 2.f) + sin(x/3.f);
+			return 0.0f;
 		}, nullptr, 0.5);
 		AddComponent(floorMesh);
 

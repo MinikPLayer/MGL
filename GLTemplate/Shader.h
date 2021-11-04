@@ -17,6 +17,9 @@ class Shader : public Asset
 	//static Asset<Shader> defaultShader;
 	static shared_ptr<Shader> defaultShader;
 
+	string vertexPath = "";
+	string fragmentPath = "";
+
 public:
 	static bool prohibitShaderChange;
 
@@ -44,6 +47,8 @@ public:
 	GLuint GetProgramID() {
 		return ID;
 	}
+
+	shared_ptr<Shader> Copy();
 
 	Shader() {}
 	Shader(string vertexPath, string fragmentPath);

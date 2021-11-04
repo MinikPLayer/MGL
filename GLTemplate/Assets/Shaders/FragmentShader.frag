@@ -10,6 +10,7 @@ struct Tex2DVec3
 };
 
 struct Material {
+	Tex2DVec3 normal;
 	Tex2DVec3 diffuse;
 	Tex2DVec3 specular;
     float shininess;
@@ -42,10 +43,11 @@ uniform sampler2D shadowMap;
 uniform vec3 shadowPos;
 
 out vec4 fragColor;
-in vec3 vertColor;
 in vec3 Normal;
 in vec3 FragPos;
 //in vec2 UV;
+
+in mat3 TBN;
 
 in vec2 TexCoords;
 uniform vec3 viewPos;
@@ -179,6 +181,13 @@ void main()
 	}
 
 	vec3 norm = normalize(Normal);
+	if(material.normal.useTex)
+	{
+		norm = texture(material.normal.tex, TexCoords).rgb;
+		norm = norm * 2.0 - 1.0;   
+		norm = normalize(TBN * norm); 
+	}
+
 	vec3 viewDir = normalize(viewPos - FragPos);
 
 	vec3 result = CalcLight_Dir(dirLight, norm, viewDir);

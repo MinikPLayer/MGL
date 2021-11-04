@@ -12,7 +12,7 @@
 bool Model::loadModel(string path, shared_ptr<Material>& overrideMat)
 {
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals);
+	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace);
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
@@ -29,6 +29,7 @@ bool Model::loadModel(string path, shared_ptr<Material>& overrideMat)
 
 void Model::processNode(aiNode* node, const aiScene* scene, shared_ptr<Material>& overrideMat)
 {
+
 	// process all the node's meshes (if any)
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
@@ -50,12 +51,25 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, shared_ptr<Material
 {
 	vector<Vertex> vertexData;
 	vector<unsigned int> indicesData;
+	vector<Vector3> tangents;
 
 	for (int i = 0; i < mesh->mNumVertices; i++)
 	{
+
 		Vertex v;
 		v.pos = Vector3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
 		v.normal = Vector3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
+		if (mesh->HasTangentsAndBitangents())
+		{
+			v.tangent = Vector3(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z);
+			v.bitangent = Vector3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z);
+		}
+		else
+		{
+			LOGW_E("No tangents and bitangents in mesh");
+			v.tangent = Vector3(0, 0, 0);
+			v.bitangent = Vector3(0, 0, 0);
+		}
 
 		if (mesh->HasTextureCoords(0))
 		{
@@ -68,6 +82,7 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, shared_ptr<Material
 		}
 
 		vertexData.push_back(v);
+
 	}
 
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)

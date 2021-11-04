@@ -52,12 +52,13 @@ void Mesh::CopyFromInit()
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, UV));
 	glEnableVertexAttribArray(2);
 
-	// Vertex color - white
-	//glVertexAttrib3f(1, (rand() % 1000) / 1000.0, (rand() % 1000) / 1000.0, (rand() % 1000) / 1000.0);
-	//color = Vector3((rand() % 1000) / 1000.0, (rand() % 1000) / 1000.0, (rand() % 1000) / 1000.0);
-	//color = Vector3(1, 1, 1);
-	//glVertexAttrib3f(3, color.x, color.y, color.z);
-	glVertexAttrib3f(3, 1, 1, 1);
+	// Tangents
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
+	glEnableVertexAttribArray(3);
+
+	// Bitangents
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
+	glEnableVertexAttribArray(4);
 
 	//InitObjects();
 }
@@ -77,6 +78,7 @@ void Mesh::CopyFrom(Mesh* mesh)
 	CopyFrom(mesh->vertexData.get(), mesh->vertexDataSize, mesh->indices.get(), mesh->indicesDataSize);
 	SetMaterial(mesh->GetMaterial());
 }
+
 
 void Mesh::CopyFrom(vector<Vertex> vertexData, vector<unsigned int> indices)
 {

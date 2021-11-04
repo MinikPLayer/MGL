@@ -17,6 +17,11 @@ void Shader::UpdateUniformsLocations()
 	projectionLocation = glGetUniformLocation(ID, "projection");
 }
 
+shared_ptr<Shader> Shader::Copy()
+{
+	return shared_ptr<Shader>(new Shader(vertexPath, fragmentPath));
+}
+
 Shader::Shader(string vertexPath, string fragmentPath)
 {
 	loaded = LoadShaders(vertexPath, fragmentPath);
@@ -24,6 +29,9 @@ Shader::Shader(string vertexPath, string fragmentPath)
 
 bool Shader::LoadShaders(string vertexPath, string fragmentPath)
 {
+	this->vertexPath = vertexPath;
+	this->fragmentPath = fragmentPath;
+
 	// Init some variables
 	GLuint vertex = 0;
 	GLuint fragment = 0;
@@ -245,5 +253,5 @@ shared_ptr<Shader> Shader::GetDefaultShader()
 	{
 		defaultShader = AssetsLoader::LoadShader("VertexShader.vert", "FragmentShader.frag");
 	}
-	return defaultShader;
+	return defaultShader->Copy();
 }

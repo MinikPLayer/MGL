@@ -20,12 +20,16 @@ struct Vertex
 	Vector3 pos;
 	Vector3 normal;
 	Vector2 UV;
+	Vector3 tangent;
+	Vector3 bitangent;
 
-	Vertex(Vector3 pos, Vector3 normal, Vector2 UV)
+	Vertex(Vector3 pos, Vector3 normal, Vector2 UV, Vector3 tangent = Vector3(0,0,0), Vector3 bitangent = Vector3(0,0,0))
 	{
 		this->pos = pos;
 		this->normal = normal;
 		this->UV = UV;
+		this->tangent = tangent;
+		this->bitangent = bitangent;
 	}
 
 	Vertex()
@@ -33,6 +37,7 @@ struct Vertex
 		this->pos = Vector3(0, 0, 0);
 		this->normal = Vector3(0, 0, 0);
 		this->UV = Vector2(0, 0);
+		this->tangent = Vector3(0, 0, 0);
 	}
 };
 
