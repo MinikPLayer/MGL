@@ -60,7 +60,7 @@ void MeshRenderer::RenderMeshes(vector<shared_ptr<GameObject>>& objects)
 
 	for (int i = 0; i < materials.size(); i++)
 	{
-		if (materials[i] == nullptr || materials[i]->shader == nullptr)
+		if (materials[i] == nullptr || materials[i]->GetShader() == nullptr)
 			continue;
 
 		GLuint VAO;
@@ -76,7 +76,7 @@ void MeshRenderer::RenderMeshes(vector<shared_ptr<GameObject>>& objects)
 		glGenBuffers(1, &VBO);
 		glGenBuffers(1, &EBO);
 
-		materials[i]->shader->Use();
+		materials[i]->GetShader()->Use();
 		materials[i]->__SendToShader();
 		//materials[i]->Use();
 		/*glBindVertexArray(VAO);
@@ -117,7 +117,7 @@ void MeshRenderer::RenderMeshes(vector<shared_ptr<GameObject>>& objects)
 			glm::mat4 model = glm::mat4(1.0f);
 			model = glm::translate(model, meshes[i][j]->GetPosition().GetGLVector());
 			//Vector3 pos = meshes[i][j]->GetPosition();
-			materials[i]->shader->SetMat4(materials[i]->shader->modelLocation, glm::value_ptr(model));
+			materials[i]->GetShader()->SetMat4(materials[i]->GetShader()->modelLocation, glm::value_ptr(model));
 
 			meshes[i][j]->__Draw(shared_ptr<Material>(materials[i]));
 		}

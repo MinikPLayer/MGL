@@ -47,5 +47,5 @@ private:
     Mesh* processMesh(aiMesh* mesh, const aiScene* scene, shared_ptr<Material>& overrideMat);
 
     
-    void loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
+    vector<shared_ptr<Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName);
 };

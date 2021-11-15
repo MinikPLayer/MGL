@@ -66,7 +66,7 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, shared_ptr<Material
 		}
 		else
 		{
-			LOGW_E("No tangents and bitangents in mesh");
+			//LOGW_E("No tangents and bitangents in mesh");
 			v.tangent = Vector3(0, 0, 0);
 			v.bitangent = Vector3(0, 0, 0);
 		}
@@ -78,7 +78,7 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, shared_ptr<Material
 		else
 		{
 			v.UV = Vector2(0, 0);
-			LOG("No vertex UV");
+			//LOG("No vertex UV");
 		}
 
 		vertexData.push_back(v);
@@ -92,11 +92,19 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, shared_ptr<Material
 			indicesData.push_back(face.mIndices[j]);
 	}
 
+	auto mat = Material::GetDefaultMaterial();
 	if (mesh->mMaterialIndex >= 0)
 	{
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-		loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-		loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+		auto diffTextures = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
+		auto specTextures = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+
+		if (diffTextures.size() > 0)
+			mat->SetTextureSlot(diffTextures[0]);
+
+		if (specTextures.size() > 0)
+			mat->SetTextureSlot(specTextures[0]);
+
 		LOG_E("Loaded textures");
 	}
 
@@ -105,11 +113,8 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, shared_ptr<Material
 	if (overrideMat != nullptr)
 		m->SetMaterial(overrideMat);
 	else
-		m->SetMaterial(Material::GetDefaultMaterial());
-	//m->SetParent(this);
-	
-	//m->SetPosition(GetPosition());
-	//m.initialized = false;
+		m->SetMaterial(mat);
+
 
 	if (debug)
 	{
@@ -135,9 +140,9 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, shared_ptr<Material
 	return m;
 }
 
-void Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
+vector<shared_ptr<Texture>> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typeName)
 {
-
+	vector<shared_ptr<Texture>> ret;
 	for (int i = 0; i < mat->GetTextureCount(type); i++)
 	{
 		aiString str;
@@ -177,8 +182,11 @@ void Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, string typ
 		string p = Path::Combine({ directory, str.C_Str() });
 		LOG("TexturePath: ", p);
 		// Load texture into assets
-		AssetsLoader::LoadTexture(p, slot, true);
+		auto newTexture = AssetsLoader::LoadTexture(p, slot, true);
+		ret.push_back(newTexture);
 	}
+
+	return ret;
 }
 
 shared_ptr<GameObject> Model::SpawnMesh(shared_ptr<GameObject> parent, shared_ptr<Material> materialOverride)

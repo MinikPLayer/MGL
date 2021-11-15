@@ -7,6 +7,7 @@
 #include "Debug.h"
 #include "Vector.h"
 #include "Quaternion.h"
+#include "Material.h"
 #include <typeinfo>
 #include <memory>
 #include "Util.h"
@@ -331,7 +332,7 @@ public:
 	/// <summary>
 	/// [ENGINE] Event used to draw object
 	/// </summary>
-	virtual void __Draw() {}
+	virtual void __Draw(shared_ptr<Material> overrideMat = nullptr) {}
 };
 
 template<class Type>

@@ -24,14 +24,10 @@ void RenderScene(Camera* cam, shared_ptr<Material> matOverride, bool forceFrontC
 	// RunEvent
 	for (int i = 0; i < GameObject::__objects.size(); i++)
 	{
-		if (GameObject::__objects[i] == nullptr)
+		auto object = GameObject::__objects[i].get();
+		if (object == nullptr)
 			continue;
 
-		if (GameObject::__objects[i]->IsType<Mesh>()) {
-			Mesh* m = (Mesh*)GameObject::__objects[i].get();
-			m->__Draw(matOverride, forceFrontCull);
-		}
-
-		GameObject::__objects[i].get()->__Draw();
+		object->__Draw(matOverride);
 	}
 }

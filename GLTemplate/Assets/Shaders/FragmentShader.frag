@@ -1,4 +1,11 @@
 #version 330 core
+#define MAX_LIGHTS_COUNT 4
+
+#pragma [ShaderFeatures]
+#pragma PointLights:1=pointLights,MAX_LIGHTS_COUNT,pointLightsCount
+#pragma DirLight:1=dirLight
+#pragma Material:1=material
+#pragma [ShaderFeaturesEnd]
 
 // Union between vec3 and texture
 struct Tex2DVec3
@@ -17,6 +24,7 @@ struct Material {
 }; 
 
 struct DirLight {
+	bool castShadow;
 	vec3 direction;
 	float strength;
 
@@ -26,6 +34,7 @@ struct DirLight {
 };
 
 struct PointLight {
+	bool castShadow;
 	vec3 position;
 	float strength;
 
@@ -60,7 +69,7 @@ uniform Material material;
 uniform DirLight dirLight;
 
 uniform int pointLightsCount = 0;
-const int MAX_LIGHTS_COUNT = 4;
+//const int MAX_LIGHTS_COUNT = 4;
 uniform PointLight pointLights[MAX_LIGHTS_COUNT];
 
 /*float ShadowCalculation2(vec4 lightSpace)
@@ -107,8 +116,8 @@ float ShadowCalculation(vec4 lightSource)
     float currentDepth = projCoords.z;
     // Check whether current frag pos is in shadow
 
-    //float bias = max(0.000025 * (1.0 - NdL), 0.0001);
-	float bias = 0.00001;
+    float bias = max(0.000025 * (1.0 - NdL), 0.00001);
+	//float bias = 0.0001;
 	float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
     //float shadow = currentDepth > closestDepth  ? 1.0 : 0.0;
 
@@ -142,9 +151,15 @@ vec3 CalcLight_Dir(DirLight light, vec3 normal, vec3 viewDir) {
     vec3 diffuse = light.diffuse * light.strength * diff * GetTex2DVec3Value(material.diffuse, TexCoords);
     vec3 specular = light.specular * light.strength * spec * GetTex2DVec3Value(material.specular, TexCoords);
     
-	float shadow = ShadowCalculation(FragPosLightSpace);
-    return (ambient + (1.0 - shadow) * (diffuse + specular));
-	//return (ambient + diffuse + specular);
+	if(dirLight.castShadow)
+	{
+		float shadow = ShadowCalculation(FragPosLightSpace);
+		return (ambient + (1.0 - shadow) * (diffuse + specular));
+	}
+	else
+	{
+		return (ambient + diffuse + specular);
+	}
 }
 
 vec3 CalcLight_Point(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
@@ -166,9 +181,9 @@ vec3 CalcLight_Point(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) 
     diffuse  *= attenuation;
     specular *= attenuation;
 
-	float shadow = ShadowCalculation(FragPosLightSpace);
-    return (ambient + (1.0 - shadow) * (diffuse + specular));
-	//return (ambient + diffuse + specular);
+	//float shadow = ShadowCalculation(FragPosLightSpace);
+    //return (ambient + (1.0 - shadow) * (diffuse + specular));
+	return (ambient + diffuse + specular);
 }
 
 void main()

@@ -82,7 +82,7 @@ string ReadAllText(string filePath)
 vector<string> ReadAllLines(const char* filePath)
 {
 	string content = ReadAllText(filePath);
-	vector<string> ret;
+	/*vector<string> ret;
 	int startIndex = 0;
 	for (int i = 0; i < content.size(); i++)
 	{
@@ -95,6 +95,65 @@ vector<string> ReadAllLines(const char* filePath)
 
 	if (startIndex < content.size())
 		ret.push_back(content.substr(startIndex, content.size() - startIndex));
+
+	return ret;*/
+
+	return StrUtils::Split(content, '\n');
+}
+
+string StrUtils::Replace(string src, string match, string replaceStr)
+{
+	if (replaceStr.empty() || src.empty())
+		return src;
+
+	size_t start_pos = 0;
+	while ((start_pos = src.find(match, start_pos)) != std::string::npos) {
+		src.replace(start_pos, match.length(), replaceStr);
+		start_pos += replaceStr.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+	}
+
+	return src;
+}
+
+bool StrUtils::StartsWith(string src, string match)
+{
+	if (match.size() > src.size())
+		return false;
+
+	for (int i = 0; i < src.size() && i < match.size(); i++)
+		if (src[i] != match[i])
+			return false;
+
+	return true;
+}
+
+string StrUtils::ReplaceStart(string src, string match, string replaceStr)
+{
+	if (!StartsWith(src, match))
+		return src;
+
+	src.erase(0, match.size());
+	src.insert(0, replaceStr);
+
+	return src;
+}
+
+vector<string> StrUtils::Split(string src, char c, int maxSplitCount)
+{
+	vector<string> ret;
+	ret.push_back("");
+	int ind = 0;
+	for (int i = 0; i < src.size(); i++)
+	{
+		if (src[i] == c && (ret.size() < maxSplitCount || maxSplitCount == -1))
+		{
+			ret.push_back("");
+			ind++;
+			continue;
+		}
+
+		ret[ind] += src[i];
+	}
 
 	return ret;
 }
@@ -157,7 +216,7 @@ TextureInfo LoadTexture(const char* path, bool flip, TextureFiltering minFilter,
 
 	if (!data)
 	{
-		LOGF_E("Failed to load [", path, "]  texture!");
+		LOGE_E("Failed to load [", path, "]  texture!");
 		stbi_image_free(data);
 		return TextureInfo(-1, -1);
 	}

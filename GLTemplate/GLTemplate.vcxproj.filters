@@ -40,6 +40,9 @@
     <Filter Include="Pliki zasobów\Engine">
       <UniqueIdentifier>{527735a1-c0b4-4221-b311-3a7bfb5c816a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pliki źródłowe\UserScripts">
+      <UniqueIdentifier>{3eba1525-ea2f-4498-9399-b2c35511e0e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -173,6 +176,15 @@
     </ClCompile>
     <ClCompile Include="ShadowMap.cpp">
       <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="DirecitonalLight.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="PointLight.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="UserScript.cpp">
+      <Filter>Pliki źródłowe\UserScripts</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -366,6 +378,9 @@
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="DirecitonalLight.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="PointLight.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>

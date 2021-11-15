@@ -16,7 +16,7 @@ Camera* ShadowMap::shadowMapCamera = new Camera();
 vector<ShadowMap*> ShadowMap::__ShadowMaps__;
 shared_ptr<Shader> ShadowMap::shadowMapShader = nullptr;
 
-ShadowMap::ShadowMap(GLuint width, GLuint height)
+ShadowMap::ShadowMap(bool ortographic, GLuint width, GLuint height)
 {
 	const bool color = false;
 
@@ -54,6 +54,8 @@ ShadowMap::ShadowMap(GLuint width, GLuint height)
 	size.x = width;
 	size.y = height;
 
+	this->orto = ortographic;
+
 	__ShadowMaps__.push_back(this);
 }
 
@@ -87,13 +89,15 @@ void ShadowMap::Render()
 	if (posFunc != nullptr)
 		pos = posFunc();
 
+	if(mat == nullptr)
+		mat = shared_ptr<Material>(new Material(shadowMapShader));
+
 	//glm::mat4 lightProjection = glm::ortho(-40.0f, 40.0f, -20.0f, 20.0f, nearPlane, farPlane);
 	glm::mat4 lightProjection = glm::perspective(1.8f, 2.f, nearPlane, farPlane);
 	//glm::mat4 lightView = glm::lookAt((pos).GetGLVector(), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
 	glm::mat4 lightView = glm::translate(glm::mat4(1.0f), -pos.GetGLVector());
 
 	lightSpaceMatrix = lightProjection * lightView;
-	shared_ptr<Material> mat = shared_ptr<Material>(new Material(shadowMapShader));
 	shadowMapShader->SetMat4("lightSpaceMatrix", glm::value_ptr(lightSpaceMatrix));
 	shadowMapShader->Use();
 
@@ -121,7 +125,7 @@ void ShadowMap::DebugDraw()
 	m.faceCulling = Mesh::FaceCullingModes::Disabled;
 
 	glActiveTexture(GL_TEXTURE0);
-	mat->shader->SetInt("depthMap", 0);
+	mat->GetShader()->SetInt("depthMap", 0);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 
 	glDisable(GL_DEPTH_TEST);

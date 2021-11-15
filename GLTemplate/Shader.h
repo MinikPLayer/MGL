@@ -21,6 +21,9 @@ class Shader : public Asset
 	string fragmentPath = "";
 
 public:
+	string GetVertexPath() { return vertexPath; }
+	string GetFragmentPath() { return fragmentPath; }
+
 	static bool prohibitShaderChange;
 
 	// Locations of uniforms

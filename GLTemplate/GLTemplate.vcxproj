@@ -162,6 +162,7 @@
     <ClCompile Include="Color.cpp" />
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Debug.cpp" />
+    <ClCompile Include="DirecitonalLight.cpp" />
     <ClCompile Include="EngineUtil.cpp" />
     <ClCompile Include="FBX\fbxdocument.cpp" />
     <ClCompile Include="FBX\fbxdump.cpp" />
@@ -188,6 +189,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="PlaneMesh.cpp" />
+    <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
@@ -195,6 +197,7 @@
     <ClCompile Include="SystemInfo.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Time.cpp" />
+    <ClCompile Include="UserScript.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Vector.cpp" />
     <ClCompile Include="Window.cpp" />
@@ -254,6 +257,7 @@
     <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="Path.h" />
     <ClInclude Include="PlaneMesh.h" />
+    <ClInclude Include="PointLight.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShadowMap.h" />

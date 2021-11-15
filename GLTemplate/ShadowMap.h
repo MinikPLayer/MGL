@@ -4,6 +4,8 @@
 #include <vector>
 #include "Camera.h"
 #include "Shader.h"
+#include "Material.h"
+#include <memory>
 
 class ShadowMap : public Framebuffer {
 
@@ -13,7 +15,13 @@ class ShadowMap : public Framebuffer {
 
 	Vector2i size;
 
+	bool orto;
+
+	std::shared_ptr<Material> mat;
+
 public:
+
+
 	glm::mat4 lightSpaceMatrix;
 	GLuint GetDepthMapID() { return depthMap; }
 
@@ -22,7 +30,7 @@ public:
 	// List of shadow maps, used for rendering
 	static std::vector<ShadowMap*> __ShadowMaps__;
 
-	ShadowMap(GLuint width = 512, GLuint height = 512);
+	ShadowMap(bool ortographic, GLuint width = 512, GLuint height = 512);
 	~ShadowMap();
 
 	void Render();

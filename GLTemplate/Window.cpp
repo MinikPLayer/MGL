@@ -2,6 +2,7 @@
 #include "lib/ImGui/imgui.h"
 #include "lib/ImGui/backends/imgui_impl_glfw.h"
 #include "lib/ImGui/backends/imgui_impl_opengl3.h"
+#include "Time.h"
 
 Window* Window::mainWindow = nullptr;
 
@@ -140,6 +141,7 @@ bool Window::ShouldClose()
 void Window::SwapBuffers()
 {
 	glfwSwapBuffers(window);
+	Time::renderedFrames++;
 }
 
 void Window::SetCursorMode(CursorModes mode)

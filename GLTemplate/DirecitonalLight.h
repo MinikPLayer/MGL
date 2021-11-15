@@ -5,4 +5,6 @@
 class DirectionalLight : public Light {
 public:
 	float intensity = 1.0f;
+
+	DirectionalLight();
 };

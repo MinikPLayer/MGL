@@ -59,8 +59,6 @@ void Mesh::CopyFromInit()
 	// Bitangents
 	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
 	glEnableVertexAttribArray(4);
-
-	//InitObjects();
 }
 
 void Mesh::SetMaterial(shared_ptr<Material> mat)
@@ -95,8 +93,6 @@ void Mesh::CopyFrom(vector<Vertex> vertexData, vector<unsigned int> indices)
 	}
 	this->indicesDataSize = indices.size();
 
-	//this->vertexData = vertexData;
-	//this->indices = indices;
 	this->indices.reset(newIndicesData);
 	this->vertexData.reset(newVertexData);
 
@@ -132,9 +128,6 @@ void Mesh::CopyFrom(Vertex* vertexArray, int vSize, unsigned int* indicesArray, 
 		newIndicesData[i] = indicesArray[i];
 	}
 	this->indicesDataSize = iSize;
-
-	//this->vertexData.reset(newVertexData);
-	//this->indices.reset(newIndicesData);
 
 	this->indices.reset(newIndicesData);
 	this->vertexData.reset(newVertexData);
@@ -199,15 +192,10 @@ void Mesh::UpdateGeneratedMesh(std::function<float(float, float)> heightFunc)
 
 void Mesh::GenerateMesh(Vector2 size, std::function<float(float, float)> heightFunc, std::function<Vector2(float, float)> uvFunc, float step)
 {
-	//vector<Vertex> vertexArray;
-	//vector<unsigned int> indicesArray;
-
 	int sizeX = size.x / step;
 	int sizeY = size.y / step;
 
 	// Generate verticies
-	//vertexArray.reserve(sizeX * sizeY);
-	//indicesArray.reserve((sizeY - 1) * (sizeX - 1) * 6);
 	Vertex* vertexArray = new Vertex[sizeX * sizeY];
 	unsigned int* indicesArray = new unsigned int[(sizeY - 1) * (sizeX - 1) * 6];
 
@@ -238,16 +226,12 @@ void Mesh::GenerateMesh(Vector2 size, std::function<float(float, float)> heightF
 		int y = i / (sizeY - 1);
 
 		// Creating 2 triangles to create rectangle
-		//unsigned int ind[6];
 		indicesArray[iIt + 0] = y * sizeX + x;
 		indicesArray[iIt + 1] = (y + 1) * sizeX + x;
 		indicesArray[iIt + 2] = y * sizeX + (x + 1);
 		indicesArray[iIt + 3] = indicesArray[iIt + 2];
 		indicesArray[iIt + 4] = indicesArray[iIt + 1];
 		indicesArray[iIt + 5] = (y + 1) * sizeX + (x + 1);
-
-		//for (int i = 0; i < 6; i++)
-		//	indicesArray.push_back(ind[i]);
 
 
 		// Generate normals
@@ -298,12 +282,7 @@ Mesh::Mesh(shared_ptr<Material> mat)
 	InitObjects();
 }
 
-void Mesh::__Draw()
-{
-	__Draw(nullptr);
-}
-
-void Mesh::__Draw(shared_ptr<Material> mat, bool forceFrontCull)
+void Mesh::__Draw(shared_ptr<Material> mat)
 {
 	if (mat == nullptr)
 	{
@@ -318,13 +297,10 @@ void Mesh::__Draw(shared_ptr<Material> mat, bool forceFrontCull)
 	}
 
 	if (!initialized)
-	{
-		//InitObjects();
-		//CopyFrom(vertexData, indices);
 		CopyFromInit();
-	}
 
-	mat->shader->Use();
+	auto shader = mat->GetShader();
+	shader->Use();
 	mat->__SendToShader();
 
 	glBindVertexArray(VAO);
@@ -335,10 +311,10 @@ void Mesh::__Draw(shared_ptr<Material> mat, bool forceFrontCull)
 	glm::mat4 scale = glm::scale(glm::mat4(1.0f), GetScale().GetGLVector());
 	glm::mat4 model = translation * rotation * scale;
 
-	mat->shader->SetMat4(mat->shader->modelLocation, glm::value_ptr(model));
+	shader->SetMat4(shader->modelLocation, glm::value_ptr(model));
 
 	glEnable(GL_CULL_FACE);
-	long mode = GL_BACK;;
+	long mode = GL_BACK;
 	switch (faceCulling)
 	{
 	case FaceCullingModes::Disabled:

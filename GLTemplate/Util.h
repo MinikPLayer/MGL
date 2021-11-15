@@ -22,6 +22,21 @@ public:
 		:exception(error) {}
 };
 
+
+template<class T1, class T2>
+struct Tuple2
+{
+public:
+	T1 item1;
+	T2 item2;
+
+	Tuple2(T1 i1, T2 i2) {
+		item1 = i1;
+		item2 = i2;
+	}
+};
+
+
 void SplitToThreads1D(int start, int end, std::function<void(int)> func, int threadCount = 0);
 
 
@@ -38,6 +53,46 @@ string ReadAllText(string filePath);
 /// <param name="filePath"></param>
 /// <returns></returns>
 vector<string> ReadAllLines(const char* filePath);
+
+class StrUtils
+{
+public:
+	/// <summary>
+	/// Replaces any replaceStr occurance in src string, changes nothing if match is not found
+	/// </summary>
+	/// <param name="src">Source string</param>
+	/// <param name="match">Match string</param>
+	/// <param name="replaceStr">String to paste into</param>
+	/// <returns>String after replacing</returns>
+	static string Replace(string src, string match, string replaceStr);
+
+	/// <summary>
+	/// Checks if src string starts with match string
+	/// </summary>
+	/// <param name="src">Source string</param>
+	/// <param name="match">Match to find</param>
+	/// <returns>True if src starts with match</returns>
+	static bool StartsWith(string src, string match);
+
+	/// <summary>
+	/// Replaces src match with replaceStr if src starts with match
+	/// </summary>
+	/// <param name="src">Source string</param>
+	/// <param name="match">Match to find</param>
+	/// <param name="replaceStr">String to paste instead of match</param>
+	/// <returns>Modified string</returns>
+	static string ReplaceStart(string src, string match, string replaceStr);
+
+	/// <summary>
+	/// Splits string at character c
+	/// </summary>
+	/// <param name="src">Source string</param>
+	/// <param name="c">Split character</param>
+	/// <returns>Splitted strings</returns>
+	static vector<string> Split(string src, char c, int maxSplitCount = -1);
+};
+
+
 
 /// <summary>
 /// Compiles a shader from specified file
