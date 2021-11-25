@@ -43,6 +43,9 @@
     <Filter Include="Pliki źródłowe\UserScripts">
       <UniqueIdentifier>{3eba1525-ea2f-4498-9399-b2c35511e0e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pliki nagłówkowe\Editor">
+      <UniqueIdentifier>{18722cc8-0c08-4c17-b9dd-a70c70801fae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -132,7 +135,7 @@
     <ClCompile Include="Quaternion.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Documents\LIB\CPP\OpenGL\src\glad.c">
+    <ClCompile Include="..\..\..\..\Documents\LIB\CPP\OpenGL\src\glad.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
     <ClCompile Include="lib\ImGui\imgui_demo.cpp">
@@ -186,6 +189,9 @@
     <ClCompile Include="UserScript.cpp">
       <Filter>Pliki źródłowe\UserScripts</Filter>
     </ClCompile>
+    <ClCompile Include="PostProcessing.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -230,6 +236,15 @@
     </None>
     <None Include="Assets\Shaders\DepthMapShader.vert">
       <Filter>Pliki zasobów</Filter>
+    </None>
+    <None Include="Editor.h">
+      <Filter>Pliki nagłówkowe\Editor</Filter>
+    </None>
+    <None Include="Assets\Shaders\PP.vert">
+      <Filter>Pliki zasobów\Engine</Filter>
+    </None>
+    <None Include="Assets\Shaders\PP.frag">
+      <Filter>Pliki zasobów\Engine</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -381,6 +396,9 @@
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="PointLight.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="PostProcessing.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>

@@ -63,8 +63,11 @@ public:
 };
 
 
-#define Vector3 Vector3Base<float>
-#define Vector3i Vector3Base<int>
+//#define Vector3 Vector3Base<float>
+//#define Vector3i Vector3Base<int>
+
+using Vector3 = Vector3Base<float>;
+using Vector3i = Vector3Base<int>;
 
 /*class Vector3
 {
@@ -168,8 +171,10 @@ public:
 	}
 };
 
-#define Vector2 Vector2Base<float>
-#define Vector2i Vector2Base<int>
+//#define Vector2 Vector2Base<float>
+//#define Vector2i Vector2Base<int>
+using Vector2 = Vector2Base<float>;
+using Vector2i = Vector2Base<int>;
 
 /*class Vector2
 {

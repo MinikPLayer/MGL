@@ -18,6 +18,7 @@ shared_ptr<Shader> ShadowMap::shadowMapShader = nullptr;
 
 ShadowMap::ShadowMap(bool ortographic, GLuint width, GLuint height)
 {
+
 	const bool color = false;
 
 	// Create depth texture

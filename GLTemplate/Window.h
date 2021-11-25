@@ -16,8 +16,8 @@ class Window
 	GLFWwindow* window = nullptr;
 	Vector2i size;
 
-	void UpdateSize();
 public:
+	void UpdateSize();
 	enum class CursorModes
 	{
 		Enabled,

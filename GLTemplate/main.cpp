@@ -24,6 +24,7 @@ using namespace std;
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "PostProcessing.h"
 
 
 float texMix = 0.2f;
@@ -105,6 +106,8 @@ int main()
 	bool dynamicBatching = true;
 	Input::RegisterAxis(Input::Axis("DynBatch", Input::Keyboard, Input::C));
 
+	PostProcessing pp(window.GetSize());
+
 	while(!window.ShouldClose())
 	{
 		float currentFrame = glfwGetTime();
@@ -143,12 +146,17 @@ int main()
 
 		Camera::__SetRenderingCamera(Camera::GetMainCamera());
 			
+		pp.Use();
+
 		glDisable(GL_DEPTH_TEST);
 		sky->Update();
 		sky->__Draw();
 		glEnable(GL_DEPTH_TEST);
 
 		RenderScene();
+
+		pp.DrawToScreen();
+		
 
 		if (Input::GetKey(Input::Keyboard, Input::KBButtons::O)) {
 			glDisable(GL_DEPTH_TEST);

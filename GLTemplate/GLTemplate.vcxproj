@@ -155,7 +155,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Documents\LIB\CPP\OpenGL\src\glad.c" />
+    <ClCompile Include="..\..\..\..\Documents\LIB\CPP\OpenGL\src\glad.cpp" />
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="AssetsLoader.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -190,6 +190,7 @@
     <ClCompile Include="Path.cpp" />
     <ClCompile Include="PlaneMesh.cpp" />
     <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="PostProcessing.cpp" />
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShadowMap.cpp" />
@@ -208,6 +209,8 @@
     <None Include="Assets\Shaders\DepthMapShader.vert" />
     <None Include="Assets\Shaders\FragmentLightShader.frag" />
     <None Include="Assets\Shaders\FragmentShader.frag" />
+    <None Include="Assets\Shaders\PP.frag" />
+    <None Include="Assets\Shaders\PP.vert" />
     <None Include="Assets\Shaders\ShadowMapFragmentShader.frag" />
     <None Include="Assets\Shaders\ShadowMapVertexShader.vert" />
     <None Include="Assets\Shaders\SkyShader.frag" />
@@ -217,6 +220,7 @@
     <None Include="Assets\Shaders\VertexLightShader.vert" />
     <None Include="Assets\Shaders\VertexShader.vert" />
     <None Include="atmosphere.glsl" />
+    <None Include="Editor.h" />
     <None Include="GameObject.tpp" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -258,6 +262,7 @@
     <ClInclude Include="Path.h" />
     <ClInclude Include="PlaneMesh.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="PostProcessing.h" />
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShadowMap.h" />
