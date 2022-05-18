@@ -306,7 +306,7 @@ void Material::DetectShaderFeatures()
 			if (splitted.size() < 2)
 				continue;
 
-			defines.push_back(Tuple2(splitted[0], splitted[1]));
+			defines.push_back(Tuple2<std::string, std::string>(splitted[0], splitted[1]));
 		}
 		else if(started) // Something else, no more shader features defines
 			break;

@@ -143,7 +143,7 @@ void Mesh::CalculateMeshNormals()
 	}
 
 	for (int i = 0; i < indicesDataSize; i += 3) {
-		int ind[3] = { indices.get()[i], indices.get()[i + 1], indices.get()[i + 2] };
+		int ind[3] = { (int)indices.get()[i], (int)indices.get()[i + 1], (int)indices.get()[i + 2] };
 		Vertex* v[3];
 
 		for (int j = 0; j < 3; j++) {
