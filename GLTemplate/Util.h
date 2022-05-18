@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glad/glad.h>
+#include "glad/glad.h"
 #include <string>
 #include <fstream>
 #include <iostream>
@@ -19,7 +19,7 @@ class IOException : exception
 {
 public:
 	IOException(const char* error)
-		:exception(error) {}
+		:exception() {}
 };
 
 

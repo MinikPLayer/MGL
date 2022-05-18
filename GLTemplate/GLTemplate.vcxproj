@@ -19,6 +19,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
+    <VCTargetsPath Condition="'$(DesignTimeBuild)'!='true' AND ($(Configuration.Contains('Linux')) OR $(Platform.Contains('Linux')))">./</VCTargetsPath>
+    <MSBuildProjectExtensionsPath Condition="'$(DesignTimeBuild)'!='true' AND ($(Configuration.Contains('Linux')) OR $(Platform.Contains('Linux')))">./</MSBuildProjectExtensionsPath>
+    <GCCBuild_UseWSL>false</GCCBuild_UseWSL>
+    <GCCToolCompilerStyle Condition="$(Configuration.Contains('Wasm'))">llvm</GCCToolCompilerStyle>
+
+    <VCTargetsPath Condition="'$(DesignTimeBuild)'!='true' AND $(Configuration.Contains('Wasm'))">./</VCTargetsPath>
+    <MSBuildProjectExtensionsPath Condition="'$(DesignTimeBuild)'!='true' AND $(Configuration.Contains('Wasm'))">./</MSBuildProjectExtensionsPath>
+
+    <VCTargetsPath Condition="'$(DesignTimeBuild)'!='true' AND ($(Configuration.Contains('GCC')) OR $(Platform.Contains('GCC')))">./</VCTargetsPath>
+    <MSBuildProjectExtensionsPath Condition="'$(DesignTimeBuild)'!='true' AND ($(Configuration.Contains('GCC')) OR $(Platform.Contains('GCC')))">./</MSBuildProjectExtensionsPath>
+
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{616222cb-3544-4609-a3a4-e49b02e10f19}</ProjectGuid>
@@ -52,7 +63,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" Condition="'$(VCTargetsPath)' != '.' AND '$(VCTargetsPath)' != '.\' AND '$(VCTargetsPath)' != './'" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="Shared">
@@ -277,7 +288,7 @@
     <ClInclude Include="Window.h" />
     <ClInclude Include="zlib\miniz.h" />
   </ItemGroup>
-  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" Condition="'$(VCTargetsPath)' != '.' AND '$(VCTargetsPath)' != '.\' AND '$(VCTargetsPath)' != './'" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\libpng.redist.1.6.28.1\build\native\libpng.redist.targets" Condition="Exists('..\packages\libpng.redist.1.6.28.1\build\native\libpng.redist.targets')" />
     <Import Project="..\packages\zlib.v120.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\build\native\zlib.v120.windesktop.msvcstl.dyn.rt-dyn.targets" Condition="Exists('..\packages\zlib.v120.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\build\native\zlib.v120.windesktop.msvcstl.dyn.rt-dyn.targets')" />

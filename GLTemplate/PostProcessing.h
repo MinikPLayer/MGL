@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FrameBuffer.h"
+#include "Framebuffer.h"
 #include "Util.h"
 #include "Shader.h"
 #include "PlaneMesh.h"

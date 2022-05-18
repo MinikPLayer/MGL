@@ -1,10 +1,11 @@
 #pragma once
 
-#include <glad/glad.h>
+#include "glad/glad.h"
 
 #include <iostream>
 #include <string>
 #include "Asset.h"
+#include "Debug.h"
 
 using namespace std;
 
@@ -44,7 +45,9 @@ public:
 	{
 	public:
 		ShaderLoadException(string type, string message)
-			:exception(("Error loading " + type + " shader, error: " + message).c_str()) {}
+			:exception() {
+				LOGE_E(("Error loading " + type + " shader, error: " + message).c_str());
+			}
 	};
 
 	GLuint GetProgramID() {

@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 
+template<>
 float Vector3::Magnitude()
 {
     return glm::vec3(x, y, z).length();
@@ -16,7 +17,7 @@ inline Vector3Base<Type> Vector3Base<Type>::Normalized()
     return Vector3Base<Type>(res.x, res.y, res.z);
 }*/
 
-
+template<>
 void Vector3::Normalize()
 {
     glm::vec3 v = glm::normalize(glm::vec3(x, y, z));
@@ -25,6 +26,7 @@ void Vector3::Normalize()
     z = v.z;
 }
 
+template<>
 float Vector3i::Magnitude()
 {
     return sqrt(x * x + y * y + z * z);
@@ -58,7 +60,7 @@ inline void Vector2Base<Type>::Normalize()
     y = v.y;
 }
 
-
+template<>
 Vector2Base<int>::operator Vector2Base<float>()
 {   
     return Vector2Base<float>(x, y);

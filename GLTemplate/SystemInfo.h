@@ -1,6 +1,6 @@
 #pragma once
 
-static class SystemInfo {
+class SystemInfo {
 public:
 	static int GetThreadCount();
 };

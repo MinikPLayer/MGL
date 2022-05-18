@@ -40,5 +40,8 @@ void Log_Recursive(const char* file, int line, LogTypes type, LogLevels level, s
     std::cout << file << "(" << line << "): " << msg.str() << std::endl;
 
 	if (type == LogTypes::FatalError)
-		throw std::exception(msg.str().c_str());
+	{
+		LOG_E(msg.str().c_str());
+		throw std::exception();
+	}
 }

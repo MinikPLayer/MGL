@@ -1,11 +1,12 @@
 #include "Material.h"
 #include "Util.h"
-#include <glad/glad.h>
+#include "glad/glad.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <map>
 #include "Light.h"
 #include "PointLight.h"
 
+template<>
 void Material::ParamT<float>::SetParam(shared_ptr<Shader>& shader)
 {
 	auto val = GetValue();
@@ -16,6 +17,7 @@ void Material::ParamT<float>::SetParam(shared_ptr<Shader>& shader)
 		shader->SetFloat(locations.get()[i], val[i]);
 }
 
+template<>
 void Material::ParamT<Vector2>::SetParam(shared_ptr<Shader>& shader)
 {
 	auto val = GetValue();
@@ -25,6 +27,7 @@ void Material::ParamT<Vector2>::SetParam(shared_ptr<Shader>& shader)
 		shader->SetVec2(locations.get()[i], val[i].x, val[i].y);
 }
 
+template<>
 void Material::ParamT<Vector3>::SetParam(shared_ptr<Shader>& shader)
 {
 	auto val = GetValue();
@@ -34,6 +37,7 @@ void Material::ParamT<Vector3>::SetParam(shared_ptr<Shader>& shader)
 		shader->SetVec3(locations.get()[i], val[i].x, val[i].y, val[i].z);
 }
 
+template<>
 void Material::ParamT<glm::mat4>::SetParam(shared_ptr<Shader>& shader)
 {
 	auto val = GetValue();
@@ -43,6 +47,7 @@ void Material::ParamT<glm::mat4>::SetParam(shared_ptr<Shader>& shader)
 		shader->SetMat4(locations.get()[i], glm::value_ptr(val[i]));
 }
 
+template<>
 void Material::ParamT<int>::SetParam(shared_ptr<Shader>& shader)
 {
 	auto val = GetValue();
@@ -52,6 +57,7 @@ void Material::ParamT<int>::SetParam(shared_ptr<Shader>& shader)
 		shader->SetInt(locations.get()[i], val[i]);
 }
 
+template<>
 void Material::ParamT<bool>::SetParam(shared_ptr<Shader>& shader)
 {
 	auto val = GetValue();

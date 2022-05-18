@@ -2,7 +2,8 @@
 #include "GameObject.h"
 #include <thread>
 
-#include <stb_image.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 #include "SystemInfo.h"
 
 #include "Sky.h"

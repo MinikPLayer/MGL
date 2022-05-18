@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include <string>
-#include <glad/glad.h>
+#include "glad/glad.h"
 #include <vector>
 #include "Debug.h"
 #include "Vector.h"
@@ -61,7 +61,12 @@ public:
 	/// </summary>
 	/// <typeparam name="Type">Object type</typeparam>
 	template<class Type>
-	void __SetType();
+	void __SetType()
+	{
+		typeHash = typeid(Type).hash_code();
+
+		//LOG("TypeHash: ", typeHash);
+	}
 
 	/// <summary>
 	/// If false object won't receive any events ( Start, Update, etc )
@@ -81,8 +86,8 @@ public:
 	template<class Type>
 	static shared_ptr<Type> Instantiate()
 	{
-		Type* t = new Type();
-		shared_ptr<Type> obj(t);
+		GameObject* t = new Type();
+		shared_ptr<Type> obj((Type*)t);
 		//t->typeHash = typeid(Type).hash_code();
 		t->__SetType<Type>();
 		__objects.push_back(obj);
@@ -99,14 +104,14 @@ public:
 	template<class Type>
 	static shared_ptr<Type> Instantiate(shared_ptr<Type> prefab)
 	{
-		Type* ptr = prefab.get();
+		GameObject* ptr = prefab.get();
 		if (ptr == nullptr)
 		{
 			LOGF_E("Trying to instantiate null prefab");
 			return nullptr;
 		}
 
-		prefab.get()->__SetType<Type>();
+		((GameObject*)prefab.get())->__SetType<Type>();
 		__objects.push_back(prefab);
 
 		prefab.get()->Start();
@@ -122,7 +127,7 @@ public:
 	template<class Type>
 	static shared_ptr<Type> Instantiate(Type* prefab)
 	{
-		prefab->__SetType<Type>();
+		((GameObject*)prefab)->__SetType<Type>();
 		shared_ptr<Type> ptr(prefab);
 		__objects.push_back(ptr);
 
@@ -340,13 +345,5 @@ inline bool GameObject::IsType()
 {
 	//LOG("Type hash: ", typeid(Type).hash_code(), ", This hash: ", typeHash);
 	return typeid(Type).hash_code() == typeHash;
-}
-
-template<class Type>
-inline void GameObject::__SetType()
-{
-	typeHash = typeid(Type).hash_code();
-
-	//LOG("TypeHash: ", typeHash);
 }
 

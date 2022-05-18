@@ -42,17 +42,12 @@ inline bool AssetsLoader::FindAsset(string path, shared_ptr<T>& foundAsset)
 			continue;
 		}*/
 
-		
-
 		// Must be the same type and name
 		if (loadedAssets[i]->IsAssetType<T>() && loadedAssets[i]->path == path)
 		{
 			foundAsset = static_pointer_cast<T>(loadedAssets[i]);
 			return true;
 		}
-			
-
-
 
 	}
 
@@ -62,7 +57,7 @@ inline bool AssetsLoader::FindAsset(string path, shared_ptr<T>& foundAsset)
 template<class T>
 inline void AssetsLoader::AddAsset(string path, shared_ptr<T>& asset)
 {
-	asset->__SetAssetType<T>();
+	((Asset*)asset.get())->__SetAssetType<T>();
 	asset->path = path;
 
 	loadedAssets.push_back(static_pointer_cast<Asset>(asset));
