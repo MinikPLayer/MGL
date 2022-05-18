@@ -1,5 +1,0 @@
-/home/minik/code/CPP/MGL/build/CMakeFiles/edit_cache.dir
-/home/minik/code/CPP/MGL/build/CMakeFiles/rebuild_cache.dir
-/home/minik/code/CPP/MGL/build/GLTemplate/CMakeFiles/GLTemplate.dir
-/home/minik/code/CPP/MGL/build/GLTemplate/CMakeFiles/edit_cache.dir
-/home/minik/code/CPP/MGL/build/GLTemplate/CMakeFiles/rebuild_cache.dir
