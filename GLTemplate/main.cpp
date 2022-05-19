@@ -76,8 +76,6 @@ int main()
 	//glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
 	glClearColor(0, 0, 0, 1);
 
-	
-
 	registerBasicInput();
 
 	LOG("Processor count: ", SystemInfo::GetThreadCount());

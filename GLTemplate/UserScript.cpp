@@ -1,6 +1,25 @@
 #include "UserScript.h"
 
-void UserScript::AddCube(Vector3 pos)
+shared_ptr<GameObject> UserScript::AddCube(Vector3 pos)
+{
+	static shared_ptr<Model> cubeModel;
+	if (cubeModel.get() == nullptr)
+		cubeModel = AssetsLoader::LoadModel("cube.fbx", mats[0]);
+	//model = AssetsLoader::LoadModel("teapot1_01.FBX");
+	//model = AssetsLoader::LoadModel("room.fbx", mats[0]);
+
+	auto spawnedCube = cubeModel->SpawnMesh();
+	spawnedCube->SetParent(this);
+	spawnedCube->SetPosition(Vector3(0, 0, -10));
+	spawnedCube->SetScale(Vector3(1, 1, 1));
+	spawnedCube->SetRotation(Vector3(0, 0, 90));
+
+	cubesSpawned++;
+
+	return spawnedCube;
+}
+
+shared_ptr<GameObject> UserScript::AddTeapot(Vector3 pos)
 {
 	if (model.get() == nullptr)
 		model = AssetsLoader::LoadModel("teapot1_01.FBX", mats[0]);
@@ -13,8 +32,9 @@ void UserScript::AddCube(Vector3 pos)
 	spawned->SetScale(Vector3(1, 1, 1));
 	spawned->SetRotation(Vector3(-90, 0, 0));
 
+	//cubesSpawned++;
 
-	cubesSpawned++;
+	return spawned;
 }
 
 
@@ -56,7 +76,6 @@ void UserScript::Start()
 	dirLight = shared_ptr<DirectionalLight>(new DirectionalLight());
 	dirLight->SetPosition(Vector3(20.f, 10.f, 30.f));
 	dirLight->AddComponent(new Cube());
-	//dirLight->SetPosition(Vector3(0, 1, 0));
 
 	Camera::GetMainCamera()->SetPosition(dirLight->GetPosition());
 	Camera::GetMainCamera()->LookAt(Vector3(0, 0, 0));
@@ -64,12 +83,6 @@ void UserScript::Start()
 	// Load textures
 	for (int i = 0; i < 3; i++)
 	{
-		//mats[i].get()->SetMaterialTexture(AssetsLoader::LoadTexture("container2.png"));
-		//mats[i]->SetMaterialTexture(AssetsLoader::LoadTexture("container2_specular.png", 1), "specular");
-
-
-		//mats[i]->SetInt("pointLightsCount", lightCubesCount);
-		//mats[i]->SetVec3("dirLight.direction", Vector3(-0.2f, -0.3f, -0.3f));
 		mats[i]->SetVec3("dirLight.direction", [this]() {
 			return -1 * dirLight->GetPosition();
 			});
@@ -84,19 +97,12 @@ void UserScript::Start()
 
 		// TODO: Add engine wise lightning and shadowmaps
 		auto shadowMap = dirLight->shadowMap;
-		//auto shadowMap = ((LightCube*)lightCubes[0].get())->light->shadowMap;
-		//auto shadowMap = ShadowMap::__ShadowMaps__[0];
 		auto txt = shared_ptr<Texture>(new Texture(shadowMap->GetDepthMapID(), 15));
 		mats[i]->SetTextureSlot(txt);
 		mats[i]->SetBool("dirLight.castShadow", true);
 		mats[i]->SetMat4("lightSpaceMatrix", [this]() {
-			//auto sm = ShadowMap::__ShadowMaps__[0];
-			//return sm->lightSpaceMatrix;
 			auto sm = dirLight->shadowMap;
 			return sm->lightSpaceMatrix;
-			//LightCube* c = (LightCube*)lightCubes[0].get();
-			//auto sm = c->light->shadowMap;
-			//return sm->lightSpaceMatrix;
 			});
 		mats[i]->SetInt("shadowMap", 15);
 	}
@@ -110,8 +116,20 @@ void UserScript::Start()
 	mats[0]->SetMaterialTexture(AssetsLoader::LoadTexture("TeaPot_low_map_A_teapot1_Metallic.jpg", 1), "specular");
 	mats[0]->SetMaterialTexture(AssetsLoader::LoadTexture("TeaPot_low_map_A_teapot1_Normal.jpg", 2), "normal");
 
-	mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture("grass.png"));
-	mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture("grass_specular.png", 1), "specular");
+	//mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture("grass.png"));
+	//mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture("grass_specular.png", 1), "specular");
+
+	mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture(Path::Combine({"ForestGrass", "_diffuse.tga"}), 0));
+	mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture(Path::Combine({"ForestGrass", "_occlusion.tga"}), 1), "specular");
+	mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture(Path::Combine({"ForestGrass", "_normals.tga"}), 2), "normal");
+
+	
+	auto forestCube = AddCube();
+	Mesh* forestCubeMesh = (Mesh*)(forestCube->GetComponents()[0].get());
+
+	forestCubeMesh->SetScale(Vector3(1, 100, 100));
+	forestCubeMesh->SetMaterial(mats[2]);
+	forestCubeMesh->SetPosition(Vector3(100, 2, 100));
 
 	//mats[3]->SetMaterialTexture(AssetsLoader::LoadTexture("tall_grass.png"));
 	//mats[3]->SetMaterialTexture(AssetsLoader::LoadTexture("grass_specular.png", 1), "specular");
@@ -125,9 +143,9 @@ void UserScript::Start()
 	Vector2 sinMeshSize(100, 100);
 	floorMesh->SetLocalPosition(-1.0f * Vector3(sinMeshSize.x / 2, 0, sinMeshSize.y / 2));
 	floorMesh->GenerateMesh(sinMeshSize, [](float x, float y) {
-		//return 4 * sin(x/4.f) * sin(y/4.f);
-		//return 2 * sin(x / 4.f) * sin(y / 2.f) + sin(x/3.f);
-		return 0.0f;
+		return 0.5f * sin(x/4.f) * sin(y/4.f);
+		//return 0.5f * sin(x / 4.f) * sin(y / 2.f) + sin(x/3.f);
+		//return 0.0f;
 		}, nullptr, 0.5);
 	AddComponent(floorMesh);
 
@@ -181,6 +199,16 @@ void UserScript::Update()
 	{
 		paused = !paused;
 		LOG("Paused: ", paused);
+	}
+
+	// Crash button
+	if(Input::GetKey(Input::Keyboard, Input::KBButtons::T)) {
+		if(Input::GetKey(Input::Keyboard, Input::KBButtons::I)) {
+			mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture("grass_specular_inverted.png", 1), "specular");
+		}
+		else if(Input::GetKey(Input::Keyboard, Input::KBButtons::N)) {
+			mats[2]->SetMaterialTexture(AssetsLoader::LoadTexture("grass_specular.png", 1), "specular");
+		}
 	}
 
 	if (Input::GetButtonDown("BindCamera"))

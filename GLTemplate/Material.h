@@ -70,11 +70,6 @@ class Material
 		function<vector<Type>()> arrayFuncPtr = nullptr;
 		function<Type()> funcPtr = nullptr;
 
-		//Type value;
-		//function<Type()> funcPtr = nullptr;
-
-
-
 		vector<Type> GetValue() 
 		{ 
 			if (arrayFuncPtr != nullptr)

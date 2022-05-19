@@ -111,7 +111,8 @@ public:
 
 	int cubesSpawned = 0;
 
-	void AddCube(Vector3 pos = Vector3(0, 0, 0));
+	shared_ptr<GameObject> AddTeapot(Vector3 pos = Vector3(0, 0, 0));
+	shared_ptr<GameObject> AddCube(Vector3 pos = Vector3(0, 0, 0));
 	void AddRandomCube();
 
 	void Start();

@@ -130,6 +130,11 @@ void Material::SetTextureSlot(const char* path, int slot)
 
 void Material::SetTextureSlot(shared_ptr<Texture> texture)
 {
+	for(int i = 0;i<textures.size();i++) {
+		if(textures[i].get() == texture.get())
+			return;
+	}
+
 	textures.push_back(texture);
 }
 
