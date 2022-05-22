@@ -208,7 +208,7 @@ double rad2deg(double rad)
 	return rad * 180.0 / PI;
 }
 
-TextureInfo LoadTexture(const char* path, bool flip, TextureFiltering minFilter, TextureFiltering magFilter)
+TextureInfo LoadTexture(const char* path, TextureFiltering minFilter, TextureFiltering magFilter, TextureWrapping wrapHor, TextureWrapping wrapVert, bool flip)
 {
 	// Load texture
 	int width, height, nrChannels;
@@ -232,8 +232,8 @@ TextureInfo LoadTexture(const char* path, bool flip, TextureFiltering minFilter,
 	if (magFilter != TextureFiltering::None)
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (int)magFilter);
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, (int)wrapHor);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, (int)wrapVert);
 
 	if (nrChannels == 3)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -248,6 +248,29 @@ TextureInfo LoadTexture(const char* path, bool flip, TextureFiltering minFilter,
 	stbi_image_free(data);
 
 	return TextureInfo(texture, nrChannels);
+}
+
+TextureFiltering defaultFilter = TextureFiltering::Linear;
+TextureWrapping defaultWrapping = TextureWrapping::Repeat;
+
+TextureInfo LoadTexture(const char* path, bool flip) {
+	return LoadTexture(path, defaultFilter, defaultFilter, defaultWrapping, defaultWrapping, flip);
+}
+
+TextureInfo LoadTexture(const char* path, TextureFiltering minFilter, TextureFiltering magFilter, bool flip) {
+	return LoadTexture(path, minFilter, magFilter, defaultWrapping, defaultWrapping, flip);
+}
+
+TextureInfo LoadTexture(const char* path, TextureFiltering filter, bool flip) {
+	return LoadTexture(path, filter, filter, defaultWrapping, defaultWrapping, flip);
+}
+
+TextureInfo LoadTexture(const char* path, TextureWrapping wrapHor, TextureWrapping wrapVert, bool flip) {
+	return LoadTexture(path, defaultFilter, defaultFilter, wrapHor, wrapVert, flip);
+}
+
+TextureInfo LoadTexture(const char* path, TextureWrapping wrapping, bool flip) {
+	return LoadTexture(path, defaultFilter, defaultFilter, wrapping, wrapping, flip);
 }
 
 TextureInfo::TextureInfo(GLint ID, int channels)

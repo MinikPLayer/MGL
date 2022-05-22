@@ -53,10 +53,12 @@ protected:
 
 	//vector<Vertex> vertexData;
 	//vector<unsigned int> indices;
+public:
 	shared_ptr<Vertex> vertexData = nullptr;
 	shared_ptr<unsigned int> indices = nullptr;
 	int vertexDataSize = 0;
 	int indicesDataSize = 0;
+protected:
 
 	bool initialized = false;
 
@@ -91,6 +93,8 @@ public:
 	void CopyFrom(vector<Vertex> vertexData, vector<unsigned int> indices);
 	void CopyFrom(vector<Vector3> vertex, vector<Vector3> normals, vector<Vector2> uv, vector<unsigned int> indices);
 	void CopyFrom(Vertex* vertexArray, int vSize, unsigned int* indicesArray, int iSize);
+
+	void CalculateMeshTangents();
 
 	void CalculateMeshNormals();
 	static Vector3 CalculateTriangleNormal(Vertex vtx1, Vertex vtx2, Vertex vtx3);

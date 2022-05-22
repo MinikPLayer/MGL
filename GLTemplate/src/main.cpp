@@ -14,10 +14,10 @@
 #include "Input.h"
 #include "Vector.h"
 #include "Window.h"
-#include "FlybackCamera.h"
+#include "Cameras/FlybackCamera.h"
 #include "MeshRenderer.h"
 #include "Material.h"
-#include "lib/ImGui/imgui.h"
+#include "ImGui/imgui.h"
 #include "SystemInfo.h"
 using namespace std;
 

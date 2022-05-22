@@ -1,7 +1,7 @@
 #include "Window.h"
-#include "lib/ImGui/imgui.h"
-#include "lib/ImGui/backends/imgui_impl_glfw.h"
-#include "lib/ImGui/backends/imgui_impl_opengl3.h"
+#include "ImGui/imgui.h"
+#include "ImGui/backends/imgui_impl_glfw.h"
+#include "ImGui/backends/imgui_impl_opengl3.h"
 #include "Time.h"
 
 Window* Window::mainWindow = nullptr;

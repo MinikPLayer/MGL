@@ -21,11 +21,7 @@ public:
         {
             LOGE_E("Failed to load model from ", path);
         }
-
-        
     }
-
-
     
     /// <summary>
     /// Spawns meshes contained in this model in the world
@@ -33,7 +29,7 @@ public:
     /// <param name="positionOffset">Position offset</param>
     /// <param name="parent">Meshes parent</param>
     shared_ptr<GameObject> SpawnMesh(shared_ptr<GameObject> parent, Vector3 positionOffset = Vector3(0,0,0), shared_ptr<Material> materialOverride = nullptr);
-    shared_ptr<GameObject> SpawnMesh(shared_ptr<GameObject> parent, shared_ptr<Material> materialOverride = nullptr);
+    shared_ptr<GameObject> SpawnMesh(shared_ptr<GameObject> parent, shared_ptr<Material> materialOverride);
     shared_ptr<GameObject> SpawnMesh(shared_ptr<Material> materialOverride = nullptr);
 
 private:

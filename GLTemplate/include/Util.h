@@ -112,6 +112,13 @@ enum class TextureFiltering
 	Linear = GL_LINEAR
 };
 
+enum class TextureWrapping {
+	Repeat = GL_REPEAT,
+	RepeatMirrored = GL_MIRRORED_REPEAT,
+	ClampToEdge = GL_CLAMP_TO_EDGE,
+	ClampToBorder = GL_CLAMP_TO_BORDER
+};
+
 struct TextureInfo
 {
 public:
@@ -128,8 +135,15 @@ public:
 /// <param name="flip">True if you want to flip the image vertically (needed in some formats like BMP or PNG)</param>
 /// <param name="minFilter">Minimization filter, defaults to Nearest</param>
 /// <param name="magFilter">Maginifaction filter, defaults to Nearest</param>
+/// <param name="wrapHor">Wrapping mode horizontal, defaults to Repeat Mirrored</param>
+/// <param name="wrapVert">Wrapping mode vertical, defaults to Repeat Mirrored</param>
 /// <returns>GL handle to texture</returns>
-TextureInfo LoadTexture(const char* path, bool flip = true, TextureFiltering minFilter = TextureFiltering::Nearest, TextureFiltering magFilter = TextureFiltering::Nearest);
+TextureInfo LoadTexture(const char* path, TextureFiltering minFilter, TextureFiltering magFilter, TextureWrapping wrapHor, TextureWrapping wrapVert, bool flip = true);
+TextureInfo LoadTexture(const char* path, bool flip = true);
+TextureInfo LoadTexture(const char* path, TextureFiltering minFilter, TextureFiltering magFilter, bool flip = true);
+TextureInfo LoadTexture(const char* path, TextureFiltering filter, bool flip = true);
+TextureInfo LoadTexture(const char* path, TextureWrapping wrapHor, TextureWrapping wrapVert, bool flip = true);
+TextureInfo LoadTexture(const char* path, TextureWrapping wrapping, bool flip = true);
 
 extern Sky* sky;
 

@@ -4,7 +4,7 @@
 Texture::Texture(const char* path, int slot)
 {
 	glActiveTexture(GL_TEXTURE0);
-	auto ret = LoadTexture(path, true, TextureFiltering::Linear, TextureFiltering::Linear);
+	auto ret = LoadTexture(path, true);
 
 	this->channelsCount = ret.channels;
 	this->handle = ret.ID;

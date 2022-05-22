@@ -135,6 +135,107 @@ void Mesh::CopyFrom(Vertex* vertexArray, int vSize, unsigned int* indicesArray, 
 	CopyFromInit();
 }
 
+void Mesh::CalculateMeshTangents() {
+	if (indicesDataSize == 0 || indicesDataSize % 3 != 0) {
+		LOGE_E("Bad indices count");
+		return;
+	}
+
+	for(int i = 0; i < indicesDataSize; i += 3) {
+		int ind[3] = { (int)indices.get()[i], (int)indices.get()[i + 1], (int)indices.get()[i + 2] };
+		Vertex* v[3];
+
+		for (int j = 0; j < 3; j++) {
+			// Check to eliminate out of bounds reads / writes
+			if (ind[j] < 0 || ind[j] >= vertexDataSize) {
+				LOGE_E("Invalid vertex index");
+				return;
+			}
+
+			v[j] = &vertexData.get()[ind[j]];
+			v[j]->tangent = Vector3(0, 0, 0);
+			v[j]->bitangent = Vector3(0, 0, 0);
+		}
+
+		Vector3 poss[] = { v[0]->pos, v[1]->pos, v[2]->pos };
+		Vector2 uvs[] = { v[0]->UV, v[1]->UV, v[2]->UV };
+
+		auto d1 = poss[1] - poss[0];
+		auto d2 = poss[2] - poss[0];
+
+		auto dv1 = uvs[1] - uvs[0];
+		auto dv2 = uvs[2] - uvs[0];
+
+		float r = 1.0 / (dv1.x * dv2.y - dv1.y * dv2.x);
+
+		for(int i = 0;i<3;i++) {
+			v[i]->tangent += (d1 * dv2.y - d2 * dv1.y) * r;
+			v[i]->bitangent += (d2 * dv1.x - d1 * dv2.x) * r;
+
+			auto temp = v[i]->bitangent.y;
+			v[i]->bitangent.y = v[i]->bitangent.z;
+			v[i]->bitangent.z = temp;
+		}
+	}
+
+	for(int i = 0; i < vertexDataSize; i++) {
+		Vertex* v = &vertexData.get()[i];
+		v->tangent.Normalize();
+		v->bitangent.Normalize();
+	}
+}
+
+// void Mesh::CalculateMeshTangents() {
+// 	if (indicesDataSize == 0 || indicesDataSize % 3 != 0) {
+// 		LOGE_E("Bad indices count");
+// 		return;
+// 	}
+
+// 	for (int i = 0; i < indicesDataSize; i += 3) {
+// 		int ind[3] = { (int)indices.get()[i], (int)indices.get()[i + 1], (int)indices.get()[i + 2] };
+// 		Vertex* v[3];
+
+// 		for (int j = 0; j < 3; j++) {
+// 			// Check to eliminate out of bounds reads / writes
+// 			if (ind[j] < 0 || ind[j] >= vertexDataSize) {
+// 				LOGE_E("Invalid vertex index");
+// 				return;
+// 			}
+
+// 			v[j] = &vertexData.get()[ind[j]];
+// 			v[j]->tangent = Vector3(0, 0, 0);
+// 			v[j]->bitangent = Vector3(0, 0, 0);
+// 		}
+
+// 		float x1 = v[1]->pos.x - v[0]->pos.x;
+//         float x2 = v[2]->pos.x - v[0]->pos.x;
+// 		float y1 = v[1]->pos.y - v[0]->pos.y;
+//         float y2 = v[2]->pos.y - v[0]->pos.y;
+// 		float z1 = v[1]->pos.z - v[0]->pos.z;
+//         float z2 = v[2]->pos.z - v[0]->pos.z;
+
+// 		float s1 = v[1]->UV.x - v[0]->UV.x;
+// 		float s2 = v[2]->UV.x - v[0]->UV.x;
+// 		float t1 = v[1]->UV.y - v[0]->UV.y;
+// 		float t2 = v[2]->UV.y - v[0]->UV.y;
+
+// 		float r = 1.0F / (s1 * t2 - s2 * t1);
+// 		Vector3 sdir((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r, (t2 * z1 - t1 * z2) * r);
+//         Vector3 tdir((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r, (s1 * z2 - s2 * z1) * r);
+
+// 		for(int j = 0; j < 3; j++) {
+// 			v[j]->tangent += sdir;
+// 			v[j]->bitangent += tdir;
+// 		}
+// 	}
+
+// 	for (int i = 0; i < vertexDataSize; i++) {
+// 		Vertex* v = &vertexData.get()[i];
+
+// 		v->tangent = (v->tangent - v->normal * v->normal.Dot(v->tangent)).Normalized();
+// 	}
+// }
+
 void Mesh::CalculateMeshNormals()
 {
 	if (indicesDataSize == 0 || indicesDataSize % 3 != 0) {
@@ -175,8 +276,8 @@ Vector3 Mesh::CalculateTriangleNormal(Vertex vtx1, Vertex vtx2, Vertex vtx3)
 
 	return Vector3(
 		v1.y * v2.z - v1.z * v2.y,
-		v1.z * v2.z - v1.x * v2.z,
-		v1.x * v2.y - v1.y * v2.x
+		v1.x * v2.y - v1.y * v2.x,
+		v1.z * v2.z - v1.x * v2.z
 	);
 }
 
@@ -250,6 +351,8 @@ void Mesh::GenerateMesh(Vector2 size, std::function<float(float, float)> heightF
 		iIt += 6;
 	}
 
+	vertexArray[0].normal = vertexArray[1].normal;
+
 	// Normalize normals
 	for (int i = 0; i < sizeX * sizeY; i++)
 	{
@@ -257,6 +360,7 @@ void Mesh::GenerateMesh(Vector2 size, std::function<float(float, float)> heightF
 	}
 
 	CopyFrom(vertexArray, vIt, indicesArray, iIt);
+	CalculateMeshTangents();
 
 	this->generatedMesh = true;
 	this->generatedMeshSize = size;
@@ -264,6 +368,7 @@ void Mesh::GenerateMesh(Vector2 size, std::function<float(float, float)> heightF
 
 	delete[] vertexArray;
 	delete[] indicesArray;
+	
 }
 
 Mesh::Mesh()

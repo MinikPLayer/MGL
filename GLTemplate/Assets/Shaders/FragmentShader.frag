@@ -54,7 +54,6 @@ uniform vec3 shadowPos;
 out vec4 fragColor;
 in vec3 Normal;
 in vec3 FragPos;
-//in vec2 UV;
 
 in mat3 TBN;
 
@@ -67,6 +66,10 @@ float specularStrength = 0.5;
   
 uniform Material material;
 uniform DirLight dirLight;
+
+vec2 GetTexCoords() {
+	return TexCoords * texScale;
+}
 
 uniform int pointLightsCount = 0;
 //const int MAX_LIGHTS_COUNT = 4;
@@ -147,9 +150,9 @@ vec3 CalcLight_Dir(DirLight light, vec3 normal, vec3 viewDir) {
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess * 255);
     // combine results
-    vec3 ambient = light.ambient * light.strength * GetTex2DVec3Value(material.diffuse, TexCoords);
-    vec3 diffuse = light.diffuse * light.strength * diff * GetTex2DVec3Value(material.diffuse, TexCoords);
-    vec3 specular = light.specular * light.strength * spec * GetTex2DVec3Value(material.specular, TexCoords);
+    vec3 ambient = light.ambient * light.strength * GetTex2DVec3Value(material.diffuse, GetTexCoords());
+    vec3 diffuse = light.diffuse * light.strength * diff * GetTex2DVec3Value(material.diffuse, GetTexCoords());
+    vec3 specular = light.specular * light.strength * spec * GetTex2DVec3Value(material.specular, GetTexCoords());
     
 	if(dirLight.castShadow)
 	{
@@ -174,9 +177,9 @@ vec3 CalcLight_Point(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) 
     float distance    = length(light.position - fragPos);
     float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
     // combine results
-    vec3 ambient  = light.ambient * light.strength * GetTex2DVec3Value(material.diffuse, TexCoords);
-    vec3 diffuse  = light.diffuse  * light.strength * diff * GetTex2DVec3Value(material.diffuse, TexCoords);
-    vec3 specular = light.specular * light.strength * spec * GetTex2DVec3Value(material.specular, TexCoords);
+    vec3 ambient  = light.ambient * light.strength * GetTex2DVec3Value(material.diffuse, GetTexCoords());
+    vec3 diffuse  = light.diffuse  * light.strength * diff * GetTex2DVec3Value(material.diffuse, GetTexCoords());
+    vec3 specular = light.specular * light.strength * spec * GetTex2DVec3Value(material.specular, GetTexCoords());
     ambient  *= attenuation;
     diffuse  *= attenuation;
     specular *= attenuation;
@@ -190,7 +193,7 @@ void main()
 {
 	// Check for alpha discard
 	if(material.diffuse.useTex) {
-		vec4 texColor = texture(material.diffuse.tex, TexCoords);
+		vec4 texColor = texture(material.diffuse.tex, GetTexCoords());
 		if(texColor.a < 0.1)
 			discard;
 	}
@@ -198,7 +201,7 @@ void main()
 	vec3 norm = normalize(Normal);
 	if(material.normal.useTex)
 	{
-		norm = texture(material.normal.tex, TexCoords).rgb;
+		norm = texture(material.normal.tex, GetTexCoords()).rgb;
 		norm = norm * 2.0 - 1.0;   
 		norm = normalize(TBN * norm); 
 	}

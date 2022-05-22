@@ -3,12 +3,6 @@
 
 #include <glm/glm.hpp>
 
-template<>
-float Vector3::Magnitude()
-{
-    return glm::vec3(x, y, z).length();
-}
-
 //Vector3 Vector3::Normalized()
 /*template<class Type>
 inline Vector3Base<Type> Vector3Base<Type>::Normalized()
@@ -39,11 +33,6 @@ float Vector3i::Magnitude()
     this->z = z;
 }*/
 
-template<class Type>
-inline float Vector2Base<Type>::Magnitude()
-{
-    return sqrt(x * x + y * y);
-}
 
 /*template<class Type>
 inline Vector2Base<Type> Vector2Base<Type>::Normalized()

@@ -4,7 +4,7 @@ shared_ptr<GameObject> UserScript::AddCube(Vector3 pos)
 {
 	static shared_ptr<Model> cubeModel;
 	if (cubeModel.get() == nullptr)
-		cubeModel = AssetsLoader::LoadModel("cube.fbx", mats[0]);
+		cubeModel = AssetsLoader::LoadModel("cube_uv.fbx", mats[0]);
 	//model = AssetsLoader::LoadModel("teapot1_01.FBX");
 	//model = AssetsLoader::LoadModel("room.fbx", mats[0]);
 
@@ -127,9 +127,10 @@ void UserScript::Start()
 	auto forestCube = AddCube();
 	Mesh* forestCubeMesh = (Mesh*)(forestCube->GetComponents()[0].get());
 
-	forestCubeMesh->SetScale(Vector3(1, 100, 100));
+	mats[2]->SetVec2("texScale", Vector2(10, 10));
+	forestCubeMesh->SetScale(Vector3(1, 25, 25));
 	forestCubeMesh->SetMaterial(mats[2]);
-	forestCubeMesh->SetPosition(Vector3(100, 2, 100));
+	forestCubeMesh->SetPosition(Vector3(-30, 10, -30));
 
 	//mats[3]->SetMaterialTexture(AssetsLoader::LoadTexture("tall_grass.png"));
 	//mats[3]->SetMaterialTexture(AssetsLoader::LoadTexture("grass_specular.png", 1), "specular");
@@ -138,16 +139,35 @@ void UserScript::Start()
 	//mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("rock1_specular.png", 1), "specular");
 	//mats[4]->SetMaterialTexture(AssetsLoader::LoadTexture("TeaPot_low_map_A_teapot1_BaseColor.jpg"));
 
+	auto planeModel = AssetsLoader::LoadModel("plane2.fbx", mats[2]);
+	auto planeMesh = planeModel->SpawnMesh();
+	planeMesh->SetParent(this);
+	planeMesh->SetRotation(Vector3(0, 0, 0));
+	planeMesh->SetScale(Vector3(1, 1, 1));
+	planeMesh->SetPosition(Vector3(0, 5, 0));
+
 	// Add Floor
 	floorMesh = shared_ptr<Mesh>(new Mesh(mats[2]));
 	Vector2 sinMeshSize(100, 100);
 	floorMesh->SetLocalPosition(-1.0f * Vector3(sinMeshSize.x / 2, 0, sinMeshSize.y / 2));
 	floorMesh->GenerateMesh(sinMeshSize, [](float x, float y) {
-		return 0.5f * sin(x/4.f) * sin(y/4.f);
+		//return 0.5f * sin(x/4.f) * sin(y/4.f);
 		//return 0.5f * sin(x / 4.f) * sin(y / 2.f) + sin(x/3.f);
-		//return 0.0f;
+		return 0.0f;
 		}, nullptr, 0.5);
 	AddComponent(floorMesh);
+
+	LOG("Legend | PlaneMesh | GeneratedMesh");
+	Mesh* planeMeshMesh = (Mesh*)planeMesh->GetComponents()[0].get();
+	LOG("VertexCount | ", planeMeshMesh->vertexDataSize, " | ", floorMesh->vertexDataSize);
+
+	// auto secondFloorMesh = shared_ptr<Mesh>(new Mesh(mats[2]));
+	// secondFloorMesh->SetLocalPosition(Vector3(10, 5, 10));
+	// secondFloorMesh->SetScale(Vector3(50, 1, 50));
+	// secondFloorMesh->GenerateMesh(Vector2(1, 1), [](float x, float y) {
+	// 	return 0.0f;
+	// }, nullptr, 0.5);
+	// AddComponent(secondFloorMesh);
 
 	// Transparent plant
 	/*PlaneMesh* plane = new PlaneMesh();
@@ -158,7 +178,7 @@ void UserScript::Start()
 	//Cube* plane = new Cube();
 
 
-	AddCube();
+	AddTeapot();
 
 	startPos = GetPosition();
 

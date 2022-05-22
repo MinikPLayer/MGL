@@ -33,62 +33,65 @@ set(Libraries__zlib
 source_group("Libraries\\zlib" FILES ${Libraries__zlib})
 
 set(Pliki_nagwkowe
-    "glad/glad.h"
-    "Asset.h"
-    "Asset_b.h"
-    "AssetsLoader.h"
-    "Camera.h"
-    "Color.h"
-    "Cube.h"
-    "Debug.h"
-    "DirecitonalLight.h"
-    "EngineUtil.h"
-    "Framebuffer.h"
-    "GameObject.h"
-    "Input.h"
-    "Light.h"
-    "Material.h"
-    "Mesh.h"
-    "MeshRenderer.h"
-    "Model.h"
-    "OBJLoader.h"
-    "Path.h"
-    "PlaneMesh.h"
-    "PointLight.h"
-    "PostProcessing.h"
-    "Quaternion.h"
-    "Shader.h"
-    "ShadowMap.h"
-    "Sky.h"
-    "SystemInfo.h"
-    "Texture.h"
-    "Time.h"
-    "Util.h"
-    "Vector.h"
-    "Window.h"
+    "lib/glad/glad.h"
+    "include/Asset.h"
+    "include/Asset_b.h"
+    "include/AssetsLoader.h"
+    "include/Camera.h"
+    "include/Color.h"
+    "include/Cube.h"
+    "include/Debug.h"
+    "include/DirecitonalLight.h"
+    "include/EngineUtil.h"
+    "include/Framebuffer.h"
+    "include/GameObject.h"
+    "include/Input.h"
+    "include/Light.h"
+    "include/Material.h"
+    "include/Mesh.h"
+    "include/MeshRenderer.h"
+    "include/Model.h"
+    "include/OBJLoader.h"
+    "include/Path.h"
+    "include/PlaneMesh.h"
+    "include/PointLight.h"
+    "include/PostProcessing.h"
+    "include/Quaternion.h"
+    "include/Shader.h"
+    "include/ShadowMap.h"
+    "include/Sky.h"
+    "include/SystemInfo.h"
+    "include/Texture.h"
+    "include/Time.h"
+    "include/Util.h"
+    "include/Vector.h"
+    "include/Window.h"
 )
+include_directories("lib")
+include_directories("include")
+include_directories("UserScripts")
 source_group("Pliki nagłówkowe" FILES ${Pliki_nagwkowe})
 
 set(Pliki_nagwkowe__Cameras
-    "FlybackCamera.h"
+    "include/Cameras/FlybackCamera.h"
 )
 source_group("Pliki nagłówkowe\\Cameras" FILES ${Pliki_nagwkowe__Cameras})
 
 set(Pliki_nagwkowe__Editor
-    "Editor.h"
+    "include/Editor/Editor.h"
 )
 source_group("Pliki nagłówkowe\\Editor" FILES ${Pliki_nagwkowe__Editor})
 
 set(Pliki_nagwkowe__FBX
-    "FBX/fbxdocument.h"
-    "FBX/fbxnode.h"
-    "FBX/fbxproperty.h"
-    "FBX/fbxutil.h"
+    "lib/FBX/fbxdocument.h"
+    "lib/FBX/fbxnode.h"
+    "lib/FBX/fbxproperty.h"
+    "lib/FBX/fbxutil.h"
 )
 source_group("Pliki nagłówkowe\\FBX" FILES ${Pliki_nagwkowe__FBX})
 
 set(Pliki_nagwkowe__UserScripts
-    "UserScript.h"
+    "UserScripts/UserScript.h"
 )
 source_group("Pliki nagłówkowe\\UserScripts" FILES ${Pliki_nagwkowe__UserScripts})
 
@@ -116,58 +119,57 @@ set(Pliki_zasobw__Engine
 source_group("Pliki zasobów\\Engine" FILES ${Pliki_zasobw__Engine})
 
 set(Pliki_rdowe
-    "glad.cpp"
-    "Asset.cpp"
-    "AssetsLoader.cpp"
-    "Camera.cpp"
-    "Color.cpp"
-    "Cube.cpp"
-    "Debug.cpp"
-    "DirecitonalLight.cpp"
-    "EngineUtil.cpp"
-    "Framebuffer.cpp"
-    "GameObject.cpp"
-    "GameObject.tpp"
-    "Input.cpp"
-    "Light.cpp"
-    "main.cpp"
-    "Material.cpp"
-    "Mesh.cpp"
-    "MeshRenderer.cpp"
-    "Model.cpp"
-    "Path.cpp"
-    "PlaneMesh.cpp"
-    "PointLight.cpp"
-    "PostProcessing.cpp"
-    "Quaternion.cpp"
-    "Shader.cpp"
-    "ShadowMap.cpp"
-    "Sky.cpp"
-    "SystemInfo.cpp"
-    "Texture.cpp"
-    "Time.cpp"
-    "Util.cpp"
-    "Vector.cpp"
-    "Window.cpp"
+    "src/glad.cpp"
+    "src/Asset.cpp"
+    "src/AssetsLoader.cpp"
+    "src/Camera.cpp"
+    "src/Color.cpp"
+    "src/Cube.cpp"
+    "src/Debug.cpp"
+    "src/DirecitonalLight.cpp"
+    "src/EngineUtil.cpp"
+    "src/Framebuffer.cpp"
+    "src/GameObject.cpp"
+    "src/Input.cpp"
+    "src/Light.cpp"
+    "src/main.cpp"
+    "src/Material.cpp"
+    "src/Mesh.cpp"
+    "src/MeshRenderer.cpp"
+    "src/Model.cpp"
+    "src/Path.cpp"
+    "src/PlaneMesh.cpp"
+    "src/PointLight.cpp"
+    "src/PostProcessing.cpp"
+    "src/Quaternion.cpp"
+    "src/Shader.cpp"
+    "src/ShadowMap.cpp"
+    "src/Sky.cpp"
+    "src/SystemInfo.cpp"
+    "src/Texture.cpp"
+    "src/Time.cpp"
+    "src/Util.cpp"
+    "src/Vector.cpp"
+    "src/Window.cpp"
 )
 source_group("Pliki źródłowe" FILES ${Pliki_rdowe})
 
 set(Pliki_rdowe__Cameras
-    "FlybackCamera.cpp"
+    "src/Cameras/FlybackCamera.cpp"
 )
 source_group("Pliki źródłowe\\Cameras" FILES ${Pliki_rdowe__Cameras})
 
 set(Pliki_rdowe__FBX
-    "FBX/fbxdocument.cpp"
-    "FBX/fbxdump.cpp"
-    "FBX/fbxnode.cpp"
-    "FBX/fbxproperty.cpp"
-    "FBX/fbxutil.cpp"
+    "lib/FBX/fbxdocument.cpp"
+    "lib/FBX/fbxdump.cpp"
+    "lib/FBX/fbxnode.cpp"
+    "lib/FBX/fbxproperty.cpp"
+    "lib/FBX/fbxutil.cpp"
 )
 source_group("Pliki źródłowe\\FBX" FILES ${Pliki_rdowe__FBX})
 
 set(Pliki_rdowe__UserScripts
-    "UserScript.cpp"
+    "UserScripts/UserScript.cpp"
 )
 source_group("Pliki źródłowe\\UserScripts" FILES ${Pliki_rdowe__UserScripts})
 
@@ -412,7 +414,3 @@ elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
         "C:/Users/Minik/Documents/LIB/CPP/OpenGL/lib/x86"
     )
 endif()
-
-use_package(${PROJECT_NAME} libpng.redist 1.6.28.1)
-use_package(${PROJECT_NAME} zlib.v120.windesktop.msvcstl.dyn.rt-dyn 1.2.8.8)
-use_package(${PROJECT_NAME} zlib.v140.windesktop.msvcstl.dyn.rt-dyn 1.2.8.8)

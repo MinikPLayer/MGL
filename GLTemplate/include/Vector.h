@@ -11,7 +11,9 @@ class Vector3Base
 public:
 	Type x, y, z;
 
-	float Magnitude();
+	float Magnitude() { return sqrt(this->SqrMagnitude()); }
+	float SqrMagnitude() { return x * x + y * y + z * z; }
+
 	Vector3Base<Type> Normalized()
 	{
 		glm::vec3 res = glm::normalize(glm::vec3(x, y, z));
@@ -116,7 +118,9 @@ class Vector2Base
 public:
 	Type x, y;
 
-	float Magnitude();
+	float Magnitude() { return sqrt(this->SqrMagnitude()); }
+	float SqrMagnitude() { return x * x + y * y; }
+
 	Vector2Base<Type> Normalized()
 	{
 		glm::vec2 v = glm::normalize(glm::vec2(x, y));
