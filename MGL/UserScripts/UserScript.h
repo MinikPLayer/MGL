@@ -12,14 +12,14 @@
 
 #include <glm/glm.hpp>
 #include <iostream>
-#include "Time.h"
+#include "TimeUtils.h"
 #include "Path.h"
 #include "Window.h"
 #include "DirecitonalLight.h"
 #include "PointLight.h"
 
-#include <math.h>
-#define M_PI   3.14159265358979323846264338327950288
+#include <cmath>
+//#define M_PI   3.14159265358979323846264338327950288
 
 using namespace std;
 using namespace glm;
@@ -34,7 +34,7 @@ public:
 	LightCube()
 	{
 		light = AddComponent<PointLight>();
-		light.get()->SetColor(Color::Blue);
+		light->SetColor(Color::Blue);
 
 		// Debug
 		Mesh::CopyFrom(Cube::cubeVertexData, Cube::cubeIndices);
@@ -45,13 +45,13 @@ public:
 		}
 
 		SetMaterial(lightMat);
-		material.get()->SetVec3("objectColor", Vector3(1.0, 1.0, 1.0));
-		material.get()->SetVec3("lightColor", [this]() {
+		material->SetVec3("objectColor", Vector3(1.0, 1.0, 1.0));
+		material->SetVec3("lightColor", [this]() {
 			return light->GetColorVector();
 		});
 	}
 
-	void Update() {
+	void Update() override {
 		Color color;
 		color.r = (sin(Time::elapsedTime * 0.6) + 1) * 255 / 2.f;
 		color.g = (sin(Time::elapsedTime * 0.8) + 1) * 255 / 2.f;

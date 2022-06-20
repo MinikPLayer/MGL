@@ -1,3 +1,0 @@
-
-
-#pragma glslify: export(atmosphere)

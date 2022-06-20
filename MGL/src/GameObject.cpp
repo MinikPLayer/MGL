@@ -99,8 +99,10 @@ void GameObject::Move(Vector3 moveVector)
 Vector3 GameObject::GetLocalPosition()
 {
 	if (!transformable)
-		if(parent == nullptr)
-			LOGE_E("Non-transform object needs a parent");
+		if(parent == nullptr) {
+            LOGE_E("Non-transform object needs a parent");
+            return position;
+        }
 		else
 			return parent->GetLocalPosition();
 	else
@@ -134,8 +136,10 @@ void GameObject::SetScale(Vector3 scale)
 Vector3 GameObject::GetLocalScale()
 {
 	if (!transformable)
-		if (parent == nullptr)
-			LOGE_E("Non-transform object needs a parent");
+		if (parent == nullptr) {
+            LOGE_E("Non-transform object needs a parent");
+            return scale;
+        }
 		else
 			return parent->GetLocalScale();
 	else

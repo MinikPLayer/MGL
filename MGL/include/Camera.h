@@ -7,7 +7,7 @@
 
 #include "GameObject.h"
 #include "Input.h"
-#include "Time.h"
+#include "TimeUtils.h"
 
 class Camera : public GameObject
 {

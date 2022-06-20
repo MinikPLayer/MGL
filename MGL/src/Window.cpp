@@ -2,7 +2,7 @@
 #include "ImGui/imgui.h"
 #include "ImGui/backends/imgui_impl_glfw.h"
 #include "ImGui/backends/imgui_impl_opengl3.h"
-#include "Time.h"
+#include "TimeUtils.h"
 
 Window* Window::mainWindow = nullptr;
 

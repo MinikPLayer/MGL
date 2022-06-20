@@ -1,6 +1,6 @@
 #include "Sky.h"
 #include "AssetsLoader.h"
-#include "Time.h"
+#include "TimeUtils.h"
 #include "Camera.h"
 #include "Util.h"
 #include "Window.h"

@@ -5,7 +5,7 @@
 #include "Cube.h"
 #include "Color.h"
 #include "AssetsLoader.h"
-#include "Time.h"
+#include "TimeUtils.h"
 #include "ShadowMap.h"
 
 class Light : public GameObject
