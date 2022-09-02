@@ -103,11 +103,8 @@ void Window::DrawGUI()
 
 void Window::PollEvents()
 {
-	//glfwPollEvents();
-
 	int w, h;
 	glfwGetFramebufferSize(window, &w, &h);
-	//if(size != Vector2i(w,h))
 	if (size != Vector2i(w, h))
 	{
 		size = Vector2i(w, h);

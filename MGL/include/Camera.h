@@ -11,7 +11,6 @@
 
 class Camera : public GameObject
 {
-
 	static Camera* main;
 	static Camera* rendering;
 
@@ -61,28 +60,13 @@ public:
 
 	static Camera* GetMainCamera();
 
-
-	/*Camera(glm::vec3 pos = glm::vec3(0, 0, 0), glm::vec3 up = glm::vec3(0, 1, 0), float yaw = 90, float pitch = 0)
-		:front(glm::vec3(0,0,-1)), speed(2.5f), sensitivity(0.1f), zoom(1)
-	{
-		position = pos;
-		this->up = up;
-		this->yaw = yaw;
-		this->pitch = pitch;
-
-
-	}*/
-
 	void LookAt(Vector3 pos);
 
 	void SetAsMainCamera();
 
 	float GetFov();
-	//void Update();
 	void Start();
 	void SetRotation(Vector3 rot);
-	//void ProcessMouseMovement(float x, float y, bool constrainPitch = true);
-	//void ProcessMouseScroll(float offset);
 
 	glm::mat4 GetProjectionMatrix();
 	glm::mat4 GetViewMatrix();

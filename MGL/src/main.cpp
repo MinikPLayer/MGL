@@ -8,23 +8,17 @@
 #include "Shader.h"
 #include "stb_image.h"
 #include "Camera.h"
-#include "Cube.h"
 #include "UserScript.h"
 #include "TimeUtils.h"
 #include "Input.h"
 #include "Vector.h"
 #include "Window.h"
 #include "Cameras/FlybackCamera.h"
-#include "MeshRenderer.h"
-#include "Material.h"
 #include "ImGui/imgui.h"
 #include "SystemInfo.h"
+#include "PostProcessing.h"
 using namespace std;
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include "PostProcessing.h"
 
 
 float texMix = 0.2f;
@@ -45,11 +39,6 @@ void registerBasicInput()
 	Input::RegisterAxis(Input::Axis("Sprint", Input::Keyboard, Input::LSHIFT));
 }
 
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-	Input::__SetMousePos(xpos, ypos);
-}
-
 int main()
 {
 	srand(time(NULL));
@@ -64,7 +53,6 @@ int main()
 	// Disable / Enabke VSYNC
 	glfwSwapInterval(0);
 
-	//glClearColor(0.2f, 0.2f, 0.3f, 1.0f);
 	glClearColor(0, 0, 0, 1);
 
 	registerBasicInput();
@@ -84,10 +72,8 @@ int main()
 		GameObject::Instantiate(s);
 	}
 
-	//Sky* sky = new Sky();
 	sky = new Sky();
 	sky->SetPosition(Vector3(0, 0, 0));
-	//GameObject::Instantiate(sky);
 
 	LOG_E("Starting drawing loop...");
 

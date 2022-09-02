@@ -65,52 +65,8 @@ public:
 };
 
 
-//#define Vector3 Vector3Base<float>
-//#define Vector3i Vector3Base<int>
-
 using Vector3 = Vector3Base<float>;
 using Vector3i = Vector3Base<int>;
-
-/*class Vector3
-{
-public:
-	float x, y, z;
-
-	float Magnitude();
-	Vector3 Normalized();
-	void Normalize();
-
-	Vector3 Cross(Vector3 b) { return glm::cross(GetGLVector(), b.GetGLVector()); }
-	Vector3 Dot(Vector3 b) { return glm::dot(GetGLVector(), b.GetGLVector()); }
-
-	glm::vec3 GetGLVector();
-
-	Vector3(float x = 0, float y = 0, float z = 0);
-	
-	Vector3 operator*(float b) { return Vector3(x * b, y * b, z * b); }
-	Vector3 operator+(const Vector3& b) { return Vector3(x + b.x, y + b.y, z + b.z); }
-	Vector3 operator-(const Vector3& b) { return Vector3(x - b.x, y - b.y, z - b.z); }
-	void operator+=(const Vector3& b) { x += b.x; y += b.y; z += b.z; }
-
-protected:
-	Vector3(const glm::vec3& v) { x = v.x; y = v.y; z = v.z; }
-	void operator=(const glm::vec3& v) { x = v.x; y = v.y; z = v.z; }
-};
-
-class Vector3i
-{
-public:
-	int x, y, z;
-
-	float Magnitude();
-
-	glm::vec3 GetGLVector();
-
-	Vector3i(int x = 0, int y = 0, int z = 0);
-
-	Vector3i operator+(const Vector3i& b) { return Vector3i(x + b.x, y + b.y, z + b.z); }
-	Vector3i operator-(const Vector3i& b) { return Vector3i(x - b.x, y - b.y, z - b.z); }
-};*/
 
 template<class Type>
 class Vector2Base
@@ -175,27 +131,8 @@ public:
 	}
 };
 
-//#define Vector2 Vector2Base<float>
-//#define Vector2i Vector2Base<int>
 using Vector2 = Vector2Base<float>;
 using Vector2i = Vector2Base<int>;
-
-/*class Vector2
-{
-public:
-	float x, y;
-
-	float Magnitude();
-	Vector2 Normalized();
-	void Normalize();
-
-	Vector2(float x = 0, float y = 0);
-};
-
-class Vector2i
-{
-
-};*/
 
 template<class Type>
 inline Vector3Base<Type> Vector3Base<Type>::Cross(Vector3Base b)

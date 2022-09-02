@@ -8,14 +8,9 @@ using namespace std;
 
 class Asset
 {
-	//static vector<shared_ptr<Asset>> assets;
-
-
 	// Type hash, used to check if object is a certain type
 	size_t typeHash = 0;
 public:
-	//static void Add(shared_ptr<Asset> asset);
-
 	/// <summary>
 	/// Checks if this asset is of specified type
 	/// </summary>
@@ -36,7 +31,6 @@ public:
 	{
 		typeHash = typeid(Type).hash_code();
 	}
-
 
 	string path;
 

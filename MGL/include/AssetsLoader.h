@@ -34,21 +34,12 @@ inline bool AssetsLoader::FindAsset(string path, shared_ptr<T>& foundAsset)
 {
 	for (int i = 0; i < loadedAssets.size(); i++)
 	{
-		// TODO: If expired then just remove it from vector
-		/*if (loadedAssets[i].expired())
-		{
-			loadedAssets.erase(loadedAssets.begin() + i, loadedAssets.begin() + i + 1);
-			i--;
-			continue;
-		}*/
-
 		// Must be the same type and name
 		if (loadedAssets[i]->IsAssetType<T>() && loadedAssets[i]->path == path)
 		{
 			foundAsset = static_pointer_cast<T>(loadedAssets[i]);
 			return true;
 		}
-
 	}
 
 	return false;

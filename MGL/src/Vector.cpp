@@ -1,15 +1,5 @@
 #include "Vector.h"
-#include <ctime>
-
 #include <glm/glm.hpp>
-
-//Vector3 Vector3::Normalized()
-/*template<class Type>
-inline Vector3Base<Type> Vector3Base<Type>::Normalized()
-{
-    glm::vec3 res = glm::normalize(glm::vec3(x, y, z));
-    return Vector3Base<Type>(res.x, res.y, res.z);
-}*/
 
 template<>
 void Vector3::Normalize()
@@ -25,21 +15,6 @@ float Vector3i::Magnitude()
 {
     return sqrt(x * x + y * y + z * z);
 }
-
-/*Vector3i::Vector3i(int x, int y, int z)
-{
-    this->x = x;
-    this->y = y;
-    this->z = z;
-}*/
-
-
-/*template<class Type>
-inline Vector2Base<Type> Vector2Base<Type>::Normalized()
-{
-    glm::vec2 v = glm::normalize(glm::vec2(x, y));
-    return Vector2Base<Type>(v.x, v.y);
-}*/
 
 template<class Type>
 inline void Vector2Base<Type>::Normalize()

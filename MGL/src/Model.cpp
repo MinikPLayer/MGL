@@ -3,12 +3,6 @@
 #include "AssetsLoader.h"
 #include "Debug.h"
 
-/*void Model::__Draw()
-{
-	for (auto mesh : meshes)
-		mesh->__Draw();
-}*/
-
 bool Model::loadModel(string path, shared_ptr<Material>& overrideMat)
 {
 	Assimp::Importer importer;
@@ -35,8 +29,6 @@ void Model::processNode(aiNode* node, const aiScene* scene, shared_ptr<Material>
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		Mesh* m = processMesh(mesh, scene, overrideMat);
-		//meshes.push_back(ptr);
-		//shared_ptr<Mesh> ptr = AddComponent(m);
 		shared_ptr<Mesh> ptr(m);
 		meshes.push_back(ptr);
 	}
@@ -66,7 +58,6 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, shared_ptr<Material
 		}
 		else
 		{
-			//LOGW_E("No tangents and bitangents in mesh");
 			v.tangent = Vector3(0, 0, 0);
 			v.bitangent = Vector3(0, 0, 0);
 		}
@@ -78,7 +69,6 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, shared_ptr<Material
 		else
 		{
 			v.UV = Vector2(0, 0);
-			//LOG("No vertex UV");
 		}
 
 		vertexData.push_back(v);
@@ -115,7 +105,6 @@ Mesh* Model::processMesh(aiMesh* mesh, const aiScene* scene, shared_ptr<Material
 	else
 		m->SetMaterial(mat);
 
-
 	if (debug)
 	{
 		cout << "const vector<Vertex> vertexData = {" << endl;
@@ -148,7 +137,6 @@ vector<shared_ptr<Texture>> Model::loadMaterialTextures(aiMaterial* mat, aiTextu
 		aiString str;
 		mat->GetTexture(type, i, &str);
 		
-		//shared_ptr<Texture> newTex(new Texture(Path::Combine({ directory, str.C_Str() }).c_str(), 0));
 		int slot = -1;
 		switch (type)
 		{

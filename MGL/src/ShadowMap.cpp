@@ -98,8 +98,7 @@ void ShadowMap::Render()
 		lightProjection = glm::ortho(-4.0f, 4.0f, -2.0f, 2.0f, nearPlane, farPlane);
 	else
 		lightProjection = glm::perspective(1.8f, 2.f, nearPlane, farPlane);
-		
-	//glm::mat4 lightView = glm::lookAt((pos).GetGLVector(), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+
 	glm::mat4 lightView = glm::translate(glm::mat4(1.0f), -pos.GetGLVector());
 
 	lightSpaceMatrix = lightProjection * lightView;
@@ -111,8 +110,6 @@ void ShadowMap::Render()
 	RenderScene(nullptr, mat, true);
 	Shader::prohibitShaderChange = false;
 	Material::disableTextures = false;
-
-	//delete testCube;
 
 	// Reset FB
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

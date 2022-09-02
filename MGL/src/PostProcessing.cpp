@@ -105,15 +105,6 @@ void PostProcessing::DrawToScreen()
 	glBindTexture(GL_TEXTURE_2D, TBO);
 	drawToScreenShader->SetInt("screenTexture", 0);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	
-	/*glClear(GL_COLOR_BUFFER_BIT);
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-
-	glBlitFramebuffer(0, 0, size.x, size.y, 0, 0, size.x, size.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-	
-	glEnable(GL_DEPTH_TEST);*/
 }
 
 void PostProcessing::Use()

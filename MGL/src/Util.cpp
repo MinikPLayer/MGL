@@ -1,5 +1,4 @@
 #include "Util.h"
-#include "GameObject.h"
 #include <thread>
 
 #define STB_IMAGE_IMPLEMENTATION

@@ -46,8 +46,7 @@ add_executable (MGL
     # Includes
     "lib/glad/glad.h"
     "include/Asset.h"
-    "include/Asset_b.h"
-    "include/AssetsLoader.h"
+        "include/AssetsLoader.h"
     "include/Camera.h"
     "include/Color.h"
     "include/Cube.h"

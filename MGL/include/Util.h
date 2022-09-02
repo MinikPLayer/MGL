@@ -146,5 +146,3 @@ TextureInfo LoadTexture(const char* path, TextureWrapping wrapHor, TextureWrappi
 TextureInfo LoadTexture(const char* path, TextureWrapping wrapping, bool flip = true);
 
 extern Sky* sky;
-
-//#include "GameObject.h"

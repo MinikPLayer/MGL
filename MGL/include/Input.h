@@ -207,14 +207,6 @@ public:
 		string name;
 
 		/// <summary>
-		/// -1 for keyboard, 0 to 15 for controllers
-		/// </summary>
-		/*int device = -1;
-
-		int positiveKey;
-		int negativeKey;*/
-
-		/// <summary>
 		/// Copies lastValue to value, use this every Input update before updating input values - to update value use Update() method
 		/// </summary>
 		void SwitchBuffers();
@@ -229,7 +221,7 @@ public:
 		/// Function that returns current axis value
 		/// </summary>
 		/// <returns>Axis value</returns>
-		float Getvalue();
+		float GetValue();
 
 		/// <summary>
 		/// Check if button was pressed this frame

@@ -1,5 +1,4 @@
 #include "Path.h"
-#include <stdarg.h>
 
 const string Path::ASSETS_PATH = "Assets";
 #ifdef __linux__
@@ -12,9 +11,6 @@ const string Path::SEPARATOR = "\\"; // Windows
 #endif
 
 const string Path::IMAGES_PATH = Path::Combine({ Path::ASSETS_PATH, "Images" });
-
-
-#define __COMBINE_PATH__(...) 
 
 string Path::Combine(initializer_list<string> paths)
 {

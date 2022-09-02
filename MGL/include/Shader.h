@@ -14,8 +14,6 @@ class Shader : public Asset
 	bool loaded = false;
 	string error = "";
 
-	//static Shader* defaultShader;
-	//static Asset<Shader> defaultShader;
 	static shared_ptr<Shader> defaultShader;
 
 	string vertexPath = "";
@@ -31,7 +29,6 @@ public:
 	GLint modelLocation = 0;
 	GLint viewLocation = 0;
 	GLint projectionLocation = 0;
-	//GLint shaderModelPosition = 0;
 
 	void UpdateUniformsLocations();
 
@@ -86,20 +83,6 @@ public:
 	void SetVec4(const string& param, float v1, float v2, float v3, float v4);
 	void SetMat4(const string& param, float* value);
 
-	/*// Vertex parameters wrappers
-	void SetVertexBool(GLint location, bool value);
-	void SetVertexInt(GLint location, int value);
-	void SetVertexFloat(GLint location, float value);
-	void SetVertexVec2(GLint location, float v1, float v2);
-	void SetVertexVec3(GLint location, float v1, float v2, float v3);
-	void SetVertexVec4(GLint location, float v1, float v2, float v3, float v4);
-
-	void SetVertexBool(const string& param, bool value);
-	void SetVertexInt(const string& param, int value);
-	void SetVertexFloat(const string& param, float value);
-	void SetVertexVec2(const string& param, float v1, float v2);
-	void SetVertexVec3(const string& param, float v1, float v2, float v3);
-	void SetVertexVec4(const string& param, float v1, float v2, float v3, float v4);*/
 
 	GLint GetUniformLocation(string param);
 

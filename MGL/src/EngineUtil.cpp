@@ -19,7 +19,7 @@ void RenderScene(Camera* cam, shared_ptr<Material> matOverride, bool forceFrontC
 		cam = Camera::GetMainCamera();
 	}
 
-	//Camera::__SetRenderingCamera(cam);
+	Camera::__SetRenderingCamera(cam);
 
 	// RunEvent
 	for (int i = 0; i < GameObject::__objects.size(); i++)

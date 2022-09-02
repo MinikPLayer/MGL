@@ -12,15 +12,12 @@ float yfov_to_xfov(float yfov, float aspect) {
 	return rad2deg(xfov); 
 }
 
-
-
 // Why not working??
 Sky::Sky()
 {
 	this->SetMaterial(shared_ptr<Material>(new Material(AssetsLoader::LoadShader("SkyShader.vert", "SkyShader.frag"))));
 
 	this->material->SetFloat("time", []() {
-		//return Time::elapsedTime;
 		return 30;
 	});
 
@@ -29,5 +26,4 @@ Sky::Sky()
 
 void Sky::Update()
 {
-	//this->position = Camera::GetMainCamera()->GetPosition();	
 }

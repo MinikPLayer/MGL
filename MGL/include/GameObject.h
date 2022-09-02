@@ -64,8 +64,6 @@ public:
 	void __SetType()
 	{
 		typeHash = typeid(Type).hash_code();
-
-		//LOG("TypeHash: ", typeHash);
 	}
 
 	/// <summary>
@@ -88,7 +86,6 @@ public:
 	{
 		GameObject* t = new Type();
 		shared_ptr<Type> obj((Type*)t);
-		//t->typeHash = typeid(Type).hash_code();
 		t->__SetType<Type>();
 		__objects.push_back(obj);
 		t->Start();
@@ -343,7 +340,6 @@ public:
 template<class Type>
 inline bool GameObject::IsType()
 {
-	//LOG("Type hash: ", typeid(Type).hash_code(), ", This hash: ", typeHash);
 	return typeid(Type).hash_code() == typeHash;
 }
 

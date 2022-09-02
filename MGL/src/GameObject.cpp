@@ -45,7 +45,6 @@ void GameObject::SetRotation(Quaternion rot)
 		return;
 	}
 
-	//position = pos - GetParent()->GetPosition();
 	SetLocalRotation(rot - GetParent()->GetRotation());
 }
 
@@ -65,6 +64,7 @@ Vector3 GameObject::GetPosition()
 
 	return GetLocalPosition() * parent->GetLocalScale() + parent->GetPosition();
 }
+
 void GameObject::SetPosition(Vector3 pos)
 { 
 	if (GetParent() == nullptr)
@@ -73,18 +73,18 @@ void GameObject::SetPosition(Vector3 pos)
 		return;
 	}
 
-	//position = pos - GetParent()->GetPosition();
 	SetLocalPosition(pos - GetParent()->GetPosition() / GetParent()->GetLocalScale());
 }
 
 void GameObject::Dispose()
 {
 	OnDestroy();
-	//parent = nullptr;
 	for (int i = 0; i < components.size(); i++)
 	{
 		DestroyComponent(components[i]);
 	}
+    components.clear();
+    
 	parent = nullptr;
 	disposed = true;
 	enabled = false;
@@ -92,7 +92,6 @@ void GameObject::Dispose()
 
 void GameObject::Move(Vector3 moveVector)
 {
-	//position += moveVector;
 	SetLocalPosition(GetLocalPosition() + moveVector);
 }
 

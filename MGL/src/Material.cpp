@@ -10,7 +10,6 @@ template<>
 void Material::ParamT<float>::SetParam(shared_ptr<Shader>& shader)
 {
 	auto val = GetValue();
-
 	Param::SetParam(shader, val.size());
 
 	for(int i = 0;i<val.size();i++)
@@ -21,7 +20,6 @@ template<>
 void Material::ParamT<Vector2>::SetParam(shared_ptr<Shader>& shader)
 {
 	auto val = GetValue();
-
 	Param::SetParam(shader, val.size());
 	for (int i = 0; i < val.size(); i++)
 		shader->SetVec2(locations.get()[i], val[i].x, val[i].y);
@@ -31,7 +29,6 @@ template<>
 void Material::ParamT<Vector3>::SetParam(shared_ptr<Shader>& shader)
 {
 	auto val = GetValue();
-
 	Param::SetParam(shader, val.size());
 	for (int i = 0; i < val.size(); i++)
 		shader->SetVec3(locations.get()[i], val[i].x, val[i].y, val[i].z);
@@ -41,7 +38,6 @@ template<>
 void Material::ParamT<glm::mat4>::SetParam(shared_ptr<Shader>& shader)
 {
 	auto val = GetValue();
-
 	Param::SetParam(shader, val.size());
 	for (int i = 0; i < val.size(); i++)
 		shader->SetMat4(locations.get()[i], glm::value_ptr(val[i]));
@@ -51,7 +47,6 @@ template<>
 void Material::ParamT<int>::SetParam(shared_ptr<Shader>& shader)
 {
 	auto val = GetValue();
-
 	Param::SetParam(shader, val.size());
 	for (int i = 0; i < val.size(); i++)
 		shader->SetInt(locations.get()[i], val[i]);
@@ -61,29 +56,10 @@ template<>
 void Material::ParamT<bool>::SetParam(shared_ptr<Shader>& shader)
 {
 	auto val = GetValue();
-
 	Param::SetParam(shader, val.size());
 	for (int i = 0; i < val.size(); i++)
 		shader->SetBool(locations.get()[i], val[i]);
 }
-
-/*void Material::SetFloat(string name, float value)
-{
-	ParamT<float> p;
-	p.name = name;
-	p.value = value;
-
-	parameters.push_back(p);
-}
-
-void Material::SetVec3(string name, Vector3 value)
-{
-	ParamT<Vector3> p;
-	p.name = name;
-	p.value = value;
-
-	parameters.push_back(p);
-}*/
 
 Material Material::SILVER = Material({
 	//new ParamT<Vector3>("material.ambient", Vector3(0.19225, 0.19225, 0.19225)),
@@ -178,11 +154,9 @@ public:
 		if (lastRenderedFrame != Time::renderedFrames)
 		{
 			cache.clear();
-
 			for (int i = 0; i < Light::globalLights.size(); i++)
 			{
 				auto light = Light::globalLights[i];
-
 				func(cache, light);
 			}
 
@@ -238,53 +212,10 @@ ParameterCache<float> pointLightsStrengthCache = ParameterCache<float>([](vector
 		cache.push_back(1);
 });
 
-
-
-/*static uint64_t lastRenderedFrame = -1;
-static vector<Vector3> lightsPositions;
-static vector<Vector3> GetLightsPositions()
-{
-	if (lastRenderedFrame != Time::renderedFrames)
-	{
-		lightsPositions.clear();
-		for (int i = 0; i < Light::globalLights.size(); i++)
-		{
-			auto light = Light::globalLights[i];
-
-			// For now - only point lights are supported
-			if(light->IsType<PointLight>())
-				lightsPositions.push_back(light->GetPosition());
-		}
-
-		lastRenderedFrame = Time::renderedFrames;
-	}
-
-	return lightsPositions;
-}*/
-
-
 // Used to detect shader features, like vertex position, lights, material properties, etc
 // TODO: Finish implementation
 void Material::DetectShaderFeatures()
 {
-
-	// Implementation not complete
-	/*GLint count;
-	GLint size;
-	GLenum type;
-
-	const GLsizei bufSize = 64;
-	GLchar name[bufSize];
-	GLsizei length;
-
-	glGetProgramiv(shader->ID, GL_ACTIVE_UNIFORMS, &count);
-	for (GLint i = 0; i < count; i++)
-	{
-		glGetActiveUniform(shader->ID, (GLuint)i, bufSize, &length, &size, &type, name);
-
-		LOG("Uniform id ", i, " Type: ", type, " Name: ", name);
-	}*/
-
 	auto path = shader->GetFragmentPath();
 	auto source = ReadAllLines(path.c_str());
 
@@ -430,7 +361,6 @@ Material::Material(initializer_list<shared_ptr<Param>> params, shared_ptr<Shader
 
 	for (auto param : params)
 	{
-		//parameters.push_back(param);
 		parameters.push_back(param);
 	}
 }

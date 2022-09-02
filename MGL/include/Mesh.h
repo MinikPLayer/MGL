@@ -50,9 +50,6 @@ public:
 	
 protected:
 	shared_ptr<bool> refCounter = nullptr;
-
-	//vector<Vertex> vertexData;
-	//vector<unsigned int> indices;
 public:
 	shared_ptr<Vertex> vertexData = nullptr;
 	shared_ptr<unsigned int> indices = nullptr;
