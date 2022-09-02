@@ -43,20 +43,11 @@ void registerBasicInput()
 	Input::RegisterAxis(Input::Axis("MouseX", Input::Mouse, Input::MouseAxis::MOUSE_X));
 	Input::RegisterAxis(Input::Axis("MouseY", Input::Mouse, Input::MouseAxis::MOUSE_Y));
 	Input::RegisterAxis(Input::Axis("Sprint", Input::Keyboard, Input::LSHIFT));
-
-	
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
 	Input::__SetMousePos(xpos, ypos);
-
-	//camera->ProcessMouseMovement(x, y);
-}
-
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-	//camera->ProcessMouseScroll(yoffset);
 }
 
 int main()
@@ -119,20 +110,6 @@ int main()
 		RunEvent(&GameObject::Update);
 
 		Camera::__SetRenderingCamera(Camera::GetMainCamera(), window.GetAspectRatio());
-
-		if (Input::GetButtonDown("DynBatch"))
-		{
-            for (int i = 0; i < GameObject::__objects.size(); i++) {
-                if (GameObject::__objects[i]->IsType<US2>()) {
-                    GameObject::__objects[i]->Dispose();
-                    GameObject::__objects[i].reset();
-                    GameObject::__objects.erase(GameObject::__objects.begin() + i, GameObject::__objects.begin() + i + 1);
-                    i--;
-                    //GameObject::__objects[i] = make_shared<US2>();
-                }
-            }
-		}
-
 
 		// Render shadow maps
 		for (int i = 0; i < ShadowMap::__ShadowMaps__.size(); i++) {
