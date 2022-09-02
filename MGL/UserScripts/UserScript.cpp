@@ -155,9 +155,9 @@ void UserScript::Start()
 	floorMesh->SetLocalPosition(-1.0f * Vector3(sinMeshSize.x / 2, 0, sinMeshSize.y / 2));
 	floorMesh->GenerateMesh(sinMeshSize, [](float x, float y) {
 		//return 0.5f * sin(x/4.f) * sin(y/4.f);
-		//return 0.5f * sin(x / 4.f) * sin(y / 2.f) + sin(x/3.f);
-		return 0.0f;
-		}, nullptr, 0.5);
+		return 0.5f * sin(x / 4.f) * sin(y / 2.f) + sin(x/3.f);
+		//return 0.0f;
+    }, nullptr, 1);
 	AddComponent(floorMesh);
 
 	LOG("Legend | PlaneMesh | GeneratedMesh");
