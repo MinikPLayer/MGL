@@ -11,5 +11,6 @@ Framebuffer::~Framebuffer()
 {
 	if (FBO != -1) {
 		glDeleteFramebuffers(1, &FBO);
+        FBO = -1;
 	}
 }

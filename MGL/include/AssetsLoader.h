@@ -20,13 +20,13 @@ public:
 	static shared_ptr<Model> LoadModel(string path, shared_ptr<Material> mat = nullptr, bool absoluteDir = false);
 	static shared_ptr<Texture> LoadTexture(string path, int slot = 0, bool absoluteDir = false);
 
-
 	template<class T>
 	static void AddAsset(string path, shared_ptr<T>& asset);
 
-
 	template<class T>
 	static bool FindAsset(string path, shared_ptr<T>& foundAsset);
+
+    static void ClearAssets();
 };
 
 template<class T>

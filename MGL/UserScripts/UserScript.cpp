@@ -85,7 +85,7 @@ void UserScript::Start()
 	{
 		mats[i]->SetVec3("dirLight.direction", [this]() {
 			return -1 * dirLight->GetPosition();
-			});
+        });
 		mats[i]->SetVec3("dirLight.ambient", Vector3(0.05f, 0.05f, 0.05f));
 		mats[i]->SetVec3("dirLight.diffuse", Vector3(0.4f, 0.4f, 0.4f));
 		mats[i]->SetVec3("dirLight.specular", Vector3(0.5f, 0.5f, 0.5f));
@@ -102,8 +102,11 @@ void UserScript::Start()
 		mats[i]->SetBool("dirLight.castShadow", true);
 		mats[i]->SetMat4("lightSpaceMatrix", [this]() {
 			auto sm = dirLight->shadowMap;
-			return sm->lightSpaceMatrix;
-			});
+            if(sm != nullptr)
+			    return sm->lightSpaceMatrix;
+            else
+                return glm::mat4(1);
+        });
 		mats[i]->SetInt("shadowMap", 15);
 	}
 

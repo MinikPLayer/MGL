@@ -183,7 +183,7 @@ public:
 			{
 				// Clean and mark as disposed
 				components[i]->Dispose();
-
+                components.erase(components.begin() + i, components.begin() + i + 1);
 				return;
 			}
 		}

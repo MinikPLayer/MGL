@@ -68,3 +68,7 @@ shared_ptr<Texture> AssetsLoader::LoadTexture(string path, int slot, bool absolu
 	return asset;
 }
 
+void AssetsLoader::ClearAssets() {
+    loadedAssets.clear();
+}
+

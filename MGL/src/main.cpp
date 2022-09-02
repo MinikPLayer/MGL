@@ -91,7 +91,6 @@ int main()
 		UserScript* s = new UserScript();
 		s->SetPosition(Vector3(0,0,0));
 		GameObject::Instantiate(s);
-
 	}
 
 	//Sky* sky = new Sky();
@@ -123,17 +122,15 @@ int main()
 
 		if (Input::GetButtonDown("DynBatch"))
 		{
-			dynamicBatching = !dynamicBatching;
-			LOG("Dynamic batching: ", dynamicBatching);
-
-			if(!dynamicBatching)
-				for (int i = 0; i < GameObject::__objects.size(); i++)
-				{
-					if (GameObject::__objects[i]->IsType<Mesh>())
-					{
-						Mesh* mesh = (Mesh*)GameObject::__objects[i].get();
-					}
-				}
+            for (int i = 0; i < GameObject::__objects.size(); i++) {
+                if (GameObject::__objects[i]->IsType<US2>()) {
+                    GameObject::__objects[i]->Dispose();
+                    GameObject::__objects[i].reset();
+                    GameObject::__objects.erase(GameObject::__objects.begin() + i, GameObject::__objects.begin() + i + 1);
+                    i--;
+                    //GameObject::__objects[i] = make_shared<US2>();
+                }
+            }
 		}
 
 
@@ -162,14 +159,17 @@ int main()
 			glEnable(GL_DEPTH_TEST);
 		}
 
-		
-
 		Camera::__SetRenderingCamera(nullptr);
 
 		window.DrawGUI();
 		window.SwapBuffers();
 		glfwPollEvents();
 	}
+
+    // Cleanup
+    for(auto i = GameObject::__objects.begin(); i < GameObject::__objects.end(); )
+        i = GameObject::__objects.erase(i);
+    AssetsLoader::ClearAssets();
 
 	glfwTerminate();
 

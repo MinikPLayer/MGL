@@ -20,8 +20,6 @@ class ShadowMap : public Framebuffer {
 	std::shared_ptr<Material> mat;
 
 public:
-
-
 	glm::mat4 lightSpaceMatrix;
 	GLuint GetDepthMapID() { return depthMap; }
 

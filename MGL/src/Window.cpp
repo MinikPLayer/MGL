@@ -154,7 +154,7 @@ void Window::SetCursorMode(CursorModes mode)
 		break;
 	case Window::CursorModes::Disabled:
 		m = GLFW_CURSOR_DISABLED;
-		break;
+        break;
 	case Window::CursorModes::Hidden:
 		m = GLFW_CURSOR_HIDDEN;
 		break;
