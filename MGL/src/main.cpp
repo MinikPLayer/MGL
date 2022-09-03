@@ -19,8 +19,6 @@
 #include "PostProcessing.h"
 using namespace std;
 
-
-
 float texMix = 0.2f;
 float window_width = 1280;
 float window_height = 720;
@@ -58,7 +56,6 @@ int main()
 	registerBasicInput();
 
 	LOG("Processor count: ", SystemInfo::GetThreadCount());
-
 
 	camera = new FlybackCamera();
 	camera->SetPosition(Vector3(-3, 0, 0));

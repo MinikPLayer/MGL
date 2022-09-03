@@ -122,7 +122,6 @@ add_executable (MGL
 
 find_package(glm CONFIG REQUIRED)
 get_target_property(GLM_INCLUDE_DIR glm INTERFACE_INCLUDE_DIRECTORIES)
-message(STATUS "Found glm: ${GLM_INCLUDE_DIR}")
 add_library(glm::glm INTERFACE IMPORTED)
 set_target_properties(glm::glm PROPERTIES
         INTERFACE_INCLUDE_DIRECTORIES ${GLM_INCLUDE_DIR})
@@ -132,7 +131,7 @@ find_package(glfw3 CONFIG REQUIRED)
 target_link_libraries(MGL PRIVATE glfw)
 
 find_package(assimp CONFIG REQUIRED)
-target_link_libraries(MGL PRIVATE assimp::assimp)
+target_link_libraries(MGL PRIVATE assimp)
 
 
 set_property(TARGET MGL PROPERTY CXX_STANDARD 11)
