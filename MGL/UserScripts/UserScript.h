@@ -1,22 +1,22 @@
 #pragma once
 
-#include "GameObject.h"
-#include "Mesh.h"
-#include "Model.h"
-#include "Util.h"
-#include "Sky.h"
+#include "../GameObject.h"
+#include "../Mesh.h"
+#include "../Model.h"
+#include "../Util.h"
+#include "../Sky.h"
 
-#include "Cube.h"
-#include "Light.h"
-#include "Shader.h"
+#include "../Cube.h"
+#include "../Light.h"
+#include "../Shader.h"
 
 #include <glm/glm.hpp>
 #include <iostream>
-#include "TimeUtils.h"
-#include "Path.h"
-#include "Window.h"
-#include "DirecitonalLight.h"
-#include "PointLight.h"
+#include "../TimeUtils.h"
+#include "../Path.h"
+#include "../Window.h"
+#include "../DirecitonalLight.h"
+#include "../PointLight.h"
 
 #include <cmath>
 //#define M_PI   3.14159265358979323846264338327950288

@@ -103,6 +103,6 @@ public:
 	Mesh(shared_ptr<Material> mat);
 
 	~Mesh();
-
-	void __Draw(shared_ptr<Material> materialOverride = nullptr);
+    
+	virtual void __Draw(shared_ptr<Material> materialOverride);
 };

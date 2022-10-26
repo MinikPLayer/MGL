@@ -17,6 +17,8 @@
 #include "ImGui/imgui.h"
 #include "SystemInfo.h"
 #include "PostProcessing.h"
+#include "SceneManager.h"
+
 using namespace std;
 
 float texMix = 0.2f;
@@ -50,27 +52,15 @@ int main()
 
 	// Disable / Enabke VSYNC
 	glfwSwapInterval(0);
-
+    glEnable(GL_FRAMEBUFFER_SRGB);
 	glClearColor(0, 0, 0, 1);
 
 	registerBasicInput();
 
 	LOG("Processor count: ", SystemInfo::GetThreadCount());
 
-	camera = new FlybackCamera();
-	camera->SetPosition(Vector3(-3, 0, 0));
-	GameObject::Instantiate(camera);
-	camera->SetAsMainCamera();
-
-	for (int i = 0; i < 1; i++)
-	{
-		UserScript* s = new UserScript();
-		s->SetPosition(Vector3(0,0,0));
-		GameObject::Instantiate(s);
-	}
-
-	sky = new Sky();
-	sky->SetPosition(Vector3(0, 0, 0));
+    SceneManager::LoadDefaultScene();
+    GameObject::Instantiate<UserScript>();
 
 	LOG_E("Starting drawing loop...");
 
@@ -102,14 +92,7 @@ int main()
 		Camera::__SetRenderingCamera(Camera::GetMainCamera());
 			
 		pp.Use();
-
-		glDisable(GL_DEPTH_TEST);
-		sky->Update();
-		sky->__Draw();
-		glEnable(GL_DEPTH_TEST);
-
 		RenderScene();
-
 		pp.DrawToScreen();
 		
 

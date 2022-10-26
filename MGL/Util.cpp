@@ -1,5 +1,6 @@
 #include "Util.h"
 #include <thread>
+#include <random>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -205,6 +206,17 @@ double deg2rad(double deg)
 double rad2deg(double rad)
 {
 	return rad * 180.0 / PI;
+}
+
+std::random_device dev;
+std::mt19937 rng(dev());
+long GetRandomLong(long min, long max) {
+    std::uniform_int_distribution<std::mt19937::result_type> dst(min, max);
+    return (long)dst(rng);
+}
+
+long GetRandomLong() {
+    return GetRandomLong(std::numeric_limits<long>::min(), std::numeric_limits<long>::max());
 }
 
 TextureInfo LoadTexture(const char* path, TextureFiltering minFilter, TextureFiltering magFilter, TextureWrapping wrapHor, TextureWrapping wrapVert, bool flip)

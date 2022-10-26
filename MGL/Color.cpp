@@ -30,3 +30,8 @@ Color Color::Transparent = Color(0, 0, 0, 0);
 Color Color::Red = Color(255, 0, 0);
 Color Color::Green = Color(0, 255, 0);
 Color Color::Blue = Color(0, 0, 255);
+
+Color Color::Random() {
+    auto vec = Vector3i::Random(0, 255);
+    return {vec.x, vec.y, vec.z};
+}

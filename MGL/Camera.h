@@ -11,12 +11,17 @@
 
 class Camera : public GameObject
 {
+public:
+	enum class ProjectionTypes {
+		Perspective,
+		Ortographic
+	};
+
+protected:
 	static Camera* main;
 	static Camera* rendering;
 
 	glm::quat orientation;
-
-protected:
 	glm::mat4 projectionMatrix;
 	glm::mat4 viewMatrix;
 
@@ -34,13 +39,11 @@ protected:
 	Vector3 up;
 	Vector3 right;
 	Vector3 worldUp = Vector3(0, 1, 0);
-public:
-	enum class ProjectionTypes {
-		Perspective,
-		Ortographic
-	};
 
 	ProjectionTypes projectionType = ProjectionTypes::Perspective;
+public:
+	ProjectionTypes GetProjectionType();
+	void SetProjectionType(ProjectionTypes type);
 
 	float GetAspectRatio();
 

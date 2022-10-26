@@ -1,4 +1,4 @@
-#version 330 core
+#version 440
 #define MAX_LIGHTS_COUNT 4
 
 #pragma [ShaderFeatures]

@@ -119,3 +119,12 @@ void Camera::UpdateCameraVectors()
 	right = glm::rotate(glm::inverse(orientation), glm::vec3(1.0, 0.0, 0.0));
 	up = glm::vec3(0.0, 1.0, 0.0);
 }
+
+Camera::ProjectionTypes Camera::GetProjectionType() {
+	return projectionType;
+}
+
+void Camera::SetProjectionType(Camera::ProjectionTypes type) {
+	this->projectionType = type;
+	UpdateProjectionMatrix(aspectRatio);
+}

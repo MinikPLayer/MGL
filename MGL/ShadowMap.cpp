@@ -131,6 +131,6 @@ void ShadowMap::DebugDraw()
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 
 	glDisable(GL_DEPTH_TEST);
-	m.__Draw();
+	m.__Draw(nullptr);
 	glEnable(GL_DEPTH_TEST);
 }

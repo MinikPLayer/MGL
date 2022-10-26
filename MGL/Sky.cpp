@@ -27,3 +27,10 @@ Sky::Sky()
 void Sky::Update()
 {
 }
+
+void Sky::__Draw(shared_ptr<Material> materialOverride) {
+
+    glDisable(GL_DEPTH_TEST);
+    Mesh::__Draw(materialOverride);
+    glEnable(GL_DEPTH_TEST);
+}

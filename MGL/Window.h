@@ -11,19 +11,24 @@ using namespace std;
 
 class Window
 {
+public:
+    enum class CursorModes
+    {
+        Enabled = GLFW_CURSOR_NORMAL,
+        Disabled = GLFW_CURSOR_DISABLED,
+        Hidden = GLFW_CURSOR_HIDDEN
+    };
+
+protected:
+
 	static Window* mainWindow;
 
 	GLFWwindow* window = nullptr;
 	Vector2i size;
 
+    CursorModes mode;
 public:
 	void UpdateSize();
-	enum class CursorModes
-	{
-		Enabled,
-		Disabled,
-		Hidden
-	};
 
 	static Window* GetMainWindow();
 

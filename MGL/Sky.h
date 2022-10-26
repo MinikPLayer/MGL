@@ -12,4 +12,5 @@ public:
 
 	Sky();
 	void Update();
+    void __Draw(shared_ptr<Material> materialOverride) override;
 };

@@ -251,11 +251,11 @@ void UserScript::Update()
 	}
 
 	if (Input::GetKey(Input::Keyboard, Input::KBButtons::LCTRL)) {
-		glDisable(GL_FRAMEBUFFER_SRGB);
+		//glDisable(GL_FRAMEBUFFER_SRGB);
 		Window::GetMainWindow()->SetCursorMode(Window::CursorModes::Enabled);
 	}
 	else {
-		glEnable(GL_FRAMEBUFFER_SRGB);
+		//glEnable(GL_FRAMEBUFFER_SRGB);
 		Window::GetMainWindow()->SetCursorMode(Window::CursorModes::Disabled);
 	}
 

@@ -12,6 +12,7 @@ public:
 	Color(int r = 0, int g = 0, int b = 0, int a = 255);
 
 	static Color FromRGB(int r, int b, int g, int a = 255);
+    static Color Random();
 
 	Vector3 ToVector3();
 

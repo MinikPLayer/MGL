@@ -105,6 +105,9 @@ bool CompileShader(string path, GLuint type, GLuint& result);
 double deg2rad(double deg);
 double rad2deg(double rad);
 
+long GetRandomLong();
+long GetRandomLong(long min, long max);
+
 enum class TextureFiltering
 {
 	None,

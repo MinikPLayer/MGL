@@ -3,6 +3,8 @@
 #include "ImGui/backends/imgui_impl_glfw.h"
 #include "ImGui/backends/imgui_impl_opengl3.h"
 #include "TimeUtils.h"
+#include "SceneManager.h"
+#include "Benchmark.h"
 
 Window* Window::mainWindow = nullptr;
 
@@ -85,9 +87,13 @@ void Window::SetViewport() { SetViewport(0, 0, size.x, size.y); }
 void Window::SetViewport(int x, int y, int width, int height) { glViewport(x, y, width, height); }
 
 void TestGUI() {
-	ImGui::Begin("Test");
+	ImGui::Begin("Scene Manager");
 
-	ImGui::Text("Test text");
+    if(ImGui::Button("Load benchmark scene")) {
+        SceneManager::LoadDefaultScene(false);
+        GameObject::Instantiate<Benchmark>();
+        Window::GetMainWindow()->SetCursorMode(Window::CursorModes::Disabled);
+    }
 
 	ImGui::End();
 }
@@ -116,9 +122,7 @@ void Window::PollEvents()
 	int cursorMode = glfwGetInputMode(window, GLFW_CURSOR);
 
 	Input::__SetMousePos(x, y, cursorMode == GLFW_CURSOR_NORMAL);
-
 	Input::__Update(window);
-
 
 	if (Input::GetButtonDown("CloseWindow"))
 		glfwSetWindowShouldClose(window, true);
@@ -127,7 +131,6 @@ void Window::PollEvents()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
-	
 }
 
 bool Window::ShouldClose()
@@ -141,24 +144,8 @@ void Window::SwapBuffers()
 	Time::renderedFrames++;
 }
 
-void Window::SetCursorMode(CursorModes mode)
+void Window::SetCursorMode(CursorModes cMode)
 {
-	int m = 0;
-	switch (mode)
-	{
-	case Window::CursorModes::Enabled:
-		m = GLFW_CURSOR_NORMAL;
-		break;
-	case Window::CursorModes::Disabled:
-		m = GLFW_CURSOR_DISABLED;
-        break;
-	case Window::CursorModes::Hidden:
-		m = GLFW_CURSOR_HIDDEN;
-		break;
-	default:
-		break;
-	}
-
-
-	glfwSetInputMode(window, GLFW_CURSOR, m);
+    this->mode = cMode;
+	glfwSetInputMode(window, GLFW_CURSOR, (int)cMode);
 }

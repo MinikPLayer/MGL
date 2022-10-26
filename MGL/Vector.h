@@ -1,9 +1,9 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include <time.h>
 #include <limits>
 #include <string>
+#include "Util.h"
 
 template<class Type>
 class Vector3Base
@@ -42,25 +42,20 @@ public:
 	
 	Vector3Base<Type>& operator=(const glm::vec3& v) { x = v.x; y = v.y; z = v.z; return *this; }
 
-	std::string ToString()
-	{
+	std::string ToString() {
 		return "(" + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + ")";
 	}
 
-	static Vector3Base<Type> Random()
-	{
+	static Vector3Base<Type> Random() {
 		return Random(0, std::numeric_limits<Type>::max() /* max value of this type */);
 	}
 
-	static Vector3Base<Type> Random(Type max)
-	{
+	static Vector3Base<Type> Random(Type max) {
 		return Random(0, max);
 	}
 
-	static Vector3Base<Type> Random(Type min, Type max)
-	{
-		//srand(time(NULL));
-		return Vector3Base<Type>((long)(rand() * 1000.0 / 50.0) % (long)(max - min) + min, (long)(rand() * 1512.0 / 156.0) % (long)(max - min) + min, (long)(rand() * 6312.0 / 362.0) % (long)(max - min) + min);
+	static Vector3Base<Type> Random(Type min, Type max) {
+		return Vector3Base<Type>(GetRandomLong(min, max), GetRandomLong(min, max), GetRandomLong(min, max));
 	}
 };
 
